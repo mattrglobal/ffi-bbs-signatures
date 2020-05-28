@@ -1,0 +1,13 @@
+[package]
+authors = ["Michael Lodder <redmike7@gmail.com>"]
+edition = "2018"
+name = "ffi-bbs-signatures"
+version = "0.1.0"
+
+[lib]
+crate-type = ["staticlib", "cdylib"]
+
+[dependencies]
+bbs = { version = "0.4.0", git = "https://github.com/mikelodder7/ursa", branch = "master" }
+ffi-support = "0.4.0"
+lazy_static = "1.4"
