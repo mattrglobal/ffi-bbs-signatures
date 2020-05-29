@@ -116,6 +116,9 @@ impl From<BBSError> for BbsFfiError {
     }
 }
 
+#[macro_use]
+mod macros;
+pub mod bbs_blind_commitment;
 pub mod bbs_blind_sign;
 pub mod bbs_sign;
 pub mod bls;

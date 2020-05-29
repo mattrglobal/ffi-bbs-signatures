@@ -1,0 +1,149 @@
+macro_rules! add_message_impl {
+    (
+     $name_string:ident,
+     $name_bytes:ident,
+     $name_prehash:ident,
+     $static:expr
+    ) => {
+        #[no_mangle]
+        pub extern "C" fn $name_string(
+            handle: u64,
+            message: FfiStr<'_>,
+            err: &mut ExternError,
+        ) -> i32 {
+            let message = message.into_string();
+            if message.is_empty() {
+                *err = ExternError::new_error(ErrorCode::new(1), "Message cannot be empty");
+                return 1;
+            }
+            $static.call_with_output_mut(err, handle, |ctx| {
+                ctx.messages
+                    .push(SignatureMessage::hash(message.as_bytes()));
+            });
+            err.get_code().code()
+        }
+
+        #[no_mangle]
+        pub extern "C" fn $name_bytes(
+            handle: u64,
+            message: &ByteArray,
+            err: &mut ExternError,
+        ) -> i32 {
+            let message = message.to_vec();
+            if message.is_empty() {
+                *err = ExternError::new_error(ErrorCode::new(1), "Message cannot be empty");
+                return 1;
+            }
+            $static.call_with_output_mut(err, handle, |ctx| {
+                ctx.messages.push(SignatureMessage::hash(&message));
+            });
+            err.get_code().code()
+        }
+
+        #[no_mangle]
+        pub extern "C" fn $name_prehash(
+            handle: u64,
+            message: &ByteArray,
+            err: &mut ExternError,
+        ) -> i32 {
+            let message = message.to_vec();
+            if message.is_empty() {
+                *err = ExternError::new_error(ErrorCode::new(1), "Message cannot be empty");
+                return 1;
+            }
+            $static.call_with_result_mut(err, handle, |ctx| -> Result<(), BbsFfiError> {
+                let msg = SignatureMessage::try_from(message)?;
+                ctx.messages.push(msg);
+                Ok(())
+            });
+            err.get_code().code()
+        }
+    };
+    (
+     $name_string:ident,
+     $name_bytes:ident,
+     $name_prehash:ident,
+     $static:expr,
+     $index:ident
+    ) => {
+        #[no_mangle]
+        pub extern "C" fn $name_string(
+            handle: u64,
+            index: $index,
+            message: FfiStr<'_>,
+            err: &mut ExternError,
+        ) -> i32 {
+            let message = message.into_string();
+            if message.is_empty() {
+                *err = ExternError::new_error(ErrorCode::new(1), "Message cannot be empty");
+                return 1;
+            }
+            $static.call_with_output_mut(err, handle, |ctx| {
+                ctx.messages
+                    .insert(index as usize, SignatureMessage::hash(message.as_bytes()));
+            });
+            err.get_code().code()
+        }
+
+        #[no_mangle]
+        pub extern "C" fn $name_bytes(
+            handle: u64,
+            index: $index,
+            message: &ByteArray,
+            err: &mut ExternError,
+        ) -> i32 {
+            let message = message.to_vec();
+            if message.is_empty() {
+                *err = ExternError::new_error(ErrorCode::new(1), "Message cannot be empty");
+                return 1;
+            }
+            $static.call_with_output_mut(err, handle, |ctx| {
+                ctx.messages
+                    .insert(index as usize, SignatureMessage::hash(&message));
+            });
+            err.get_code().code()
+        }
+
+        #[no_mangle]
+        pub extern "C" fn $name_prehash(
+            handle: u64,
+            index: $index,
+            message: &ByteArray,
+            err: &mut ExternError,
+        ) -> i32 {
+            let message = message.to_vec();
+            if message.is_empty() {
+                *err = ExternError::new_error(ErrorCode::new(1), "Message cannot be empty");
+                return 1;
+            }
+            $static.call_with_result_mut(err, handle, |ctx| -> Result<(), BbsFfiError> {
+                let msg = SignatureMessage::try_from(message)?;
+                ctx.messages.insert(index as usize, msg);
+                Ok(())
+            });
+            err.get_code().code()
+        }
+    };
+}
+
+macro_rules! add_bytes_impl {
+    ($name:ident, $static:expr, $property:ident, $type:ident) => {
+        #[no_mangle]
+        pub extern "C" fn $name(handle: u64, value: &ByteArray, err: &mut ExternError) -> i32 {
+            let value = value.to_vec();
+            if value.is_empty() {
+                *err = ExternError::new_error(
+                    ErrorCode::new(1),
+                    &format!("{} cannot be empty", stringify!($type)),
+                );
+                return 1;
+            }
+            $static.call_with_result_mut(err, handle, |ctx| -> Result<(), BbsFfiError> {
+                let v = $type::try_from(value)?;
+                ctx.$property = Some(v);
+                Ok(())
+            });
+            err.get_code().code()
+        }
+    };
+}
