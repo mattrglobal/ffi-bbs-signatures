@@ -19,15 +19,6 @@ struct BlindCommitmentContext {
     nonce: Option<ProofNonce>,
 }
 
-// struct VerifyBlindSignProofContext {
-//     blinded: BTreeSet<usize>,
-//     challenge_hash: Option<ProofChallenge>,
-//     commitment: Option<CommitmentG1>,
-//     nonce: Option<ProofNonce>,
-//     proof: Option<ProofG1>,
-//     public_key: Option<PublicKey>,
-// }
-
 #[no_mangle]
 pub extern "C" fn bbs_blind_signature_size() -> i32 {
     SIGNATURE_COMPRESSED_SIZE as i32

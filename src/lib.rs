@@ -4,6 +4,7 @@ extern crate ffi_support;
 extern crate lazy_static;
 
 use bbs::errors::BBSError;
+use bbs::pok_vc::PoKVCError;
 use ffi_support::{ByteBuffer, ErrorCode, ExternError};
 
 use std::{ptr, slice};
@@ -116,8 +117,15 @@ impl From<BBSError> for BbsFfiError {
     }
 }
 
+impl From<PoKVCError> for BbsFfiError {
+    fn from(e: PoKVCError) -> Self {
+        BbsFfiError(format!("{:?}", e))
+    }
+}
+
 #[macro_use]
 mod macros;
+pub mod bbs_verify_sign_proof;
 pub mod bbs_blind_commitment;
 pub mod bbs_blind_sign;
 pub mod bbs_sign;
