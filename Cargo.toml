@@ -8,6 +8,9 @@ version = "0.1.0"
 name = "bbs"
 crate-type = ["staticlib", "cdylib"]
 
+[profile.release]
+lto = true
+
 [dependencies]
 arrayref = "0.3"
 bbs = { version = "0.4", git = "https://github.com/mikelodder7/ursa", branch = "master" }
