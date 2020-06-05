@@ -44,37 +44,37 @@ pub extern "C" fn bbs_verify_blind_commitment_context_add_blinded(
 }
 
 add_bytes_impl!(
-    bbs_verify_blind_commitment_context_add_commitment,
+    bbs_verify_blind_commitment_context_set_commitment,
     VERIFY_SIGN_PROOF_CONTEXT,
     commitment,
     Commitment
 );
 
 add_bytes_impl!(
-    bbs_verify_blind_commitment_context_add_challenge_hash,
+    bbs_verify_blind_commitment_context_set_challenge_hash,
     VERIFY_SIGN_PROOF_CONTEXT,
     challenge_hash,
     ProofChallenge
 );
 
 add_bytes_impl!(
-    bbs_verify_blind_commitment_context_add_public_key,
+    bbs_verify_blind_commitment_context_set_public_key,
     VERIFY_SIGN_PROOF_CONTEXT,
     public_key,
     PublicKey
 );
 
 add_bytes_impl!(
-    bbs_verify_blind_commitment_context_add_nonce_string,
-    bbs_verify_blind_commitment_context_add_nonce_bytes,
-    bbs_verify_blind_commitment_context_add_nonce_prehashed,
+    bbs_verify_blind_commitment_context_set_nonce_string,
+    bbs_verify_blind_commitment_context_set_nonce_bytes,
+    bbs_verify_blind_commitment_context_set_nonce_prehashed,
     VERIFY_SIGN_PROOF_CONTEXT,
     nonce,
     ProofNonce
 );
 
 add_bytes_impl!(
-    bbs_verify_blind_commitment_context_add_proof,
+    bbs_verify_blind_commitment_context_set_proof,
     VERIFY_SIGN_PROOF_CONTEXT,
     proof,
     ProofG1

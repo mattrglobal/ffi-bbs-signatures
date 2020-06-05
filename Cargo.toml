@@ -5,6 +5,7 @@ name = "ffi-bbs-signatures"
 version = "0.1.0"
 
 [lib]
+name = "bbs"
 crate-type = ["staticlib", "cdylib"]
 
 [dependencies]

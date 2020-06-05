@@ -127,9 +127,7 @@ impl From<PoKOfSignatureProofStatus> for SignatureProofStatus {
 }
 
 define_string_destructor!(bbs_string_free);
-define_bytebuffer_destructor!(bls_secret_key_free);
-define_bytebuffer_destructor!(bls_public_key_free);
-define_bytebuffer_destructor!(bbs_signature_key_free);
+define_bytebuffer_destructor!(bbs_byte_buffer_free);
 
 /// Wrapper to convert a string to ExternError and BBSError
 pub(crate) struct BbsFfiError(pub String);

@@ -35,23 +35,23 @@ add_proof_message_impl!(
 );
 
 add_bytes_impl!(
-    bbs_create_proof_context_add_signature,
+    bbs_create_proof_context_set_signature,
     CREATE_PROOF_CONTEXT,
     signature,
     Signature
 );
 
 add_bytes_impl!(
-    bbs_create_proof_context_add_public_key,
+    bbs_create_proof_context_set_public_key,
     CREATE_PROOF_CONTEXT,
     public_key,
     PublicKey
 );
 
 add_bytes_impl!(
-    bbs_create_proof_context_add_nonce_string,
-    bbs_create_proof_context_add_nonce_bytes,
-    bbs_create_proof_context_add_nonce_prehashed,
+    bbs_create_proof_context_set_nonce_string,
+    bbs_create_proof_context_set_nonce_bytes,
+    bbs_create_proof_context_set_nonce_prehashed,
     CREATE_PROOF_CONTEXT,
     nonce,
     ProofNonce

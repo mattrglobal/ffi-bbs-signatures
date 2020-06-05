@@ -129,23 +129,23 @@ add_message_impl!(
 );
 
 add_bytes_impl!(
-    bbs_verify_proof_context_add_proof,
+    bbs_verify_proof_context_set_proof,
     VERIFY_PROOF_CONTEXT,
     proof,
     PoKOfSignatureProofWrapper
 );
 
 add_bytes_impl!(
-    bbs_verify_proof_context_add_public_key,
+    bbs_verify_proof_context_set_public_key,
     VERIFY_PROOF_CONTEXT,
     public_key,
     PublicKey
 );
 
 add_bytes_impl!(
-    bbs_verify_proof_context_add_nonce_string,
-    bbs_verify_proof_context_add_nonce_bytes,
-    bbs_verify_proof_context_add_nonce_prehashed,
+    bbs_verify_proof_context_set_nonce_string,
+    bbs_verify_proof_context_set_nonce_bytes,
+    bbs_verify_proof_context_set_nonce_prehashed,
     VERIFY_PROOF_CONTEXT,
     nonce,
     ProofNonce

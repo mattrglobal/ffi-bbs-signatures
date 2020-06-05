@@ -42,16 +42,16 @@ add_message_impl!(
 );
 
 add_bytes_impl!(
-    bbs_blind_commitment_context_add_public_key,
+    bbs_blind_commitment_context_set_public_key,
     BLIND_COMMITMENT_CONTEXT,
     public_key,
     PublicKey
 );
 
 add_bytes_impl!(
-    bbs_blind_commitment_context_add_nonce_string,
-    bbs_blind_commitment_context_add_nonce_bytes,
-    bbs_blind_commitment_context_add_nonce_prehashed,
+    bbs_blind_commitment_context_set_nonce_string,
+    bbs_blind_commitment_context_set_nonce_bytes,
+    bbs_blind_commitment_context_set_nonce_prehashed,
     BLIND_COMMITMENT_CONTEXT,
     nonce,
     ProofNonce

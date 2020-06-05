@@ -36,21 +36,21 @@ add_message_impl!(
 );
 
 add_bytes_impl!(
-    bbs_blind_sign_context_add_public_key,
+    bbs_blind_sign_context_set_public_key,
     BLIND_SIGN_CONTEXT,
     public_key,
     PublicKey
 );
 
 add_bytes_impl!(
-    bbs_blind_sign_context_add_secret_key,
+    bbs_blind_sign_context_set_secret_key,
     BLIND_SIGN_CONTEXT,
     secret_key,
     SecretKey
 );
 
 add_bytes_impl!(
-    bbs_blind_sign_context_add_commitment,
+    bbs_blind_sign_context_set_commitment,
     BLIND_SIGN_CONTEXT,
     commitment,
     Commitment

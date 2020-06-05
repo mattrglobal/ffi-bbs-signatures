@@ -39,13 +39,13 @@ add_message_impl!(
 );
 
 add_bytes_impl!(
-    bbs_sign_context_add_secret_key,
+    bbs_sign_context_set_secret_key,
     SIGN_CONTEXT,
     secret_key,
     SecretKey
 );
 add_bytes_impl!(
-    bbs_sign_context_add_public_key,
+    bbs_sign_context_set_public_key,
     SIGN_CONTEXT,
     public_key,
     PublicKey
@@ -121,16 +121,16 @@ pub extern "C" fn bbs_verify_context_add_message_prehashed(
 }
 
 #[no_mangle]
-pub extern "C" fn bbs_verify_context_add_public_key(
+pub extern "C" fn bbs_verify_context_set_public_key(
     handle: u64,
     public_key: &ByteArray,
     err: &mut ExternError,
 ) -> i32 {
-    bbs_sign_context_add_public_key(handle, public_key, err)
+    bbs_sign_context_set_public_key(handle, public_key, err)
 }
 
 add_bytes_impl!(
-    bbs_verify_context_add_signature,
+    bbs_verify_context_set_signature,
     SIGN_CONTEXT,
     signature,
     Signature
@@ -151,12 +151,10 @@ pub extern "C" fn bbs_verify_context_finish(handle: u64, err: &mut ExternError) 
 
         match (ctx.signature.as_ref(), ctx.public_key.as_ref()) {
             (Some(ref sig), Some(ref pk)) => match sig.verify(ctx.messages.as_slice(), pk) {
-                Ok(b) => Ok(if b { 0 } else { 2 }),
-                Err(e) => Err(BbsFfiError(format!("{:?}", e))),
+                Ok(b) => Ok(if b { 1 } else { 0 }),
+                Err(e) => Err(BbsFfiError(format!("{:?}", e)))
             },
             (_, _) => Err(BbsFfiError::new("")),
         }
-    });
-
-    err.get_code().code()
+    })
 }
