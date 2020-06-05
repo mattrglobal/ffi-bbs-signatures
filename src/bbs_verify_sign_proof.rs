@@ -1,10 +1,7 @@
 use crate::{BbsFfiError, ByteArray};
 use bbs::prelude::*;
 use ffi_support::*;
-use std::{
-    collections::BTreeSet,
-    convert::TryFrom
-};
+use std::{collections::BTreeSet, convert::TryFrom};
 
 lazy_static! {
     static ref VERIFY_SIGN_PROOF_CONTEXT: ConcurrentHandleMap<VerifyBlindSignProofContext> =
@@ -35,7 +32,11 @@ pub extern "C" fn bbs_verify_blind_commitment_context_init(err: &mut ExternError
 }
 
 #[no_mangle]
-pub extern "C" fn bbs_verify_blind_commitment_context_add_blinded(handle: u64, index: u32, err: &mut ExternError) -> i32 {
+pub extern "C" fn bbs_verify_blind_commitment_context_add_blinded(
+    handle: u64,
+    index: u32,
+    err: &mut ExternError,
+) -> i32 {
     VERIFY_SIGN_PROOF_CONTEXT.call_with_output_mut(err, handle, |ctx| {
         ctx.blinded.insert(index as usize);
     });
@@ -64,7 +65,9 @@ add_bytes_impl!(
 );
 
 add_bytes_impl!(
-    bbs_verify_blind_commitment_context_add_nonce,
+    bbs_verify_blind_commitment_context_add_nonce_string,
+    bbs_verify_blind_commitment_context_add_nonce_bytes,
+    bbs_verify_blind_commitment_context_add_nonce_prehashed,
     VERIFY_SIGN_PROOF_CONTEXT,
     nonce,
     ProofNonce

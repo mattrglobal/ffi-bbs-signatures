@@ -1,4 +1,6 @@
 #[macro_use]
+extern crate arrayref;
+#[macro_use]
 extern crate ffi_support;
 #[macro_use]
 extern crate lazy_static;
@@ -7,6 +9,7 @@ use bbs::errors::BBSError;
 use bbs::pok_vc::PoKVCError;
 use ffi_support::{ByteBuffer, ErrorCode, ExternError};
 
+use bbs::pok_sig::PoKOfSignatureProofStatus;
 use std::{ptr, slice};
 
 /// Used for receiving a ByteBuffer from C that was allocated by either C or Rust.
@@ -91,6 +94,38 @@ impl From<ByteBuffer> for ByteArray {
     }
 }
 
+#[repr(C)]
+pub enum ProofMessageType {
+    Revealed,
+    HiddenProofSpecificBlinding,
+    HiddenExternalBlinding,
+}
+
+#[repr(C)]
+pub enum SignatureProofStatus {
+    /// The proof verified
+    Success = 200,
+    /// The proof failed because the signature proof of knowledge failed
+    BadSignature = 400,
+    /// The proof failed because a hidden message was invalid when the proof was created
+    BadHiddenMessage = 401,
+    /// The proof failed because a revealed message was invalid
+    BadRevealedMessage = 402,
+}
+
+impl From<PoKOfSignatureProofStatus> for SignatureProofStatus {
+    fn from(value: PoKOfSignatureProofStatus) -> Self {
+        match value {
+            PoKOfSignatureProofStatus::Success => SignatureProofStatus::Success,
+            PoKOfSignatureProofStatus::BadSignature => SignatureProofStatus::BadSignature,
+            PoKOfSignatureProofStatus::BadHiddenMessage => SignatureProofStatus::BadHiddenMessage,
+            PoKOfSignatureProofStatus::BadRevealedMessage => {
+                SignatureProofStatus::BadRevealedMessage
+            }
+        }
+    }
+}
+
 define_string_destructor!(bbs_string_free);
 define_bytebuffer_destructor!(bls_secret_key_free);
 define_bytebuffer_destructor!(bls_public_key_free);
@@ -125,8 +160,10 @@ impl From<PoKVCError> for BbsFfiError {
 
 #[macro_use]
 mod macros;
-pub mod bbs_verify_sign_proof;
 pub mod bbs_blind_commitment;
 pub mod bbs_blind_sign;
+pub mod bbs_create_proof;
 pub mod bbs_sign;
+pub mod bbs_verify_proof;
+pub mod bbs_verify_sign_proof;
 pub mod bls;

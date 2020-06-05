@@ -49,7 +49,9 @@ add_bytes_impl!(
 );
 
 add_bytes_impl!(
-    bbs_blind_commitment_context_add_nonce,
+    bbs_blind_commitment_context_add_nonce_string,
+    bbs_blind_commitment_context_add_nonce_bytes,
+    bbs_blind_commitment_context_add_nonce_prehashed,
     BLIND_COMMITMENT_CONTEXT,
     nonce,
     ProofNonce
