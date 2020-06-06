@@ -87,10 +87,11 @@ pub extern "C" fn bls_public_key_to_bbs_key(
     public_key: &mut ByteBuffer,
     err: &mut ExternError,
 ) -> i32 {
-    let res = DeterministicPublicKey::try_from(d_public_key.to_vec());
+    let bytes = d_public_key.to_vec();
+    let res = DeterministicPublicKey::try_from(bytes);
     match res {
         Err(e) => {
-            *err = ExternError::new_error(ErrorCode::new(1), format!("{:?}", e));
+            *err = ExternError::new_error(ErrorCode::new(1), format!("{:?}. Found {:?}", e, bytes));
             1
         }
         Ok(dpk) => {
