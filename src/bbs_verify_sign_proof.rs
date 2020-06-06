@@ -1,4 +1,4 @@
-use crate::{BbsFfiError, ByteArray};
+use crate::{BbsFfiError, ByteArray, SignatureProofStatus};
 use bbs::prelude::*;
 use ffi_support::*;
 use std::{collections::BTreeSet, convert::TryFrom};
@@ -79,3 +79,55 @@ add_bytes_impl!(
     proof,
     ProofG1
 );
+
+#[no_mangle]
+pub extern "C" fn bbs_verify_blind_commitment_context_finish(handle: u64, err: &mut ExternError) -> i32 {
+    let res = VERIFY_SIGN_PROOF_CONTEXT.call_with_result(err, handle, move |ctx| -> Result<i32, BbsFfiError> {
+        if ctx.blinded.is_empty() {
+            Err(BbsFfiError::new("Blinded indices cannot be empty"))?;
+        }
+        if ctx.commitment.is_none() {
+            Err(BbsFfiError::new("Commitment must be set."))?;
+        }
+        if ctx.challenge_hash.is_none() {
+            Err(BbsFfiError::new("Challenge Hash must be set."))?;
+        }
+        if ctx.nonce.is_none() {
+            Err(BbsFfiError::new("Nonce must be set."))?;
+        }
+        if ctx.proof.is_none() {
+            Err(BbsFfiError::new("Proof must be set."))?;
+        }
+        if ctx.public_key.is_none() {
+            Err(BbsFfiError::new("Public Key must be set"))?;
+        }
+
+        let commitment = ctx.commitment.as_ref().unwrap();
+        let challenge_hash = ctx.challenge_hash.as_ref().unwrap();
+        let nonce = ctx.nonce.as_ref().unwrap();
+        let proof = ctx.proof.as_ref().unwrap();
+        let public_key = ctx.public_key.as_ref().unwrap();
+
+        let ctx_verify = BlindSignatureContext {
+            commitment: commitment.clone(),
+            challenge_hash: challenge_hash.clone(),
+            proof_of_hidden_messages: proof.clone(),
+        };
+        if ctx_verify.verify(&ctx.blinded, public_key, nonce)? {
+            Ok(SignatureProofStatus::Success as i32)
+        } else {
+            Ok(SignatureProofStatus::BadHiddenMessage as i32)
+        }
+    });
+
+    if err.get_code().is_success() {
+        match VERIFY_SIGN_PROOF_CONTEXT.remove_u64(handle) {
+            Err(e) => *err = ExternError::new_error(ErrorCode::new(1), format!("{:?}", e)),
+            Ok(_) => {}
+        };
+        res
+    } else {
+        err.get_code().code()
+    }
+}
+

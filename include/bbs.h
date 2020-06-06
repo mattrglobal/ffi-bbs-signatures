@@ -233,6 +233,7 @@ int32_t bbs_verify_blind_commitment_context_set_proof(uint64_t handle,
 
 uint64_t bbs_verify_blind_commitment_context_init(struct ExternError *err);
 
+int32_t bbs_verify_blind_commitment_context_finish(uint64_t handle, struct ExternError *err);
 
 int32_t bbs_verify_proof_context_add_revealed_index(uint64_t handle,
                                                     uint32_t index,
