@@ -29,12 +29,40 @@ int main(int argc, char** argv) {
     signature = (struct ByteBuffer*) malloc(sizeof(struct ByteBuffer));
     err = (struct ExternError*) malloc(sizeof(struct ExternError));
 
-    bls_generate_key(seed, d_public_key, secret_key, err);
+    printf("Create key pair...");
+    fflush(stdout);
 
-    if (bls_public_key_to_bbs_key(d_public_key, message_count, public_key, err) != 0) {
-        printf("%s\n", err->message);
+    if (bls_generate_key(seed, d_public_key, secret_key, err) != 0) {
+        printf("fail\n");
         goto Err;
     }
+    printf("pass\n");
+
+    printf("Public key is correct size...");
+    fflush(stdout);
+    if (d_public_key->len != bls_public_key_size()) {
+        printf("fail\n");
+        printf("    Expected %d, Found: %lld\n", bls_public_key_size(), d_public_key->len);
+        goto Exit;
+    }
+    printf("pass\n");
+
+    printf("Secret key is correct size...");
+    fflush(stdout);
+    if (secret_key->len != bls_secret_key_size()) {
+        printf("fail\n");
+        printf("Expected %d, Found: %lld\n", bls_secret_key_size(), secret_key->len);
+        goto Exit;
+    }
+    printf("pass\n");
+
+    printf("Create BBS key from BLS key that can sign %d messages...", message_count);
+    fflush(stdout);
+    if (bls_public_key_to_bbs_key(d_public_key, message_count, public_key, err) != 0) {
+        printf("fail\n");
+        goto Err;
+    }
+    printf("pass\n");
 
     for (i = 0; i < message_count; i++) {
         message = (struct ByteBuffer*) malloc(sizeof(struct ByteBuffer));
@@ -44,35 +72,63 @@ int main(int argc, char** argv) {
         messages[i] = message;
     }
 
+    printf("Create sign context...");
+    fflush(stdout);
     handle = bbs_sign_context_init(err);
+
+    if (handle == 0) {
+        printf("fail\n");
+        goto Err;
+    }
+    printf("pass\n");
+
+    printf("Set public key in sign context...");
+    fflush(stdout);
     if (bbs_sign_context_set_public_key(handle, public_key, err) != 0) {
-        printf("%s\n", err->message);
+        printf("fail\n");
         goto Err;
     }
+    printf("pass\n");
 
+    printf("Set secret key in sign context...");
+    fflush(stdout);
     if (bbs_sign_context_set_secret_key(handle, secret_key, err) != 0) {
-        printf("%s\n", err->message);
+        printf("fail\n");
         goto Err;
     }
+    printf("pass\n");
 
+    printf("Set messages sign context...");
+    fflush(stdout);
     for (i = 0; i < message_count; i++) {
         if (bbs_sign_context_add_message_bytes(handle, messages[i], err) != 0) {
-            printf("%s\n", err->message);
+            printf("fail\n");
             goto Err;
         }
     }
+    printf("pass\n");
 
+    printf("Sign %d messages ...", message_count);
+    fflush(stdout);
     if (bbs_sign_context_finish(handle, signature, err) != 0) {
-        printf("%s\n", err->message);
+        printf("fail\n");
         goto Err;
     }
+    printf("pass\n");
 
-    for (i = 0; i < signature->len; i++) {
-        printf("%d ", signature->data[i]);
+    printf("Signature is correct size...");
+    if (signature->len != bbs_blind_signature_size()) {
+        printf("fail\n");
+        printf("Expected %d, found %lld\n", bbs_blind_signature_size(), signature->len);
+        goto Exit;
     }
+    printf("pass\n");
 
+    printf("Tests Passed\n");
 
     goto Exit;
+Fail:
+    printf("%s\n", err->message);
 Err:
     free(err->message);
 Exit:
