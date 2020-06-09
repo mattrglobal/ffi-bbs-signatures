@@ -21,6 +21,8 @@ unless the operation is simple enough to perform with a single function call. Pl
 1. When functions create values like `bls_generate_key`, the caller is responsible for freeing the values returned
 as Rust no longer guarantees ownership and cannot be responsible for its management.
 
+Examples can be found in [bbs_test](tests/bbs_test.c)
+
 ### Key Generation
 
 ## Building from source
