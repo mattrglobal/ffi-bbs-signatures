@@ -158,3 +158,4 @@ pub extern "C" fn bbs_verify_context_finish(handle: u64, err: &mut ExternError) 
         }
     })
 }
+

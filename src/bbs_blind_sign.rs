@@ -1,6 +1,6 @@
 use crate::{BbsFfiError, ByteArray};
 use bbs::prelude::*;
-use ffi_support::{ByteBuffer, ConcurrentHandleMap, ErrorCode, ExternError, FfiStr};
+use ffi_support::{ByteBuffer, ConcurrentHandleMap, ErrorCode, ExternError, FfiStr, call_with_result};
 use std::{collections::BTreeMap, convert::TryFrom};
 
 lazy_static! {
@@ -96,4 +96,19 @@ pub extern "C" fn bbs_blind_sign_context_finish(
         };
     }
     err.get_code().code()
+}
+
+#[no_mangle]
+pub extern "C" fn bbs_unblind_signature(blind_signature: &ByteArray,
+                                        blinding_factor: &ByteArray,
+                                        unblind_signature: &mut ByteBuffer,
+                                        err: &mut ExternError) -> i32 {
+    let res = call_with_result(err, || -> Result<ByteBuffer, BbsFfiError> {
+        let blinded_sig = BlindSignature::try_from(blind_signature.to_vec())?;
+        let bf = SignatureBlinding::try_from(blinding_factor.to_vec())?;
+        let sig = blinded_sig.to_unblinded(&bf);
+        Ok(ByteBuffer::from_vec(sig.to_bytes_compressed_form().to_vec()))
+    });
+    *unblind_signature = res;
+    0
 }

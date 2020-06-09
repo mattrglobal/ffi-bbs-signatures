@@ -17,7 +17,14 @@ int main(int argc, char** argv) {
     struct ByteBuffer** messages;
     struct ByteBuffer* message;
     struct ByteBuffer* signature;
+    struct ByteBuffer* nonce;
+    struct ByteBuffer* commitment;
+    struct ByteBuffer* blind_sign_context;
+    struct ByteBuffer* blinding_factor;
+    struct ByteBuffer* blind_signature;
+    struct ByteBuffer* unblind_signature;
     struct ExternError* err;
+    signature_proof_status result;
     uint64_t handle;
     int i;
 
@@ -27,14 +34,24 @@ int main(int argc, char** argv) {
     secret_key = (struct ByteBuffer*) malloc(sizeof(struct ByteBuffer));
     messages = (struct ByteBuffer**) malloc(message_count * sizeof(struct ByteBuffer*));
     signature = (struct ByteBuffer*) malloc(sizeof(struct ByteBuffer));
+    nonce = (struct ByteBuffer*) malloc(sizeof(struct ByteBuffer));
+    commitment = (struct ByteBuffer*) malloc(sizeof(struct ByteBuffer));
+    blind_sign_context = (struct ByteBuffer*) malloc(sizeof(struct ByteBuffer));
+    blinding_factor = (struct ByteBuffer*) malloc(sizeof(struct ByteBuffer));
+    blind_signature = (struct ByteBuffer*) malloc(sizeof(struct ByteBuffer));
+    unblind_signature = (struct ByteBuffer*) malloc(sizeof(struct ByteBuffer));
     err = (struct ExternError*) malloc(sizeof(struct ExternError));
+
+    nonce->len = 16;
+    nonce->data = (uint8_t *)malloc(60);
+    memset(nonce->data, 15, 16);
 
     printf("Create key pair...");
     fflush(stdout);
 
     if (bls_generate_key(seed, d_public_key, secret_key, err) != 0) {
         printf("fail\n");
-        goto Err;
+        goto Fail;
     }
     printf("pass\n");
 
@@ -60,7 +77,7 @@ int main(int argc, char** argv) {
     fflush(stdout);
     if (bls_public_key_to_bbs_key(d_public_key, message_count, public_key, err) != 0) {
         printf("fail\n");
-        goto Err;
+        goto Fail;
     }
     printf("pass\n");
 
@@ -78,7 +95,7 @@ int main(int argc, char** argv) {
 
     if (handle == 0) {
         printf("fail\n");
-        goto Err;
+        goto Fail;
     }
     printf("pass\n");
 
@@ -86,7 +103,7 @@ int main(int argc, char** argv) {
     fflush(stdout);
     if (bbs_sign_context_set_public_key(handle, public_key, err) != 0) {
         printf("fail\n");
-        goto Err;
+        goto Fail;
     }
     printf("pass\n");
 
@@ -94,7 +111,7 @@ int main(int argc, char** argv) {
     fflush(stdout);
     if (bbs_sign_context_set_secret_key(handle, secret_key, err) != 0) {
         printf("fail\n");
-        goto Err;
+        goto Fail;
     }
     printf("pass\n");
 
@@ -103,7 +120,7 @@ int main(int argc, char** argv) {
     for (i = 0; i < message_count; i++) {
         if (bbs_sign_context_add_message_bytes(handle, messages[i], err) != 0) {
             printf("fail\n");
-            goto Err;
+            goto Fail;
         }
     }
     printf("pass\n");
@@ -112,7 +129,7 @@ int main(int argc, char** argv) {
     fflush(stdout);
     if (bbs_sign_context_finish(handle, signature, err) != 0) {
         printf("fail\n");
-        goto Err;
+        goto Fail;
     }
     printf("pass\n");
 
@@ -124,11 +141,174 @@ int main(int argc, char** argv) {
     }
     printf("pass\n");
 
+    printf("Create blind commitment context...");
+    fflush(stdout);
+    handle = bbs_blind_commitment_context_init(err);
+    if (handle == 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    printf("pass\n");
+
+    printf("Set messages to commitment...");
+    fflush(stdout);
+    if (bbs_blind_commitment_context_add_message_bytes(handle, 0, messages[0], err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    printf("pass\n");
+
+    printf("Set public key in blind sign commitment...");
+    fflush(stdout);
+    if (bbs_blind_commitment_context_set_public_key(handle, public_key, err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    printf("pass\n");
+
+    printf("Set nonce in blind sign commitment...");
+    fflush(stdout);
+    if (bbs_blind_commitment_context_set_nonce_bytes(handle, nonce, err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    printf("pass\n");
+
+    printf("Get blind sign commitment...");
+    fflush(stdout);
+    if (bbs_blind_commitment_context_finish(handle, commitment, blind_sign_context, blinding_factor, err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    printf("pass\n");
+
+    printf("Create verify blind signing commitment...");
+    fflush(stdout);
+    handle = bbs_verify_blind_commitment_context_init(err);
+    if (handle == 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    printf("pass\n");
+
+    printf("Add blinded index...");
+    fflush(stdout);
+    if (bbs_verify_blind_commitment_context_add_blinded(handle, 0, err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    printf("pass\n");
+
+    printf("Set public key in verify blind sign context...");
+    fflush(stdout);
+    if (bbs_verify_blind_commitment_context_set_public_key(handle, public_key, err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    printf("pass\n");
+
+    printf("Set nonce in verify blind sign context...");
+    fflush(stdout);
+    if (bbs_verify_blind_commitment_context_set_nonce_bytes(handle, nonce, err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    printf("pass\n");
+
+    printf("Set proof in verify blind sign context...");
+    fflush(stdout);
+    if (bbs_verify_blind_commitment_context_set_proof(handle, blind_sign_context, err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    printf("pass\n");
+
+    printf("Verify blind sign context...");
+    fflush(stdout);
+    result = bbs_verify_blind_commitment_context_finish(handle, err);
+
+    switch(result) {
+        case Success:
+            printf("pass\n");
+            break;
+        case BadSignature:
+            printf("fail.  Bad signature was used.\n");
+            goto Fail;
+        case BadHiddenMessage:
+            printf("fail.  Bad hidden message was used.\n");
+            goto Fail;
+        case BadRevealedMessage:
+            printf("fail. A message that wasn't signed was used.\n");
+            goto Fail;
+        default:
+            printf("fail. Status = %d\n", result);
+            goto Fail;
+    }
+
+    printf("Create blind signing context...");
+    fflush(stdout);
+    handle = bbs_blind_sign_context_init(err);
+    if (handle == 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    printf("pass\n");
+
+    printf("Set messages blind sign context...");
+    fflush(stdout);
+    for (i = 1; i < message_count; i++) {
+        if (bbs_blind_sign_context_add_message_bytes(handle, i, messages[i], err) != 0) {
+            printf("fail\n");
+            goto Fail;
+        }
+    }
+    printf("pass\n");
+
+    printf("Set public key in blind sign context...");
+    fflush(stdout);
+    if (bbs_blind_sign_context_set_public_key(handle, public_key, err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    printf("pass\n");
+
+    printf("Set secret key in blind sign context...");
+    fflush(stdout);
+    if (bbs_blind_sign_context_set_secret_key(handle, secret_key, err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    printf("pass\n");
+
+    printf("Set commitment in blind sign context...");
+    fflush(stdout);
+    if (bbs_blind_sign_context_set_commitment(handle, commitment, err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    printf("pass\n");
+
+    printf("Creating blind signature...");
+    fflush(stdout);
+    if (bbs_blind_sign_context_finish(handle, blind_signature, err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    printf("pass\n");
+
+    printf("Unblinding signature...");
+    fflush(stdout);
+    if (bbs_unblind_signature(blind_signature, blinding_factor, unblind_signature, err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    printf("pass\n");
+
     printf("Tests Passed\n");
 
     goto Exit;
 Fail:
-    printf("%s\n", err->message);
+    printf("Error Message = %s\n", err->message);
 Err:
     free(err->message);
 Exit:
@@ -141,10 +321,20 @@ Exit:
         bbs_byte_buffer_free(*messages[i]);
         free(messages[i]);
     }
+    bbs_byte_buffer_free(*nonce);
+    bbs_byte_buffer_free(*commitment);
+    bbs_byte_buffer_free(*blind_sign_context);
+    bbs_byte_buffer_free(*blinding_factor);
+    bbs_byte_buffer_free(*blind_signature);
+    free(nonce);
     free(signature);
+    free(blind_signature);
     free(err);
     free(seed);
     free(d_public_key);
     free(public_key);
     free(secret_key);
+    free(commitment);
+    free(blind_sign_context);
+    free(blinding_factor);
 }

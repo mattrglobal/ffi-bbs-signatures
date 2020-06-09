@@ -44,19 +44,23 @@ void bbs_byte_buffer_free(struct ByteBuffer data);
 uint64_t bbs_blind_commitment_context_init(struct ExternError *err);
 
 int32_t bbs_blind_commitment_context_finish(uint64_t handle,
+                                            struct ByteBuffer *commitment,
                                             struct ByteBuffer *out_context,
                                             struct ByteBuffer *blinding_factor,
                                             struct ExternError *err);
 
 int32_t bbs_blind_commitment_context_add_message_string(uint64_t handle,
+                                                        uint32_t index,
                                                         const char *const message,
                                                         struct ExternError *err);
 
 int32_t bbs_blind_commitment_context_add_message_bytes(uint64_t handle,
+                                                       uint32_t index,
                                                        const struct ByteBuffer *const message,
                                                        struct ExternError *err);
 
 int32_t bbs_blind_commitment_context_add_message_prehashed(uint64_t handle,
+                                                           uint32_t index,
                                                            const struct ByteBuffer *const message,
                                                            struct ExternError *err);
 
@@ -81,14 +85,17 @@ int32_t bbs_blind_sign_context_finish(uint64_t handle,
                                       struct ExternError *err);
 
 int32_t bbs_blind_sign_context_add_message_string(uint64_t handle,
+                                                  uint32_t index,
                                                   const char *const message,
                                                   struct ExternError *err);
 
 int32_t bbs_blind_sign_context_add_message_bytes(uint64_t handle,
+                                                 uint32_t index,
                                                  const struct ByteBuffer *const message,
                                                  struct ExternError *err);
 
 int32_t bbs_blind_sign_context_add_message_prehashed(uint64_t handle,
+                                                     uint32_t index,
                                                      const struct ByteBuffer *const message,
                                                      struct ExternError *err);
 
@@ -107,6 +114,11 @@ int32_t bbs_blind_sign_context_set_commitment(uint64_t handle,
 uint64_t bbs_blind_sign_context_init(struct ExternError *err);
 
 int32_t bbs_blind_signature_size(void);
+
+int32_t bbs_unblind_signature(const struct ByteBuffer *const blind_signature,
+                              const struct ByteBuffer *const blinding_factor,
+                              struct ByteBuffer *unblind_signature,
+                              struct ExternError *err);
 
 int32_t bbs_create_proof_context_finish(uint64_t handle, struct ByteBuffer *proof, struct ExternError *err);
 
@@ -202,14 +214,6 @@ uint64_t bbs_verify_context_init(struct ExternError *err);
 int32_t bbs_verify_blind_commitment_context_add_blinded(uint64_t handle,
                                                         uint32_t index,
                                                         struct ExternError *err);
-
-int32_t bbs_verify_blind_commitment_context_set_commitment(uint64_t handle,
-                                                           const struct ByteBuffer *const public_key,
-                                                           struct ExternError *err);
-
-int32_t bbs_verify_blind_commitment_context_set_challenge_hash(uint64_t handle,
-                                                               const struct ByteBuffer *const challenge_hash,
-                                                               struct ExternError *err);
 
 int32_t bbs_verify_blind_commitment_context_set_public_key(uint64_t handle,
                                                            const struct ByteBuffer *const public_key,

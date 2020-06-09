@@ -11,7 +11,6 @@ lazy_static! {
 }
 
 define_handle_map_deleter!(BLIND_COMMITMENT_CONTEXT, free_bbs_blind_commitment);
-// define_handle_map_deleter!(VERIFY_SIGN_PROOF_CONTEXT, free_verify_sign_proof);
 
 struct BlindCommitmentContext {
     messages: BTreeMap<usize, SignatureMessage>,
@@ -60,6 +59,7 @@ add_bytes_impl!(
 #[no_mangle]
 pub extern "C" fn bbs_blind_commitment_context_finish(
     handle: u64,
+    commitment: &mut ByteBuffer,
     out_context: &mut ByteBuffer,
     blinding_factor: &mut ByteBuffer,
     err: &mut ExternError,
@@ -94,6 +94,8 @@ pub extern "C" fn bbs_blind_commitment_context_finish(
     if err.get_code().is_success() {
         let v = res.into_vec();
         *blinding_factor = ByteBuffer::from_vec(v[..FR_COMPRESSED_SIZE].to_vec());
+        let commitment_end = G1_COMPRESSED_SIZE + FR_COMPRESSED_SIZE;
+        *commitment = ByteBuffer::from_vec(v[FR_COMPRESSED_SIZE..commitment_end].to_vec());
         *out_context = ByteBuffer::from_vec(v[FR_COMPRESSED_SIZE..].to_vec());
         match BLIND_COMMITMENT_CONTEXT.remove_u64(handle) {
             Err(e) => *err = ExternError::new_error(ErrorCode::new(1), format!("{:?}", e)),
