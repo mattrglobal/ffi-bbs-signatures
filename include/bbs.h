@@ -146,19 +146,19 @@ int32_t bbs_create_proof_context_add_proof_message_string(uint64_t handle,
                                                           const char *const message,
                                                           proof_message_t xtype,
                                                           const struct ByteBuffer *const blinding_factor,
-                                                          struct ExternError err);
+                                                          struct ExternError *err);
 
 int32_t bbs_create_proof_context_add_proof_message_bytes(uint64_t handle,
                                                          const struct ByteBuffer *const message,
                                                          proof_message_t xtype,
                                                          const struct ByteBuffer *const blinding_factor,
-                                                         struct ExternError err);
+                                                         struct ExternError *err);
 
 int32_t bbs_create_proof_context_add_proof_message_prehashed(uint64_t handle,
                                                              const struct ByteBuffer *const message,
                                                              proof_message_t xtype,
                                                              const struct ByteBuffer *const blinding_factor,
-                                                             struct ExternError err);
+                                                             struct ExternError *err);
 
 uint64_t bbs_create_proof_context_init(struct ExternError *err);
 
