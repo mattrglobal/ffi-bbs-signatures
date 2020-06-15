@@ -51,7 +51,7 @@ int main(int argc, char** argv) {
     printf("Create key pair...");
     fflush(stdout);
 
-    if (bls_generate_key(seed, d_public_key, secret_key, err) != 0) {
+    if (bls_generate_key(*seed, d_public_key, secret_key, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
 
     printf("Create BBS key from BLS key that can sign %d messages...", message_count);
     fflush(stdout);
-    if (bls_public_key_to_bbs_key(d_public_key, message_count, public_key, err) != 0) {
+    if (bls_public_key_to_bbs_key(*d_public_key, message_count, public_key, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -103,7 +103,7 @@ int main(int argc, char** argv) {
 
     printf("Set public key in sign context...");
     fflush(stdout);
-    if (bbs_sign_context_set_public_key(handle, public_key, err) != 0) {
+    if (bbs_sign_context_set_public_key(handle, *public_key, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -111,7 +111,7 @@ int main(int argc, char** argv) {
 
     printf("Set secret key in sign context...");
     fflush(stdout);
-    if (bbs_sign_context_set_secret_key(handle, secret_key, err) != 0) {
+    if (bbs_sign_context_set_secret_key(handle, *secret_key, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -120,7 +120,7 @@ int main(int argc, char** argv) {
     printf("Set messages sign context...");
     fflush(stdout);
     for (i = 0; i < message_count; i++) {
-        if (bbs_sign_context_add_message_bytes(handle, messages[i], err) != 0) {
+        if (bbs_sign_context_add_message_bytes(handle, *messages[i], err) != 0) {
             printf("fail\n");
             goto Fail;
         }
@@ -154,7 +154,7 @@ int main(int argc, char** argv) {
 
     printf("Set messages to commitment...");
     fflush(stdout);
-    if (bbs_blind_commitment_context_add_message_bytes(handle, 0, messages[0], err) != 0) {
+    if (bbs_blind_commitment_context_add_message_bytes(handle, 0, *messages[0], err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -162,7 +162,7 @@ int main(int argc, char** argv) {
 
     printf("Set public key in blind sign commitment...");
     fflush(stdout);
-    if (bbs_blind_commitment_context_set_public_key(handle, public_key, err) != 0) {
+    if (bbs_blind_commitment_context_set_public_key(handle, *public_key, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -170,7 +170,7 @@ int main(int argc, char** argv) {
 
     printf("Set nonce in blind sign commitment...");
     fflush(stdout);
-    if (bbs_blind_commitment_context_set_nonce_bytes(handle, nonce, err) != 0) {
+    if (bbs_blind_commitment_context_set_nonce_bytes(handle, *nonce, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -203,7 +203,7 @@ int main(int argc, char** argv) {
 
     printf("Set public key in verify blind sign context...");
     fflush(stdout);
-    if (bbs_verify_blind_commitment_context_set_public_key(handle, public_key, err) != 0) {
+    if (bbs_verify_blind_commitment_context_set_public_key(handle, *public_key, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -211,7 +211,7 @@ int main(int argc, char** argv) {
 
     printf("Set nonce in verify blind sign context...");
     fflush(stdout);
-    if (bbs_verify_blind_commitment_context_set_nonce_bytes(handle, nonce, err) != 0) {
+    if (bbs_verify_blind_commitment_context_set_nonce_bytes(handle, *nonce, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -219,7 +219,7 @@ int main(int argc, char** argv) {
 
     printf("Set proof in verify blind sign context...");
     fflush(stdout);
-    if (bbs_verify_blind_commitment_context_set_proof(handle, blind_sign_context, err) != 0) {
+    if (bbs_verify_blind_commitment_context_set_proof(handle, *blind_sign_context, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -259,7 +259,7 @@ int main(int argc, char** argv) {
     printf("Set messages blind sign context...");
     fflush(stdout);
     for (i = 1; i < message_count; i++) {
-        if (bbs_blind_sign_context_add_message_bytes(handle, i, messages[i], err) != 0) {
+        if (bbs_blind_sign_context_add_message_bytes(handle, i, *messages[i], err) != 0) {
             printf("fail\n");
             goto Fail;
         }
@@ -268,7 +268,7 @@ int main(int argc, char** argv) {
 
     printf("Set public key in blind sign context...");
     fflush(stdout);
-    if (bbs_blind_sign_context_set_public_key(handle, public_key, err) != 0) {
+    if (bbs_blind_sign_context_set_public_key(handle, *public_key, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -276,7 +276,7 @@ int main(int argc, char** argv) {
 
     printf("Set secret key in blind sign context...");
     fflush(stdout);
-    if (bbs_blind_sign_context_set_secret_key(handle, secret_key, err) != 0) {
+    if (bbs_blind_sign_context_set_secret_key(handle, *secret_key, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -284,7 +284,7 @@ int main(int argc, char** argv) {
 
     printf("Set commitment in blind sign context...");
     fflush(stdout);
-    if (bbs_blind_sign_context_set_commitment(handle, commitment, err) != 0) {
+    if (bbs_blind_sign_context_set_commitment(handle, *commitment, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -300,7 +300,7 @@ int main(int argc, char** argv) {
 
     printf("Unblinding signature...");
     fflush(stdout);
-    if (bbs_unblind_signature(blind_signature, blinding_factor, unblind_signature, err) != 0) {
+    if (bbs_unblind_signature(*blind_signature, *blinding_factor, unblind_signature, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -318,7 +318,7 @@ int main(int argc, char** argv) {
     printf("Set messages in verify signature context...");
     fflush(stdout);
     for (i = 0; i < message_count; i++) {
-        if (bbs_verify_context_add_message_bytes(handle, messages[i], err) != 0) {
+        if (bbs_verify_context_add_message_bytes(handle, *messages[i], err) != 0) {
             printf("fail\n");
             goto Fail;
         }
@@ -327,7 +327,7 @@ int main(int argc, char** argv) {
 
     printf("Set public key in verify signature context...");
     fflush(stdout);
-    if (bbs_verify_context_set_public_key(handle, public_key, err) != 0) {
+    if (bbs_verify_context_set_public_key(handle, *public_key, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -335,7 +335,7 @@ int main(int argc, char** argv) {
 
     printf("Set signature in verify signature context...");
     fflush(stdout);
-    if (bbs_verify_context_set_signature(handle, unblind_signature, err) != 0) {
+    if (bbs_verify_context_set_signature(handle, *unblind_signature, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -360,16 +360,16 @@ int main(int argc, char** argv) {
 
     printf("Adding messages to proof context...");
     fflush(stdout);
-    if (bbs_create_proof_context_add_proof_message_bytes(handle, messages[0], Revealed, blinding_factor, err) != 0) {
+    if (bbs_create_proof_context_add_proof_message_bytes(handle, *messages[0], Revealed, *blinding_factor, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
-    if (bbs_create_proof_context_add_proof_message_bytes(handle, messages[1], Revealed, blinding_factor, err) != 0) {
+    if (bbs_create_proof_context_add_proof_message_bytes(handle, *messages[1], Revealed, *blinding_factor, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
     for (i = 2; i < message_count; i++) {
-        if (bbs_create_proof_context_add_proof_message_bytes(handle, messages[i], HiddenProofSpecificBlinding, blinding_factor, err) != 0) {
+        if (bbs_create_proof_context_add_proof_message_bytes(handle, *messages[i], HiddenProofSpecificBlinding, *blinding_factor, err) != 0) {
             printf("fail\n");
             goto Fail;
         }
@@ -378,7 +378,7 @@ int main(int argc, char** argv) {
 
     printf("Setting signature in proof context...");
     fflush(stdout);
-    if (bbs_create_proof_context_set_signature(handle, unblind_signature, err) != 0) {
+    if (bbs_create_proof_context_set_signature(handle, *unblind_signature, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -386,7 +386,7 @@ int main(int argc, char** argv) {
 
     printf("Set public key in proof context...");
     fflush(stdout);
-    if (bbs_create_proof_context_set_public_key(handle, public_key, err) != 0) {
+    if (bbs_create_proof_context_set_public_key(handle, *public_key, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -394,7 +394,7 @@ int main(int argc, char** argv) {
 
     printf("Set nonce in proof context...");
     fflush(stdout);
-    if (bbs_create_proof_context_set_nonce_bytes(handle, nonce, err) != 0) {
+    if (bbs_create_proof_context_set_nonce_bytes(handle, *nonce, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -424,7 +424,7 @@ int main(int argc, char** argv) {
             printf("fail\n");
             goto Fail;
         }
-        if (bbs_verify_proof_context_add_message_bytes(handle, messages[i], err) != 0) {
+        if (bbs_verify_proof_context_add_message_bytes(handle, *messages[i], err) != 0) {
             printf("fail\n");
             goto Fail;
         }
@@ -433,7 +433,7 @@ int main(int argc, char** argv) {
 
     printf("Set proof in verify proof context...");
     fflush(stdout);
-    if (bbs_verify_proof_context_set_proof(handle, proof, err) != 0) {
+    if (bbs_verify_proof_context_set_proof(handle, *proof, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -441,7 +441,7 @@ int main(int argc, char** argv) {
 
     printf("Set public key in verify proof context...");
     fflush(stdout);
-    if (bbs_verify_proof_context_set_public_key(handle, public_key, err) != 0) {
+    if (bbs_verify_proof_context_set_public_key(handle, *public_key, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -449,7 +449,7 @@ int main(int argc, char** argv) {
 
     printf("Set nonce in verify proof context..");
     fflush(stdout);
-    if (bbs_verify_proof_context_set_nonce_bytes(handle, nonce, err) != 0) {
+    if (bbs_verify_proof_context_set_nonce_bytes(handle, *nonce, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
