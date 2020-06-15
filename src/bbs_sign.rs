@@ -105,7 +105,7 @@ pub extern "C" fn bbs_verify_context_add_message_string(
 #[no_mangle]
 pub extern "C" fn bbs_verify_context_add_message_bytes(
     handle: u64,
-    message: &ByteArray,
+    message: ByteArray,
     err: &mut ExternError,
 ) -> i32 {
     bbs_sign_context_add_message_bytes(handle, message, err)
@@ -114,7 +114,7 @@ pub extern "C" fn bbs_verify_context_add_message_bytes(
 #[no_mangle]
 pub extern "C" fn bbs_verify_context_add_message_prehashed(
     handle: u64,
-    message: &ByteArray,
+    message: ByteArray,
     err: &mut ExternError,
 ) -> i32 {
     bbs_sign_context_add_message_prehashed(handle, message, err)
@@ -123,7 +123,7 @@ pub extern "C" fn bbs_verify_context_add_message_prehashed(
 #[no_mangle]
 pub extern "C" fn bbs_verify_context_set_public_key(
     handle: u64,
-    public_key: &ByteArray,
+    public_key: ByteArray,
     err: &mut ExternError,
 ) -> i32 {
     bbs_sign_context_set_public_key(handle, public_key, err)

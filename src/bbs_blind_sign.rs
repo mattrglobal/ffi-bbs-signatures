@@ -99,8 +99,8 @@ pub extern "C" fn bbs_blind_sign_context_finish(
 }
 
 #[no_mangle]
-pub extern "C" fn bbs_unblind_signature(blind_signature: &ByteArray,
-                                        blinding_factor: &ByteArray,
+pub extern "C" fn bbs_unblind_signature(blind_signature: ByteArray,
+                                        blinding_factor: ByteArray,
                                         unblind_signature: &mut ByteBuffer,
                                         err: &mut ExternError) -> i32 {
     let res = call_with_result(err, || -> Result<ByteBuffer, BbsFfiError> {

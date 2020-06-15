@@ -15,7 +15,7 @@ pub extern "C" fn bls_public_key_size() -> i32 {
 
 #[no_mangle]
 pub extern "C" fn bls_generate_key(
-    seed: &ByteArray,
+    seed: ByteArray,
     public_key: &mut ByteBuffer,
     secret_key: &mut ByteBuffer,
     err: &mut ExternError,
@@ -30,7 +30,7 @@ pub extern "C" fn bls_generate_key(
 
 #[no_mangle]
 pub extern "C" fn bls_get_public_key(
-    secret_key: &ByteArray,
+    secret_key: ByteArray,
     public_key: &mut ByteBuffer,
     err: &mut ExternError,
 ) -> i32 {
@@ -51,7 +51,7 @@ pub extern "C" fn bls_get_public_key(
 
 #[no_mangle]
 pub extern "C" fn bls_secret_key_to_bbs_key(
-    secret_key: &ByteArray,
+    secret_key: ByteArray,
     message_count: u32,
     public_key: &mut ByteBuffer,
     err: &mut ExternError,
@@ -82,7 +82,7 @@ pub extern "C" fn bls_secret_key_to_bbs_key(
 
 #[no_mangle]
 pub extern "C" fn bls_public_key_to_bbs_key(
-    d_public_key: &ByteArray,
+    d_public_key: ByteArray,
     message_count: u32,
     public_key: &mut ByteBuffer,
     err: &mut ExternError,
