@@ -26,7 +26,7 @@ macro_rules! add_message_impl {
         #[no_mangle]
         pub extern "C" fn $name_bytes(
             handle: u64,
-            message: &ByteArray,
+            message: ByteArray,
             err: &mut ExternError,
         ) -> i32 {
             let message = message.to_vec();
@@ -43,7 +43,7 @@ macro_rules! add_message_impl {
         #[no_mangle]
         pub extern "C" fn $name_prehash(
             handle: u64,
-            message: &ByteArray,
+            message: ByteArray,
             err: &mut ExternError,
         ) -> i32 {
             let message = message.to_vec();
@@ -89,7 +89,7 @@ macro_rules! add_message_impl {
         pub extern "C" fn $name_bytes(
             handle: u64,
             index: $index,
-            message: &ByteArray,
+            message: ByteArray,
             err: &mut ExternError,
         ) -> i32 {
             let message = message.to_vec();
@@ -108,7 +108,7 @@ macro_rules! add_message_impl {
         pub extern "C" fn $name_prehash(
             handle: u64,
             index: $index,
-            message: &ByteArray,
+            message: ByteArray,
             err: &mut ExternError,
         ) -> i32 {
             let message = message.to_vec();
@@ -129,7 +129,7 @@ macro_rules! add_message_impl {
 macro_rules! add_bytes_impl {
     ($name:ident,$static:expr,$property:ident,$type:ident) => {
         #[no_mangle]
-        pub extern "C" fn $name(handle: u64, value: &ByteArray, err: &mut ExternError) -> i32 {
+        pub extern "C" fn $name(handle: u64, value: ByteArray, err: &mut ExternError) -> i32 {
             let value = value.to_vec();
             if value.is_empty() {
                 *err = ExternError::new_error(
@@ -173,7 +173,7 @@ macro_rules! add_bytes_impl {
         #[no_mangle]
         pub extern "C" fn $name_bytes(
             handle: u64,
-            value: &ByteArray,
+            value: ByteArray,
             err: &mut ExternError,
         ) -> i32 {
             let value = value.to_vec();
@@ -193,7 +193,7 @@ macro_rules! add_bytes_impl {
         #[no_mangle]
         pub extern "C" fn $name_prehash(
             handle: u64,
-            value: &ByteArray,
+            value: ByteArray,
             err: &mut ExternError,
         ) -> i32 {
             let value = value.to_vec();
@@ -226,7 +226,7 @@ macro_rules! add_proof_message_impl {
             handle: u64,
             message: FfiStr<'_>,
             xtype: ProofMessageType,
-            blinding_factor: &ByteArray,
+            blinding_factor: ByteArray,
             err: &mut ExternError,
         ) -> i32 {
             let message = message.into_string();
@@ -264,9 +264,9 @@ macro_rules! add_proof_message_impl {
         #[no_mangle]
         pub extern "C" fn $name_bytes(
             handle: u64,
-            message: &ByteArray,
+            message: ByteArray,
             xtype: ProofMessageType,
-            blinding_factor: &ByteArray,
+            blinding_factor: ByteArray,
             err: &mut ExternError,
         ) -> i32 {
             let message = message.to_vec();
@@ -304,9 +304,9 @@ macro_rules! add_proof_message_impl {
         #[no_mangle]
         pub extern "C" fn $name_prehash(
             handle: u64,
-            message: &ByteArray,
+            message: ByteArray,
             xtype: ProofMessageType,
-            blinding_factor: &ByteArray,
+            blinding_factor: ByteArray,
             err: &mut ExternError,
         ) -> i32 {
             let message = message.to_vec();
