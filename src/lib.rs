@@ -57,7 +57,7 @@ impl ByteArray {
 
     ///Convert to outgoing struct ByteBuffer
     pub fn into_byte_buffer(self) -> ByteBuffer {
-        unsafe { std::mem::transmute(self) }
+        ByteBuffer::from_vec(self.to_vec())
     }
 
     /// Convert a slice to ByteArray
