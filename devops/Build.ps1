@@ -41,21 +41,21 @@ switch ($Platform) {
         mkdir ~/.NDK
 
         & (Resolve-Path "$AndroidNdkHome/build/tools/make_standalone_toolchain.py") --api 26 --arch arm64 --install-dir ~/.NDK/arm64;
-        # & (Resolve-Path "$AndroidNdkHome/build/tools/make_standalone_toolchain.py") --api 26 --arch arm --install-dir ~/.NDK/arm;
-        # & (Resolve-Path "$AndroidNdkHome/build/tools/make_standalone_toolchain.py") --api 26 --arch x86 --install-dir ~/.NDK/x86;
+        & (Resolve-Path "$AndroidNdkHome/build/tools/make_standalone_toolchain.py") --api 26 --arch arm --install-dir ~/.NDK/arm;
+        & (Resolve-Path "$AndroidNdkHome/build/tools/make_standalone_toolchain.py") --api 26 --arch x86 --install-dir ~/.NDK/x86;
 
         Get-Content "./devops/android-cargo-config" | Out-File "~/.cargo/config"
 
         rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android
         
         cargo build --target aarch64-linux-android --release
-        # cargo build --target armv7-linux-androideabi --release
-        # cargo build --target i686-linux-android --release
+        cargo build --target armv7-linux-androideabi --release
+        cargo build --target i686-linux-android --release
 
         mkdir $OutLocation/aarch64/
         Copy-Item -Path ./target/aarch64-linux-android/release/libbbs.so -Destination $OutLocation/aarch64/
-        # Copy-Item -Path ./target/armv7-linux-androideabi/release/libbbs.so -Destination $OutLocation/armv7/
-        # Copy-Item -Path ./target/i686-linux-android/release/libbbs.so -Destination $OutLocation/i686/
+        Copy-Item -Path ./target/armv7-linux-androideabi/release/libbbs.so -Destination $OutLocation/armv7/
+        Copy-Item -Path ./target/i686-linux-android/release/libbbs.so -Destination $OutLocation/i686/
         break
     }
 }
