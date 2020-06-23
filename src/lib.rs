@@ -95,6 +95,7 @@ impl From<ByteBuffer> for ByteArray {
 }
 
 #[repr(C)]
+#[derive(PartialEq, Eq)]
 pub enum ProofMessageType {
     Revealed,
     HiddenProofSpecificBlinding,

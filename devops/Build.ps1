@@ -53,6 +53,8 @@ switch ($Platform) {
         cargo build --target i686-linux-android --release
 
         mkdir $OutLocation/aarch64/
+        mkdir $OutLocation/armv7/
+        mkdir $OutLocation/i686/
         Copy-Item -Path ./target/aarch64-linux-android/release/libbbs.so -Destination $OutLocation/aarch64/
         Copy-Item -Path ./target/armv7-linux-androideabi/release/libbbs.so -Destination $OutLocation/armv7/
         Copy-Item -Path ./target/i686-linux-android/release/libbbs.so -Destination $OutLocation/i686/
