@@ -275,7 +275,7 @@ macro_rules! add_proof_message_impl {
                 return 1;
             }
             let bf = blinding_factor.to_vec();
-            if bf.is_empty() {
+            if bf.is_empty() && xtype == ProofMessageType::HiddenExternalBlinding {
                 *err = ExternError::new_error(ErrorCode::new(1), "Blinding Factor cannot be empty");
                 return 1;
             }
@@ -315,7 +315,7 @@ macro_rules! add_proof_message_impl {
                 return 1;
             }
             let bf = blinding_factor.to_vec();
-            if bf.is_empty() {
+            if bf.is_empty() && xtype == ProofMessageType::HiddenExternalBlinding {
                 *err = ExternError::new_error(ErrorCode::new(1), "Blinding Factor cannot be empty");
                 return 1;
             }
