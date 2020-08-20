@@ -166,3 +166,8 @@ pub mod bbs_sign;
 pub mod bbs_verify_proof;
 pub mod bbs_verify_sign_proof;
 pub mod bls;
+
+#[cfg(target_os = "android")]
+extern crate jni;
+#[cfg(target_os = "android")]
+pub mod android;
