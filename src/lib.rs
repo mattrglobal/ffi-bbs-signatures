@@ -166,32 +166,36 @@ const BLINDING_G2: &'static [u8] = &[169, 99, 222, 42, 223, 177, 22, 60, 244, 19
 /// and public key `w` = `g2` ^ `x` * `blinding_g2` ^ `r`
 /// `seed`: `ArrayBuffer` [opt]
 /// `return` Object { publicKey: `ArrayBuffer`, secretKey: `ArrayBuffer`, blindingFactor: `ArrayBuffer` }
-fn bls_generate_blinded_g2_key(ikm: Option<Vec<u8>>) -> (Option<Vec<u8>>, Vec<u8>, Vec<u8>) {
-    bls_generate_keypair::<G2>(ikm, Some(BLINDING_G2))
+fn bls_generate_blinded_g2_key(ikm: Option<Vec<u8>>) -> (Vec<u8>, Vec<u8>, Vec<u8>) {
+    let (r, pk, sk) = bls_generate_keypair::<G2>(ikm, Some(BLINDING_G2));
+    (r.unwrap(), pk, sk)
 }
 
 /// Generate a blinded BLS key pair where secret key `x` and blinding factor `r` in Fp
 /// and public key `w` = `g1` ^ `x` * `blinding_g1` ^ `r`
 /// `seed`: `ArrayBuffer` [opt]
 /// `return` Object { publicKey: `ArrayBuffer`, secretKey: `ArrayBuffer`, blindingFactor: `ArrayBuffer` }
-fn bls_generate_blinded_g1_key(ikm: Option<Vec<u8>>) -> (Option<Vec<u8>>, Vec<u8>, Vec<u8>) {
-    bls_generate_keypair::<G1>(ikm, Some(BLINDING_G1))
+fn bls_generate_blinded_g1_key(ikm: Option<Vec<u8>>) -> (Vec<u8>, Vec<u8>, Vec<u8>) {
+    let (r, pk, sk) = bls_generate_keypair::<G1>(ikm, Some(BLINDING_G1));
+    (r.unwrap(), pk, sk)
 }
 
 /// Generate a BLS key pair where secret key `x` in Fp
 /// and public key `w` = `g2` ^ `x`
 /// `seed`: `ArrayBuffer` [opt]
 /// `return`: Object { publicKey: `ArrayBuffer`, secretKey: `ArrayBuffer` }
-fn bls_generate_g2_key(ikm: Option<Vec<u8>>) -> (Option<Vec<u8>>, Vec<u8>, Vec<u8>) {
-    bls_generate_keypair::<G2>(ikm, None)
+fn bls_generate_g2_key(ikm: Option<Vec<u8>>) -> (Vec<u8>, Vec<u8>) {
+    let (_, pk, sk) = bls_generate_keypair::<G2>(ikm, None);
+    (pk, sk)
 }
 
 /// Generate a BLS key pair where secret key `x` in Fp
 /// and public key `w` = `g1` ^ `x`
 /// `seed`: `ArrayBuffer` [opt]
 /// `return`: Object { publicKey: `ArrayBuffer`, secretKey: `ArrayBuffer` }
-fn bls_generate_g1_key(ikm: Option<Vec<u8>>) -> (Option<Vec<u8>>, Vec<u8>, Vec<u8>) {
-    bls_generate_keypair::<G1>(ikm, None)
+fn bls_generate_g1_key(ikm: Option<Vec<u8>>) -> (Vec<u8>, Vec<u8>) {
+    let (_, pk, sk) = bls_generate_keypair::<G1>(ikm, None);
+    (pk, sk)
 }
 
 fn bls_generate_keypair<'a, 'b, G: CurveProjective<Engine = Bls12, Scalar = Fr> + SerDes>(ikm: Option<Vec<u8>>, blinded: Option<&'b [u8]>) -> (Option<Vec<u8>>, Vec<u8>, Vec<u8>) {

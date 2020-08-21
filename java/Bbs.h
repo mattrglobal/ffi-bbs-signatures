@@ -10,9 +10,33 @@ extern "C" {
 /*
  * Class:     Bbs
  * Method:    bls_generate_g1_key
- * Signature: ([B[B[B[B)I
+ * Signature: ([B[B[B)I
  */
 JNIEXPORT jint JNICALL Java_Bbs_bls_1generate_1g1_1key
+  (JNIEnv *, jclass, jbyteArray, jbyteArray, jbyteArray);
+
+/*
+ * Class:     Bbs
+ * Method:    bls_generate_g2_key
+ * Signature: ([B[B[B)I
+ */
+JNIEXPORT jint JNICALL Java_Bbs_bls_1generate_1g2_1key
+  (JNIEnv *, jclass, jbyteArray, jbyteArray, jbyteArray);
+
+/*
+ * Class:     Bbs
+ * Method:    bls_generate_blinded_g1_key
+ * Signature: ([B[B[B[B)I
+ */
+JNIEXPORT jint JNICALL Java_Bbs_bls_1generate_1blinded_1g1_1key
+  (JNIEnv *, jclass, jbyteArray, jbyteArray, jbyteArray, jbyteArray);
+
+/*
+ * Class:     Bbs
+ * Method:    bls_generate_blinded_g2_key
+ * Signature: ([B[B[B[B)I
+ */
+JNIEXPORT jint JNICALL Java_Bbs_bls_1generate_1blinded_1g2_1key
   (JNIEnv *, jclass, jbyteArray, jbyteArray, jbyteArray, jbyteArray);
 
 #ifdef __cplusplus
