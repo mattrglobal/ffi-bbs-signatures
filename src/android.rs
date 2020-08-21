@@ -26,10 +26,10 @@ pub extern "C" fn Java_Bbs_bls_1generate_1g1_1key(env: JNIEnv, _: JObject, seed:
     };
     let s = if ikm.is_empty() { None } else { Some(ikm) };
     let (r, pk_bytes, sk_bytes) = bls_generate_g1_key(s);
-    let pk = pk_bytes.iter().map(|b| b as jbyte).collect();
-    let sk = sk_bytes.iter().map(|b| b as jbyte).collect();
+    let pk = pk_bytes.iter().map(|b| *b as jbyte).collect();
+    let sk = sk_bytes.iter().map(|b| *b as jbyte).collect();
     if let Some(bf) = r {
-        let b = bf.iter().map(|b| b as jbyte).collect();
+        let b = bf.iter().map(|b| *b as jbyte).collect();
         env.set_byte_array_region(blinding_factor, 0, b).unwrap();
     }
     env.set_byte_array_region(public_key, 0, pk).unwrap();
