@@ -6,7 +6,7 @@ use jni::JNIEnv;
 // These objects are what you should use as arguments to your native function.
 // They carry extra lifetime information to prevent them escaping this context
 // and getting used after being GC'd.
-use jni::objects::JObject;
+use jni::objects::{JObject, JValue};
 
 // This is just a pointer. We'll be returning it from our function.
 // We can't return one of the objects with lifetime information because the
@@ -14,6 +14,8 @@ use jni::objects::JObject;
 use jni::sys::{jbyteArray, jint, jbyte};
 
 use crate::*;
+use bbs::keys::{DeterministicPublicKey, KeyGenOption, SecretKey};
+use bbs::ToVariableLengthBytes;
 
 
 #[allow(non_snake_case)]
@@ -85,6 +87,39 @@ pub extern "C" fn Java_Bbs_bls_1generate_1blinded_1g2_1key(env: JNIEnv, _: JObje
     copy_to_jni!(env, public_key, pk.as_slice());
     copy_to_jni!(env, secret_key, sk.as_slice());
     copy_to_jni!(env, bf, r.as_slice());
+    1
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_Bbs_bls_1secret_1key_1to_1bbs_1key(env: JNIEnv, _: JObject, secret_key: jbyteArray, message_count: jint, public_key: JObject) -> jint {
+    let sk;
+    match env.convert_byte_array(secret_key) {
+        Err(_) => return 0,
+        Ok(s) => {
+            if s.len() != 32 {
+                return 0;
+            }
+            sk = SecretKey::from(array_ref![s, 0, 32]);
+        }
+    }
+    let (dpk, _) = DeterministicPublicKey::new(Some(KeyGenOption::FromSecretKey(sk)));
+    let pk;
+    match dpk.to_public_key(message_count as usize) {
+        Err(_) => return 0,
+        Ok(p) => pk = p
+    };
+    if pk.validate().is_err() {
+        return 0;
+    }
+
+    let pk_bytes: Vec<JValue> = pk.to_bytes_compressed_form().iter().map(|b| JValue::Byte(*b as jbyte)).collect();
+
+    // TODO: test whether this actually works
+    if env.call_method(public_key, "put", "[B", pk_bytes.as_slice()).is_err() {
+        return 0;
+    }
+
     1
 }
 

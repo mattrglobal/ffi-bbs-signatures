@@ -39,6 +39,14 @@ JNIEXPORT jint JNICALL Java_Bbs_bls_1generate_1blinded_1g1_1key
 JNIEXPORT jint JNICALL Java_Bbs_bls_1generate_1blinded_1g2_1key
   (JNIEnv *, jclass, jbyteArray, jbyteArray, jbyteArray, jbyteArray);
 
+/*
+ * Class:     Bbs
+ * Method:    bls_secret_key_to_bbs_key
+ * Signature: ([BILjava/nio/ByteBuffer;)I
+ */
+JNIEXPORT jint JNICALL Java_Bbs_bls_1secret_1key_1to_1bbs_1key
+  (JNIEnv *, jclass, jbyteArray, jint, jobject);
+
 #ifdef __cplusplus
 }
 #endif

@@ -1,8 +1,11 @@
+import java.nio.ByteBuffer;
+
 class Bbs {
     private static native int bls_generate_g1_key(byte[] seed, byte[] public_key, byte[] secret_key);
     private static native int bls_generate_g2_key(byte[] seed, byte[] public_key, byte[] secret_key);
     private static native int bls_generate_blinded_g1_key(byte[] seed, byte[] blinding_factor, byte[] public_key, byte[] secret_key);
     private static native int bls_generate_blinded_g2_key(byte[] seed, byte[] blinding_factor, byte[] public_key, byte[] secret_key);
+    private static native int bls_secret_key_to_bbs_key(byte[] secret_key, int message_count, ByteBuffer public_key);
 
     static {
         System.loadLibrary("bbs");
