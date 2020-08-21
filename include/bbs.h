@@ -9,7 +9,7 @@
 */
 typedef struct {
     int64_t len;
-    uint8_t *data;
+    uint8_t *_Nullable data;
 } ByteBuffer;
 
 typedef struct {
