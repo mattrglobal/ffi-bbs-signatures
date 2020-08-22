@@ -10,39 +10,39 @@
 
 int main(int argc, char** argv) {
     const int message_count = 5;
-    struct ByteBuffer* seed;
-    struct ByteBuffer* d_public_key;
-    struct ByteBuffer* public_key;
-    struct ByteBuffer* secret_key;
-    struct ByteBuffer** messages;
-    struct ByteBuffer* message;
-    struct ByteBuffer* signature;
-    struct ByteBuffer* nonce;
-    struct ByteBuffer* commitment;
-    struct ByteBuffer* blind_sign_context;
-    struct ByteBuffer* blinding_factor;
-    struct ByteBuffer* blind_signature;
-    struct ByteBuffer* unblind_signature;
-    struct ByteBuffer* proof;
-    struct ExternError* err;
+    ByteBuffer* seed;
+    ByteBuffer* d_public_key;
+    ByteBuffer* public_key;
+    ByteBuffer* secret_key;
+    ByteBuffer** messages;
+    ByteBuffer* message;
+    ByteBuffer* signature;
+    ByteBuffer* nonce;
+    ByteBuffer* commitment;
+    ByteBuffer* blind_sign_context;
+    ByteBuffer* blinding_factor;
+    ByteBuffer* blind_signature;
+    ByteBuffer* unblind_signature;
+    ByteBuffer* proof;
+    ExternError* err;
     signature_proof_status result;
     uint64_t handle;
     int i;
 
-    seed = (struct ByteBuffer*) malloc(sizeof(struct ByteBuffer));
-    d_public_key = (struct ByteBuffer*) malloc(sizeof(struct ByteBuffer));
-    public_key = (struct ByteBuffer*) malloc(sizeof(struct ByteBuffer));
-    secret_key = (struct ByteBuffer*) malloc(sizeof(struct ByteBuffer));
-    messages = (struct ByteBuffer**) malloc(message_count * sizeof(struct ByteBuffer*));
-    signature = (struct ByteBuffer*) malloc(sizeof(struct ByteBuffer));
-    nonce = (struct ByteBuffer*) malloc(sizeof(struct ByteBuffer));
-    commitment = (struct ByteBuffer*) malloc(sizeof(struct ByteBuffer));
-    blind_sign_context = (struct ByteBuffer*) malloc(sizeof(struct ByteBuffer));
-    blinding_factor = (struct ByteBuffer*) malloc(sizeof(struct ByteBuffer));
-    blind_signature = (struct ByteBuffer*) malloc(sizeof(struct ByteBuffer));
-    unblind_signature = (struct ByteBuffer*) malloc(sizeof(struct ByteBuffer));
-    proof = (struct ByteBuffer*) malloc(sizeof(struct ByteBuffer));
-    err = (struct ExternError*) malloc(sizeof(struct ExternError));
+    seed = (ByteBuffer*) malloc(sizeof(ByteBuffer));
+    d_public_key = (ByteBuffer*) malloc(sizeof(ByteBuffer));
+    public_key = (ByteBuffer*) malloc(sizeof(ByteBuffer));
+    secret_key = (ByteBuffer*) malloc(sizeof(ByteBuffer));
+    messages = (ByteBuffer**) malloc(message_count * sizeof(ByteBuffer*));
+    signature = (ByteBuffer*) malloc(sizeof(ByteBuffer));
+    nonce = (ByteBuffer*) malloc(sizeof(ByteBuffer));
+    commitment = (ByteBuffer*) malloc(sizeof(ByteBuffer));
+    blind_sign_context = (ByteBuffer*) malloc(sizeof(ByteBuffer));
+    blinding_factor = (ByteBuffer*) malloc(sizeof(ByteBuffer));
+    blind_signature = (ByteBuffer*) malloc(sizeof(ByteBuffer));
+    unblind_signature = (ByteBuffer*) malloc(sizeof(ByteBuffer));
+    proof = (ByteBuffer*) malloc(sizeof(ByteBuffer));
+    err = (ExternError*) malloc(sizeof(ExternError));
 
     nonce->len = 16;
     nonce->data = (uint8_t *)malloc(60);
@@ -84,7 +84,7 @@ int main(int argc, char** argv) {
     printf("pass\n");
 
     for (i = 0; i < message_count; i++) {
-        message = (struct ByteBuffer*) malloc(sizeof(struct ByteBuffer));
+        message = (ByteBuffer*) malloc(sizeof(ByteBuffer));
         message->len = 10;
         message->data = (uint8_t *)malloc(10);
         memset(message->data, i+1, 10);
@@ -420,11 +420,7 @@ int main(int argc, char** argv) {
     printf("Adding revealed messages to verify proof context...");
     fflush(stdout);
     for (i = 0; i < 2; i++) {
-        if (bbs_verify_proof_context_add_revealed_index(handle, i, err) != 0) {
-            printf("fail\n");
-            goto Fail;
-        }
-        if (bbs_verify_proof_context_add_message_bytes(handle, *messages[i], err) != 0) {
+        if (bbs_verify_proof_context_add_message_bytes(handle, i, *messages[i], err) != 0) {
             printf("fail\n");
             goto Fail;
         }
@@ -456,6 +452,139 @@ int main(int argc, char** argv) {
     printf("pass\n");
 
     printf("Verify blind sign context...");
+    fflush(stdout);
+    result = bbs_verify_proof_context_finish(handle, err);
+
+    switch(result) {
+        case Success:
+            printf("pass\n");
+            break;
+        case BadSignature:
+            printf("fail.  Bad signature was used.\n");
+            goto Fail;
+        case BadHiddenMessage:
+            printf("fail.  Bad hidden message was used.\n");
+            goto Fail;
+        case BadRevealedMessage:
+            printf("fail. A message that wasn't signed was used.\n");
+            goto Fail;
+        default:
+            printf("fail. Status = %d\n", result);
+            goto Fail;
+    }
+
+    printf("Create new proof context 2...");
+    fflush(stdout);
+    handle = bbs_create_proof_context_init(err);
+    if (handle == 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    printf("pass\n");
+
+    printf("Adding messages to proof context 2...");
+    fflush(stdout);
+    if (bbs_create_proof_context_add_proof_message_bytes(handle, *messages[0], HiddenProofSpecificBlinding, *blinding_factor, err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    if (bbs_create_proof_context_add_proof_message_bytes(handle, *messages[1], Revealed, *blinding_factor, err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    if (bbs_create_proof_context_add_proof_message_bytes(handle, *messages[2], HiddenProofSpecificBlinding, *blinding_factor, err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    if (bbs_create_proof_context_add_proof_message_bytes(handle, *messages[3], Revealed, *blinding_factor, err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    if (bbs_create_proof_context_add_proof_message_bytes(handle, *messages[4], HiddenProofSpecificBlinding, *blinding_factor, err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+
+    printf("pass\n");
+
+    printf("Setting signature in proof context 2...");
+    fflush(stdout);
+    if (bbs_create_proof_context_set_signature(handle, *unblind_signature, err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    printf("pass\n");
+
+    printf("Set public key in proof context 2...");
+    fflush(stdout);
+    if (bbs_create_proof_context_set_public_key(handle, *public_key, err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    printf("pass\n");
+
+    printf("Set nonce in proof context 2...");
+    fflush(stdout);
+    if (bbs_create_proof_context_set_nonce_bytes(handle, *nonce, err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    printf("pass\n");
+
+    printf("Creating proof 2...");
+    fflush(stdout);
+    if (bbs_create_proof_context_finish(handle, proof, err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    printf("pass\n");
+
+    printf("Create verify proof context 2...");
+    fflush(stdout);
+    handle = bbs_verify_proof_context_init(err);
+    if (handle == 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    printf("pass\n");
+
+    printf("Adding revealed messages to verify proof context 2...");
+    fflush(stdout);
+    if (bbs_verify_proof_context_add_message_bytes(handle, 1, *messages[1], err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    if (bbs_verify_proof_context_add_message_bytes(handle, 3, *messages[3], err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    printf("pass\n");
+
+    printf("Set proof in verify proof context 2...");
+    fflush(stdout);
+    if (bbs_verify_proof_context_set_proof(handle, *proof, err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    printf("pass\n");
+
+    printf("Set public key in verify proof context 2...");
+    fflush(stdout);
+    if (bbs_verify_proof_context_set_public_key(handle, *public_key, err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    printf("pass\n");
+
+    printf("Set nonce in verify proof context 2...");
+    fflush(stdout);
+    if (bbs_verify_proof_context_set_nonce_bytes(handle, *nonce, err) != 0) {
+        printf("fail\n");
+        goto Fail;
+    }
+    printf("pass\n");
+
+    printf("Verify blind sign context 2...");
     fflush(stdout);
     result = bbs_verify_proof_context_finish(handle, err);
 

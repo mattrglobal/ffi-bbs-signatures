@@ -15,12 +15,12 @@ lazy_static! {
 define_handle_map_deleter!(VERIFY_PROOF_CONTEXT, free_verify_proof);
 
 struct VerifyProofContext {
-    messages: Vec<SignatureMessage>,
+    messages: BTreeMap<usize, SignatureMessage>,
     nonce: Option<ProofNonce>,
     proof: Option<PoKOfSignatureProofWrapper>,
     public_key: Option<PublicKey>,
-    revealed: BTreeSet<usize>,
 }
+
 #[derive(Debug)]
 struct PoKOfSignatureProofWrapper {
     bit_vector: Vec<u8>,
@@ -101,31 +101,19 @@ impl<'a> Deserialize<'a> for PoKOfSignatureProofWrapper {
 #[no_mangle]
 pub extern "C" fn bbs_verify_proof_context_init(err: &mut ExternError) -> u64 {
     VERIFY_PROOF_CONTEXT.insert_with_output(err, || VerifyProofContext {
-        messages: Vec::new(),
+        messages: BTreeMap::new(),
         nonce: None,
         public_key: None,
         proof: None,
-        revealed: BTreeSet::new(),
     })
-}
-
-#[no_mangle]
-pub extern "C" fn bbs_verify_proof_context_add_revealed_index(
-    handle: u64,
-    index: u32,
-    err: &mut ExternError,
-) -> i32 {
-    VERIFY_PROOF_CONTEXT.call_with_output_mut(err, handle, |ctx| {
-        ctx.revealed.insert(index as usize);
-    });
-    err.get_code().code()
 }
 
 add_message_impl!(
     bbs_verify_proof_context_add_message_string,
     bbs_verify_proof_context_add_message_bytes,
     bbs_verify_proof_context_add_message_prehashed,
-    VERIFY_PROOF_CONTEXT
+    VERIFY_PROOF_CONTEXT,
+    u32
 );
 
 add_bytes_impl!(
@@ -169,18 +157,16 @@ pub extern "C" fn bbs_verify_proof_context_finish(handle: u64, err: &mut ExternE
             if ctx.messages.is_empty() {
                 Err(BbsFfiError::new("Messages cannot be empty"))?;
             }
-            if ctx.revealed.is_empty() {
-                Err(BbsFfiError::new("Revealed indices cannot be empty"))?;
-            }
             let public_key = &ctx.public_key.as_ref().unwrap();
             let nonce = &ctx.nonce.as_ref().unwrap();
             let proofwrapper = ctx.proof.as_ref().unwrap();
 
             let (revealed, proof) = proofwrapper.unpack();
+            let passed_revealed: BTreeSet<usize> = ctx.messages.iter().map(|(k, _)| *k).collect();
 
-            let mut revealed_messages = BTreeMap::new();
-            for i in &revealed {
-                revealed_messages.insert(*i, ctx.messages[*i]);
+            // These should be equal
+            if revealed != passed_revealed {
+                Err(BbsFfiError::new("Indices are not equal"))?;
             }
 
             let mut challenge_bytes =
@@ -190,7 +176,7 @@ pub extern "C" fn bbs_verify_proof_context_finish(handle: u64, err: &mut ExternE
             let challenge_verifier = ProofChallenge::hash(&challenge_bytes);
             let res = proof.verify(
                 public_key,
-                &revealed_messages,
+                &ctx.messages,
                 &challenge_verifier,
             )?;
             Ok(SignatureProofStatus::from(res) as i32)
