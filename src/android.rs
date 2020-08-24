@@ -11,10 +11,10 @@ use jni::objects::{JObject, JValue};
 // This is just a pointer. We'll be returning it from our function.
 // We can't return one of the objects with lifetime information because the
 // lifetime checker won't let us.
-use jni::sys::{jbyteArray, jint, jbyte};
+use jni::sys::{jbyteArray, jint, jbyte, jobjectArray};
 
 use crate::*;
-use bbs::keys::{DeterministicPublicKey, KeyGenOption, SecretKey, DETERMINISTIC_PUBLIC_KEY_COMPRESSED_SIZE};
+use bbs::keys::{DeterministicPublicKey, KeyGenOption, SecretKey, DETERMINISTIC_PUBLIC_KEY_COMPRESSED_SIZE, PublicKey};
 use bbs::{ToVariableLengthBytes, FR_COMPRESSED_SIZE};
 
 
@@ -93,16 +93,11 @@ pub extern "C" fn Java_Bbs_bls_1generate_1blinded_1g2_1key(env: JNIEnv, _: JObje
 #[allow(non_snake_case)]
 #[no_mangle]
 pub extern "C" fn Java_Bbs_bls_1secret_1key_1to_1bbs_1key(env: JNIEnv, _: JObject, secret_key: jbyteArray, message_count: jint, public_key: JObject) -> jint {
-    let sk;
-    match env.convert_byte_array(secret_key) {
-        Err(_) => return 0,
-        Ok(s) => {
-            if s.len() != FR_COMPRESSED_SIZE {
-                return 0;
-            }
-            sk = SecretKey::from(array_ref![s, 0, FR_COMPRESSED_SIZE]);
-        }
+    let sk= get_secret_key(env, secret_key);
+    if sk.is_err() {
+        return 0;
     }
+    let sk = sk.unwrap();
     let (dpk, _) = DeterministicPublicKey::new(Some(KeyGenOption::FromSecretKey(sk)));
     let pk;
     match dpk.to_public_key(message_count as usize) {
@@ -155,3 +150,35 @@ pub extern "C" fn Java_Bbs_bls_1public_1key_1to_1bbs_1key(env: JNIEnv, _: JObjec
     1
 }
 
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_Bbs_bbs_1sign(env: JNIEnv, _: JObject, secret_key: jbyteArray, public_key: jbyteArray, messages: jobjectArray, message_count: jint, signature: jbyteArray) -> jint {
+    let sk = get_secret_key(env, secret_key);
+    if sk.is_err() {
+        return 0;
+    }
+    let sk = sk.unwrap();
+    let pk;
+    match env.convert_byte_array(public_key) {
+        Err(_) => return 0,
+        Ok(p) => {
+            pk = PublicKey::from_bytes_compressed_form(p.as_slice()).unwrap();
+        }
+    }
+    let messages = unsafe { Vec::from_raw_parts(messages, message_count as usize, message_count as usize) };
+
+    1
+}
+
+fn get_secret_key(env: JNIEnv, secret_key: jbyteArray) -> Result<SecretKey, jint> {
+    match env.convert_byte_array(secret_key) {
+        Err(_) => Err(0),
+        Ok(s) => {
+            if s.len() != FR_COMPRESSED_SIZE {
+                return Err(0);
+            } else {
+                Ok(SecretKey::from(array_ref![s, 0, FR_COMPRESSED_SIZE]))
+            }
+        }
+    }
+}

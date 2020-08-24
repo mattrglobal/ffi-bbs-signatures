@@ -58,10 +58,10 @@ JNIEXPORT jint JNICALL Java_Bbs_bls_1public_1key_1to_1bbs_1key
 /*
  * Class:     Bbs
  * Method:    bbs_sign
- * Signature: ([B[B[[B)I
+ * Signature: ([B[B[[BI[B)I
  */
 JNIEXPORT jint JNICALL Java_Bbs_bbs_1sign
-  (JNIEnv *, jclass, jbyteArray, jbyteArray, jobjectArray);
+  (JNIEnv *, jclass, jbyteArray, jbyteArray, jobjectArray, jint, jbyteArray);
 
 #ifdef __cplusplus
 }
