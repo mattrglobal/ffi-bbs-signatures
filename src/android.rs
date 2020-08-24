@@ -14,8 +14,8 @@ use jni::objects::{JObject, JValue};
 use jni::sys::{jbyteArray, jint, jbyte};
 
 use crate::*;
-use bbs::keys::{DeterministicPublicKey, KeyGenOption, SecretKey};
-use bbs::ToVariableLengthBytes;
+use bbs::keys::{DeterministicPublicKey, KeyGenOption, SecretKey, DETERMINISTIC_PUBLIC_KEY_COMPRESSED_SIZE};
+use bbs::{ToVariableLengthBytes, FR_COMPRESSED_SIZE};
 
 
 #[allow(non_snake_case)]
@@ -97,10 +97,10 @@ pub extern "C" fn Java_Bbs_bls_1secret_1key_1to_1bbs_1key(env: JNIEnv, _: JObjec
     match env.convert_byte_array(secret_key) {
         Err(_) => return 0,
         Ok(s) => {
-            if s.len() != 32 {
+            if s.len() != FR_COMPRESSED_SIZE {
                 return 0;
             }
-            sk = SecretKey::from(array_ref![s, 0, 32]);
+            sk = SecretKey::from(array_ref![s, 0, FR_COMPRESSED_SIZE]);
         }
     }
     let (dpk, _) = DeterministicPublicKey::new(Some(KeyGenOption::FromSecretKey(sk)));
@@ -123,23 +123,35 @@ pub extern "C" fn Java_Bbs_bls_1secret_1key_1to_1bbs_1key(env: JNIEnv, _: JObjec
     1
 }
 
-// TODO discuss what we will call the android package name e.g reactnativernbbssignatures
-// #[allow(non_snake_case)]
-// #[no_mangle]
-// pub extern fn Java_com_reactnativernbbssignatures_Native_bls_1generate_1key(
-//   env: JNIEnv, _: JObject, seed: jbyteArray, public_key: jbyteArray, secret_key: jbyteArray
-// ) -> i32 {
-//       let seed_data = env.convert_byte_array(seed).unwrap();
-//       let mut vec: Vec<i8> = vec![0, 1, 2, 3];
-//       let buf = vec.as_slice();
-//       env.set_byte_array_region(public_key, 0, buf).unwrap();
-//       env.set_byte_array_region(secret_key, 0, buf).unwrap();
-//       100
-//       generate_keys(
-//         seed_data.to_opt_vec().map(|v| KeyGenOption::UseSeed(v)),
-//         public_key,
-//         secret_key,
-//         err,
-//       )
-//       )
-// }
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_Bbs_bls_1public_1key_1to_1bbs_1key(env: JNIEnv, _: JObject, short_public_key: jbyteArray, message_count: jint, public_key: JObject) -> jint {
+    let dpk;
+    match env.convert_byte_array(short_public_key) {
+        Err(_) => return 0,
+        Ok(s) => {
+            if s.len() != DETERMINISTIC_PUBLIC_KEY_COMPRESSED_SIZE {
+                return 0;
+            }
+            dpk = DeterministicPublicKey::from(*array_ref![s, 0, DETERMINISTIC_PUBLIC_KEY_COMPRESSED_SIZE]);
+        }
+    }
+    let pk;
+    match dpk.to_public_key(message_count as usize) {
+        Err(_) => return 0,
+        Ok(p) => pk = p
+    }
+    if pk.validate().is_err() {
+        return 0;
+    }
+
+    let pk_bytes: Vec<JValue> = pk.to_bytes_compressed_form().iter().map(|b| JValue::Byte(*b as jbyte)).collect();
+
+    // TODO: test whether this actually works
+    if env.call_method(public_key, "put", "[B", pk_bytes.as_slice()).is_err() {
+        return 0;
+    }
+
+    1
+}
+
