@@ -44,6 +44,7 @@ switch ($Platform) {
         & (Resolve-Path "$AndroidNdkHome/build/tools/make_standalone_toolchain.py") --api 26 --arch arm --install-dir ~/.NDK/arm;
         & (Resolve-Path "$AndroidNdkHome/build/tools/make_standalone_toolchain.py") --api 26 --arch x86 --install-dir ~/.NDK/x86;
 
+        Remove-Item ".cargo/config"
         Get-Content "./dotnet/devops/android-cargo-config" | Out-File "~/.cargo/config"
 
         rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android
