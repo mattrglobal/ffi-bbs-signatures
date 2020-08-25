@@ -3,32 +3,46 @@
 # Add steps that publish symbols, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
 
-trigger:
-- master
+jobs:
+- job:
+  pool:
+    vmImage: 'windows-latest'
+  variables:
+    solution: '**/*.sln'
+    buildPlatform: 'Any CPU'
+    buildConfiguration: 'Release'
 
-pool:
-  vmImage: 'windows-latest'
-variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+  steps:
 
-steps:
+  - task: DownloadPipelineArtifact@2
+    inputs:
+      buildType: 'current'
+      itemPattern: |
+        **/*.a
+        **/*.dylib
+        **/*.so
+        **/*.dll
+      targetPath: 'dotnet/libs'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'restore'
-    projects: '$(solution)'
-    feedsToUse: 'select'
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'restore'
+      projects: '$(solution)'
+      feedsToUse: 'select'
 
-- task: MSBuild@1
-  inputs:
-    solution: '$(solution)'
-    configuration: '$(buildConfiguration)'
+  - task: MSBuild@1
+    inputs:
+      solution: '$(solution)'
+      configuration: '$(buildConfiguration)'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'test'
-    projects: '**/*.Tests.csproj'
-    arguments: '-c $(buildConfiguration) --collect "Code coverage"'
+  - task: MSBuild@1
+    inputs:
+      solution: '**/*.sln'
+      configuration: '$(buildConfiguration)'
+      msbuildArguments: '/t:build,pack /p:PackageOutputPath=dotnet/nuget'
 
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'test'
+      projects: '**/*.Tests.csproj'
+      arguments: '-c $(buildConfiguration) --collect "Code coverage"'

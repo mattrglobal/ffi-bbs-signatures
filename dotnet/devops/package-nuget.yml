@@ -4,6 +4,17 @@ jobs:
   pool:
     vmImage: 'macos-latest'
   steps:
+    
+  - task: DownloadPipelineArtifact@2
+    inputs:
+      buildType: 'current'
+      itemPattern: |
+        **/*.a
+        **/*.dylib
+        **/*.so
+        **/*.dll
+      targetPath: 'dotnet/libs'
+
   - task: PowerShell@2
     inputs:
       filePath: 'devops/Build.ps1'

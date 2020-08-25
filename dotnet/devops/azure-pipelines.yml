@@ -30,13 +30,12 @@ stages:
         platform: 'android'
         additionalArguments: -AndroidNdkHome ~/Library/Developer/Xamarin/android-ndk/
 
-
   - stage: RunTests
-    # dependsOn: BuildNativeLibraries
+    dependsOn: BuildNativeLibraries
     jobs:
-    - template: package-nuget.yml
+    - template: run-tests.yml
     
   - stage: CreatePackages
-    # dependsOn: BuildNativeLibraries
+    dependsOn: BuildNativeLibraries
     jobs:
     - template: package-nuget.yml
