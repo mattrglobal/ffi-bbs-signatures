@@ -52,12 +52,12 @@ switch ($Platform) {
         cargo build --target armv7-linux-androideabi --release
         cargo build --target i686-linux-android --release
 
-        mkdir $OutLocation/aarch64/
-        mkdir $OutLocation/armv7/
-        mkdir $OutLocation/i686/
-        Copy-Item -Path ./target/aarch64-linux-android/release/libbbs.so -Destination $OutLocation/aarch64/
-        Copy-Item -Path ./target/armv7-linux-androideabi/release/libbbs.so -Destination $OutLocation/armv7/
-        Copy-Item -Path ./target/i686-linux-android/release/libbbs.so -Destination $OutLocation/i686/
+        mkdir $OutLocation/arm64-v8a/
+        mkdir $OutLocation/armeabi-v7a/
+        mkdir $OutLocation/x86/
+        Copy-Item -Path ./target/aarch64-linux-android/release/libbbs.so -Destination $OutLocation/arm64-v8a/
+        Copy-Item -Path ./target/armv7-linux-androideabi/release/libbbs.so -Destination $OutLocation/armeabi-v7a/
+        Copy-Item -Path ./target/i686-linux-android/release/libbbs.so -Destination $OutLocation/x86/
         break
     }
 }
