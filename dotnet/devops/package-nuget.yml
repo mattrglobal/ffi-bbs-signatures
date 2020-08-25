@@ -3,8 +3,12 @@ jobs:
 
   pool:
     vmImage: 'macos-latest'
+  variables:
+    solution: '**/*.sln'
+    buildConfiguration: 'Release'
+
   steps:
-    
+
   - task: DownloadPipelineArtifact@2
     inputs:
       buildType: 'current'
@@ -15,14 +19,20 @@ jobs:
         **/*.dll
       targetPath: 'dotnet/libs'
 
-  - task: PowerShell@2
+  - task: DotNetCoreCLI@2
     inputs:
-      filePath: 'devops/Build.ps1'
-      arguments: '-Platform ${{ parameters.platform }} -OutLocation $(Build.ArtifactStagingDirectory) ${{ parameters.additionalArguments }}'
-      pwsh: true
+      command: 'restore'
+      projects: '$(solution)'
+      feedsToUse: 'select'
+
+  - task: MSBuild@1
+    inputs:
+      solution: '**/*.sln'
+      configuration: '$(buildConfiguration)'
+      msbuildArguments: '/t:build,pack /p:PackageOutputPath=dotnet/nuget'
 
   - task: PublishBuildArtifacts@1
     inputs:
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      ArtifactName: '${{ parameters.platform }}'
+      PathtoPublish: 'dotnet/nuget'
+      ArtifactName: 'nuget'
       publishLocation: 'Container'
