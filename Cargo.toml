@@ -2,6 +2,8 @@
 authors = ["Michael Lodder <redmike7@gmail.com>"]
 edition = "2018"
 name = "ffi-bbs-signatures"
+# Please ignore the below version this does not indicate the current package version
+# instead please refer to ./package.json
 version = "0.1.0"
 
 [lib]

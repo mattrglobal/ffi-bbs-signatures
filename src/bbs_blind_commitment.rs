@@ -92,7 +92,7 @@ pub extern "C" fn bbs_blind_commitment_context_finish(
     );
 
     if err.get_code().is_success() {
-        let v = res.into_vec();
+        let v = res.destroy_into_vec();
         *blinding_factor = ByteBuffer::from_vec(v[..FR_COMPRESSED_SIZE].to_vec());
         let commitment_end = G1_COMPRESSED_SIZE + FR_COMPRESSED_SIZE;
         *commitment = ByteBuffer::from_vec(v[FR_COMPRESSED_SIZE..commitment_end].to_vec());
