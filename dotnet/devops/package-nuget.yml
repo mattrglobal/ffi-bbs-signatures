@@ -14,7 +14,7 @@ jobs:
       buildType: 'current'
       downloadType: 'specific'
       itemPattern: |
-      **/*.a
+        **/*.a
         **/*.dylib
         **/*.so
         **/*.dll
