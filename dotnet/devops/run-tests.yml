@@ -23,7 +23,7 @@ jobs:
         **/*.dylib
         **/*.so
         **/*.dll
-      downloadPath: '$(Agent.BuildDirectory)/dotnet/libs'
+      downloadPath: '$(Build.SourcesDirectory)/dotnet/libs'
 
   - task: DotNetCoreCLI@2
     inputs:
