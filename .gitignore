@@ -18,3 +18,8 @@ Cargo.lock
 #Cargo.lock
 
 .DS_Store
+
+out
+release
+node_modules
+.NDK

@@ -1,31 +1,24 @@
-An FFI Wrapper around Hyperledger Ursa's BBS+ implementation.
+# BBS Signature FFI Wrapper
 
-## Usage
-All that is needed to use the library is the following two artifacts: bbs.h and the native library for OS platforms:
+This repository is home to a foreign function interface (FFI) wrapper around the rust based [bbs crate](https://crates.io/crates/bbs) maintained by the [Hyperledger Ursa project](https://github.com/hyperledger/ursa).
 
-- Mac OS X: libbbs.dylib
-- Windows: libbbs.dll
-- Linux/Android: libbbs.so
-- iOS: libbbs.a
+[BBS+ Signatures](https://github.com/mattrglobal/bbs-signatures) are a digital signature algorithm originally born from
+the work on [Short group signatures](https://crypto.stanford.edu/~xb/crypto04a/groupsigs.pdf) by Boneh, Boyen, and
+Shachum which was later improved on in
+[Constant-Size Dynamic k-TAA](http://web.cs.iastate.edu/~wzhang/teach-552/ReadingList/552-14.pdf) as BBS+ and touched on
+again in section 4.3 in
+[Anonymous Attestation Using the Strong Diffie Hellman Assumption Revisited ](https://www.researchgate.net/publication/306347781_Anonymous_Attestation_Using_the_Strong_Diffie_Hellman_Assumption_Revisited).
 
-## Layout
+[BBS+ Signatures](https://github.com/mattrglobal/bbs-signatures) require a
+[pairing-friendly curve](https://tools.ietf.org/html/draft-irtf-cfrg-pairing-friendly-curves-03), this library includes
+support for [BLS12-381](https://tools.ietf.org/html/draft-irtf-cfrg-pairing-friendly-curves-03#section-2.4).
 
-Each operation uses a context object to that stores the current state until the finish operation is called,
-unless the operation is simple enough to perform with a single function call. Please take note:
+[BBS+ Signatures](https://github.com/mattrglobal/bbs-signatures) allow for multi-message signing whilst producing a
+single output signature. With a BBS signature, a [proof of knowledge](https://en.wikipedia.org/wiki/Proof_of_knowledge)
+based proof can be produced where only some of the originally signed messages are revealed at the discretion of the
+prover.
 
-1. This library avoids throwing panics over the FFI (which is undefined behavior)
-1. This library translates rust errors (and panics) into errors that the caller on the other side of the FFI is able to handle.
-1. Uses structures instead of basic types to minimize the number of parameters passed to functions.
-    1. For example, ByteBuffer and ExternError.
-1. Most functions return 0 if successful and non-zero if an error occurs. 
-1. When functions create values like `bls_generate_key`, the caller is responsible for freeing the values returned
-as Rust no longer guarantees ownership and cannot be responsible for its management.
+## Supported Environments
 
-Examples can be found in [bbs_test](tests/bbs_test.c)
-
-### Key Generation
-
-## Building from source
-This library is written in Rust and exposed through the FFI wrapper.
-To build it for a specific system, install Rust and run `make`.
-To install rust see [here](https://www.rust-lang.org/tools/install)
+Every release of this repository publishes a new [github release](https://github.com/mattrglobal/ffi-bbs-signatures/releases/tag/v0.1.0) including publishing the platform specific artifacts required to run the library in different environments. See the [release process](./docs/RELEASE.md) for
+more details on this process

@@ -1,0 +1,68 @@
+name: release
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+jobs:
+  build_test:
+    name: Release
+    if: "contains(github.event.head_commit.message, 'chore(release): publish')"
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build
+        run: yarn build
+
+      - name: Get Package Version
+        id: package-version
+        run: |
+          PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
+          echo ::set-output name=value::${PACKAGE_VERSION}
+
+      - name: Prepare the release artifacts
+        run: yarn release:prepare
+
+      - name: Create Release
+        id: create-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.package-version.outputs.value }}
+          release_name: Release v${{ steps.package-version.outputs.value }}
+          body: |
+            Refer to [CHANGELOG](./CHANGELOG.md) for more details
+          draft: false
+          prerelease: false
+
+      - name: Upload Android Release Asset
+        id: upload-android-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: ./release/android.zip
+          asset_name: android.zip
+          asset_content_type: application/zip
+
+      - name: Upload iOS Release Asset
+        id: upload-ios-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: ./release/ios.zip
+          asset_name: ios.zip
+          asset_content_type: application/zip
