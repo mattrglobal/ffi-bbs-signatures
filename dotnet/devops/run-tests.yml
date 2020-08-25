@@ -14,15 +14,16 @@ jobs:
 
   steps:
 
-  - task: DownloadPipelineArtifact@2
+  - task: DownloadBuildArtifacts@0
     inputs:
       buildType: 'current'
+      downloadType: 'specific'
       itemPattern: |
-        **/*.a
+      **/*.a
         **/*.dylib
         **/*.so
         **/*.dll
-      targetPath: 'dotnet/libs'
+      downloadPath: '$(Agent.BuildDirectory)/dotnet/libs'
 
   - task: DotNetCoreCLI@2
     inputs:
