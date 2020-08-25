@@ -29,10 +29,10 @@ jobs:
     inputs:
       solution: '**/*.sln'
       configuration: '$(buildConfiguration)'
-      msbuildArguments: '/t:build,pack /p:PackageOutputPath=dotnet/nuget'
+      msbuildArguments: '/t:build,pack /p:PackageOutputPath=$(Agent.BuildDirectory)/dotnet/nuget'
 
   - task: PublishBuildArtifacts@1
     inputs:
-      PathtoPublish: 'dotnet/nuget'
+      PathtoPublish: '$(Agent.BuildDirectory)/dotnet/nuget/'
       ArtifactName: 'nuget'
       publishLocation: 'Container'
