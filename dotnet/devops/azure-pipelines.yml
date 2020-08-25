@@ -7,30 +7,36 @@ stages:
     - template: build-template.yml
       parameters:
         vmImage: 'macos-latest'
-        platform: 'Ios'
+        platform: 'ios'
 
     - template: build-template.yml
       parameters:
         vmImage: 'windows-latest'
-        platform: 'Windows'
+        platform: 'windows'
 
     - template: build-template.yml
       parameters:
         vmImage: 'macos-latest'
-        platform: 'MacOS'
+        platform: 'macos'
 
     - template: build-template.yml
       parameters:
         vmImage: 'ubuntu-latest'
-        platform: 'Linux'
+        platform: 'linux'
 
     - template: build-template.yml
       parameters:
         vmImage: 'macos-latest'
-        platform: 'Android'
+        platform: 'android'
         additionalArguments: -AndroidNdkHome ~/Library/Developer/Xamarin/android-ndk/
 
+
+  - stage: RunTests
+    # dependsOn: BuildNativeLibraries
+    jobs:
+    - template: package-nuget.yml
+    
   - stage: CreatePackages
-    dependsOn: BuildNativeLibraries
+    # dependsOn: BuildNativeLibraries
     jobs:
     - template: package-nuget.yml
