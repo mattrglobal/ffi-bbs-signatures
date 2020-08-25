@@ -19,5 +19,10 @@ Cargo.lock
 
 .DS_Store
 
+out
+release
+node_modules
+.NDK
+
 dotnet/libs
 dotnet/nuget
