@@ -11,7 +11,7 @@ jobs:
   steps:
   - task: PowerShell@2
     inputs:
-      filePath: 'dotnet/devops/Build.ps1'
+      filePath: 'wrappers/dotnet/devops/Build.ps1'
       arguments: '-Platform ${{ parameters.platform }} -OutLocation $(Build.ArtifactStagingDirectory) ${{ parameters.additionalArguments }}'
       pwsh: true
 

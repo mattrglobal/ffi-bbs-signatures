@@ -1,15 +1,10 @@
-# ASP.NET
-# Build and test ASP.NET projects.
-# Add steps that publish symbols, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
-
 jobs:
-- job: RunTests
+- job: Package_Nuget
+
   pool:
-    vmImage: 'windows-latest'
+    vmImage: 'macos-latest'
   variables:
     solution: '**/*.sln'
-    buildPlatform: 'Any CPU'
     buildConfiguration: 'Release'
 
   steps:
@@ -35,9 +30,10 @@ jobs:
     inputs:
       solution: '**/*.sln'
       configuration: '$(buildConfiguration)'
+      msbuildArguments: '/t:build,pack /p:PackageOutputPath=$(Build.SourcesDirectory)/dotnet/nuget'
 
-  - task: DotNetCoreCLI@2
+  - task: PublishBuildArtifacts@1
     inputs:
-      command: 'test'
-      projects: '**/*.Tests.csproj'
-      arguments: '-c $(buildConfiguration) --collect "Code coverage"'
+      PathtoPublish: '$(Build.SourcesDirectory)/wrappers/dotnet/nuget/'
+      ArtifactName: 'nuget'
+      publishLocation: 'Container'
