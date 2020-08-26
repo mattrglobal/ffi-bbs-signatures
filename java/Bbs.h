@@ -57,11 +57,51 @@ JNIEXPORT jint JNICALL Java_Bbs_bls_1public_1key_1to_1bbs_1key
 
 /*
  * Class:     Bbs
- * Method:    bbs_sign
- * Signature: ([B[B[[BI[B)I
+ * Method:    bbs_sign_init
+ * Signature: ()J
  */
-JNIEXPORT jint JNICALL Java_Bbs_bbs_1sign
-  (JNIEnv *, jclass, jbyteArray, jbyteArray, jobjectArray, jint, jbyteArray);
+JNIEXPORT jlong JNICALL Java_Bbs_bbs_1sign_1init
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     Bbs
+ * Method:    bbs_sign_set_secret_key
+ * Signature: (J[B)I
+ */
+JNIEXPORT jint JNICALL Java_Bbs_bbs_1sign_1set_1secret_1key
+  (JNIEnv *, jclass, jlong, jbyteArray);
+
+/*
+ * Class:     Bbs
+ * Method:    bbs_sign_set_public_key
+ * Signature: (J[B)I
+ */
+JNIEXPORT jint JNICALL Java_Bbs_bbs_1sign_1set_1public_1key
+  (JNIEnv *, jclass, jlong, jbyteArray);
+
+/*
+ * Class:     Bbs
+ * Method:    bbs_sign_add_message_bytes
+ * Signature: (J[B)I
+ */
+JNIEXPORT jint JNICALL Java_Bbs_bbs_1sign_1add_1message_1bytes
+  (JNIEnv *, jclass, jlong, jbyteArray);
+
+/*
+ * Class:     Bbs
+ * Method:    bbs_sign_add_message_prehashed
+ * Signature: (J[B)I
+ */
+JNIEXPORT jint JNICALL Java_Bbs_bbs_1sign_1add_1message_1prehashed
+  (JNIEnv *, jclass, jlong, jbyteArray);
+
+/*
+ * Class:     Bbs
+ * Method:    bbs_sign_finish
+ * Signature: (J[B)I
+ */
+JNIEXPORT jint JNICALL Java_Bbs_bbs_1sign_1finish
+  (JNIEnv *, jclass, jlong, jbyteArray);
 
 #ifdef __cplusplus
 }

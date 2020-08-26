@@ -7,7 +7,25 @@ class Bbs {
     private static native int bls_generate_blinded_g2_key(byte[] seed, byte[] blinding_factor, byte[] public_key, byte[] secret_key);
     private static native int bls_secret_key_to_bbs_key(byte[] secret_key, int message_count, ByteBuffer public_key);
     private static native int bls_public_key_to_bbs_key(byte[] short_public_key, int message_count, ByteBuffer public_key);
-    private static native int bbs_sign(byte[] secret_key, byte[] public_key, byte[][] messages, int message_count, byte[] signature);
+
+    private static native long bbs_sign_init();
+    private static native int bbs_sign_set_secret_key(long handle, byte[] secret_key);
+    private static native int bbs_sign_set_public_key(long handle, byte[] public_key);
+    private static native int bbs_sign_add_message_bytes(long handle, byte[] message);
+    private static native int bbs_sign_add_message_prehashed(long handle, byte[] hash);
+    private static native int bbs_sign_finish(long handle, byte[] signature);
+
+    public static byte[] bbs_sign(byte[] secret_key, byte[] public_key, byte[][] messages) {
+        long handle = bbs_sign_init();
+        bbs_sign_set_secret_key(handle, secret_key);
+        bbs_sign_set_public_key(handle, public_key);
+        for (byte[] msg : messages) {
+            bbs_sign_add_message_bytes(handle, msg);
+        }
+        byte[] signature = new byte[96];
+        bbs_sign_finish(handle, signature);
+        return signature;
+    }
 
     static {
         System.loadLibrary("bbs");
