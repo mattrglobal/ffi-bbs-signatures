@@ -35,7 +35,7 @@ Using Visual Studio or Visual Studio for Mac, simply build the solution.
 ## Using `msbuild`
 
 ```
-msbuild ./dotnet/BbsSignatures.sln
+msbuild ./wrappers/dotnet/BbsSignatures.sln
 ```
 
 ## Using NET CLI
@@ -43,14 +43,14 @@ msbuild ./dotnet/BbsSignatures.sln
 you must run `msbuild` or use an IDE that uses it, like Visual Studio or Visual Studio for Mac. The main project depends on `MSBuild.Sdk.Extras` package to produce Xamarin specific packages, for this reason, you must specify the target framework when building with CLI
 
 ```
-dotnet build --framework netstandard2.1 ./dotnet/src/Hyperledger.Ursa.BbsSignatures
+dotnet build --framework netstandard2.1 ./wrappers/dotnet/src/Hyperledger.Ursa.BbsSignatures
 
 ```
     msbuild /p:Configuration=Release src/
 
 To build for a specific target use
 
-    msbuild /p:Configuration=Release /p:TargetFramework=netstandard2.1 ./src/BbsSignatures/BbsSignatures.csproj
+    msbuild /p:Configuration=Release /p:TargetFramework=netstandard2.1 ./wrappers/dotnet/src/BbsSignatures/BbsSignatures.csproj
 
 # Test runners
 
@@ -61,7 +61,7 @@ There are three test runners included with the solution. Tests use NUnit runners
 
 To run the tests for NET Core app, you can use `dotnet` tool
 
-    dotnet test ./dotnet
+    dotnet test ./wrappers/dotnet
 
 # Demo
 

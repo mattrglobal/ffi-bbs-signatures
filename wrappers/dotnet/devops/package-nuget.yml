@@ -18,7 +18,7 @@ jobs:
         **/*.dylib
         **/*.so
         **/*.dll
-      downloadPath: '$(Build.SourcesDirectory)/dotnet/libs'
+      downloadPath: '$(Build.SourcesDirectory)/wrappers/dotnet/libs'
 
   - task: DotNetCoreCLI@2
     inputs:
@@ -30,7 +30,7 @@ jobs:
     inputs:
       solution: '**/*.sln'
       configuration: '$(buildConfiguration)'
-      msbuildArguments: '/t:build,pack /p:PackageOutputPath=$(Build.SourcesDirectory)/dotnet/nuget'
+      msbuildArguments: '/t:build,pack /p:PackageOutputPath=$(Build.SourcesDirectory)/wrappers/dotnet/nuget'
 
   - task: PublishBuildArtifacts@1
     inputs:
