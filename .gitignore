@@ -23,3 +23,6 @@ out
 release
 node_modules
 .NDK
+
+wrappers/dotnet/libs
+wrappers/dotnet/nuget
