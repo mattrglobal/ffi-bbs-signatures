@@ -42,7 +42,7 @@ JNIEXPORT jint JNICALL Java_Bbs_bls_1generate_1blinded_1g2_1key
 /*
  * Class:     Bbs
  * Method:    bls_secret_key_to_bbs_key
- * Signature: ([BILjava/nio/ByteBuffer;)I
+ * Signature: ([BILjava/io/ByteArrayOutputStream;)I
  */
 JNIEXPORT jint JNICALL Java_Bbs_bls_1secret_1key_1to_1bbs_1key
   (JNIEnv *, jclass, jbyteArray, jint, jobject);
@@ -50,7 +50,7 @@ JNIEXPORT jint JNICALL Java_Bbs_bls_1secret_1key_1to_1bbs_1key
 /*
  * Class:     Bbs
  * Method:    bls_public_key_to_bbs_key
- * Signature: ([BILjava/nio/ByteBuffer;)I
+ * Signature: ([BILjava/io/ByteArrayOutputStream;)I
  */
 JNIEXPORT jint JNICALL Java_Bbs_bls_1public_1key_1to_1bbs_1key
   (JNIEnv *, jclass, jbyteArray, jint, jobject);
@@ -102,6 +102,102 @@ JNIEXPORT jint JNICALL Java_Bbs_bbs_1sign_1add_1message_1prehashed
  */
 JNIEXPORT jint JNICALL Java_Bbs_bbs_1sign_1finish
   (JNIEnv *, jclass, jlong, jbyteArray);
+
+/*
+ * Class:     Bbs
+ * Method:    bbs_verify_init
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_Bbs_bbs_1verify_1init
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     Bbs
+ * Method:    bbs_verify_add_message_bytes
+ * Signature: (J[B)I
+ */
+JNIEXPORT jint JNICALL Java_Bbs_bbs_1verify_1add_1message_1bytes
+  (JNIEnv *, jclass, jlong, jbyteArray);
+
+/*
+ * Class:     Bbs
+ * Method:    bbs_verify_add_message_prehashed
+ * Signature: (J[B)I
+ */
+JNIEXPORT jint JNICALL Java_Bbs_bbs_1verify_1add_1message_1prehashed
+  (JNIEnv *, jclass, jlong, jbyteArray);
+
+/*
+ * Class:     Bbs
+ * Method:    bbs_verify_set_public_key
+ * Signature: (J[B)I
+ */
+JNIEXPORT jint JNICALL Java_Bbs_bbs_1verify_1set_1public_1key
+  (JNIEnv *, jclass, jlong, jbyteArray);
+
+/*
+ * Class:     Bbs
+ * Method:    bbs_verify_set_signature
+ * Signature: (J[B)I
+ */
+JNIEXPORT jint JNICALL Java_Bbs_bbs_1verify_1set_1signature
+  (JNIEnv *, jclass, jlong, jbyteArray);
+
+/*
+ * Class:     Bbs
+ * Method:    bbs_verify_finish
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_Bbs_bbs_1verify_1finish
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     Bbs
+ * Method:    bbs_blind_commitment_init
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_Bbs_bbs_1blind_1commitment_1init
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     Bbs
+ * Method:    bbs_blind_commitment_add_message_bytes
+ * Signature: (JI[B)I
+ */
+JNIEXPORT jint JNICALL Java_Bbs_bbs_1blind_1commitment_1add_1message_1bytes
+  (JNIEnv *, jclass, jlong, jint, jbyteArray);
+
+/*
+ * Class:     Bbs
+ * Method:    bbs_blind_commitment_add_prehashed
+ * Signature: (JI[B)I
+ */
+JNIEXPORT jint JNICALL Java_Bbs_bbs_1blind_1commitment_1add_1prehashed
+  (JNIEnv *, jclass, jlong, jint, jbyteArray);
+
+/*
+ * Class:     Bbs
+ * Method:    bbs_blind_commitment_set_public_key
+ * Signature: (J[B)I
+ */
+JNIEXPORT jint JNICALL Java_Bbs_bbs_1blind_1commitment_1set_1public_1key
+  (JNIEnv *, jclass, jlong, jbyteArray);
+
+/*
+ * Class:     Bbs
+ * Method:    bbs_blind_commitment_set_nonce_bytes
+ * Signature: (J[B)I
+ */
+JNIEXPORT jint JNICALL Java_Bbs_bbs_1blind_1commitment_1set_1nonce_1bytes
+  (JNIEnv *, jclass, jlong, jbyteArray);
+
+/*
+ * Class:     Bbs
+ * Method:    bbs_blind_commitment_finish
+ * Signature: (J[BLjava/io/ByteArrayOutputStream;[B)I
+ */
+JNIEXPORT jint JNICALL Java_Bbs_bbs_1blind_1commitment_1finish
+  (JNIEnv *, jclass, jlong, jbyteArray, jobject, jbyteArray);
 
 #ifdef __cplusplus
 }
