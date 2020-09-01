@@ -27,3 +27,31 @@ dependencies {
     // Use JUnit test framework
     testImplementation 'junit:junit:4.13'
 }
+
+// Builds the android binaries
+task buildAndroidBinaries(type:Exec) {  
+    workingDir '../../'
+
+    //on windows
+    //TODO add support
+
+    //on linux
+    commandLine './scripts/build.sh' ,'ANDROID' ,'out' //TODO what about other environments other than android
+}
+
+// Copies the android binaries to the JNI libraries folder
+task copyAndroidBinaries(type:Exec) {
+    workingDir '../../'
+    
+    //on windows
+    //TODO add support
+
+    //on linux
+    commandLine 'cp', '-r', 'out/android/', 'wrappers/java/src/main/jniLibs/'
+}
+
+// Builds and copies the required binaries for the java wrapper
+task buildAndCopyBinaries {
+    dependsOn ':buildAndroidBinaries'
+    dependsOn ':copyAndroidBinaries'
+}
