@@ -35,12 +35,21 @@ class Bbs {
     private static native int bbs_verify_set_signature(long handle, byte[] signature);
     private static native int bbs_verify_finish(long handle);
 
+    private static native int bbs_blind_signature_size();
     private static native long bbs_blind_commitment_init();
     private static native int bbs_blind_commitment_add_message_bytes(long handle, int index, byte[] message);
     private static native int bbs_blind_commitment_add_prehashed(long handle, int index, byte[] hash);
     private static native int bbs_blind_commitment_set_public_key(long handle, byte[] public_key);
     private static native int bbs_blind_commitment_set_nonce_bytes(long handle, byte[] nonce);
     private static native byte[] bbs_blind_commitment_finish(long handle, byte[] commitment, byte[] blinding_factor);
+
+    private static native long bbs_blind_sign_init();
+    private static native int bbs_blind_sign_set_secret_key(long handle, byte[] secret_key);
+    private static native int bbs_blind_sign_set_public_key(long handle, byte[] public_key);
+    private static native int bbs_blind_sign_set_commitment(long handle, byte[] commitment);
+    private static native int bbs_blind_sign_add_message_bytes(long handle, int index, byte[] message);
+    private static native int bbs_blind_sign_add_prehashed(long handle, int index, byte[] hash);
+    private static native int bbs_blind_sign_finish(long handle, byte[] blind_signature);
 
     public static byte[] bbs_sign(byte[] secret_key, byte[] public_key, byte[][] messages) throws Exception {
         long handle = bbs_sign_init();
@@ -113,6 +122,27 @@ class Bbs {
         }
         BlindCommitmentContext context = new BlindCommitmentContext(commitment, proof, blinding_factor);
         return context;
+    }
+
+    public static byte[] bbs_blind_sign(byte[] secret_key, byte[] public_key, byte[] commitment, Map<Integer, byte[]> messages) throws Exception {
+        long handle = bbs_blind_sign_init();
+        if (0 == handle)
+            throw new Exception("Unable to create blind sign context");
+        if (0 == bbs_blind_sign_set_secret_key(handle, secret_key))
+            throw new Exception("Unable to set secret key");
+        if (0 == bbs_blind_sign_set_public_key(handle, public_key))
+            throw new Exception("Unable to set public key");
+        if (0 == bbs_blind_sign_set_commitment(handle, commitment))
+            throw new Exception("Unable to set commitment");
+        for (Map.Entry<Integer,byte[]> entry : messages.entrySet()) {
+            if (0 == bbs_blind_sign_add_message_bytes(handle, entry.getKey(), entry.getValue())) {
+                throw new Exception("Unable to add message");
+            }
+        }
+        byte[] blind_signature = new byte[bbs_blind_signature_size()];
+        if (0 == bbs_blind_sign_finish(handle, blind_signature))
+            throw new Exception("Unable to create blind signature");
+        return blind_signature;
     }
 
     static {

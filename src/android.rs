@@ -18,6 +18,7 @@ use bbs::keys::{DeterministicPublicKey, KeyGenOption, SecretKey, DETERMINISTIC_P
 use bbs::{ToVariableLengthBytes, FR_COMPRESSED_SIZE, G1_COMPRESSED_SIZE, G2_COMPRESSED_SIZE};
 use crate::bbs_sign::*;
 use crate::bbs_blind_commitment::{bbs_blind_commitment_context_init, bbs_blind_commitment_context_add_message_bytes, bbs_blind_commitment_context_add_message_prehashed, bbs_blind_commitment_context_set_public_key, bbs_blind_commitment_context_set_nonce_bytes, bbs_blind_commitment_context_finish};
+use crate::bbs_blind_sign::{bbs_blind_sign_context_init, bbs_blind_sign_context_set_secret_key, bbs_blind_sign_context_set_public_key, bbs_blind_sign_context_set_commitment, bbs_blind_sign_context_add_message_bytes, bbs_blind_sign_context_add_message_prehashed, bbs_blind_sign_context_finish};
 
 
 #[allow(non_snake_case)]
@@ -402,6 +403,104 @@ pub extern "C" fn Java_Bbs_bbs_1blind_1commitment_1finish(env: JNIEnv, _: JObjec
             out
         }
     }
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_Bbs_bbs_1blind_1sign_1init(_: JNIEnv, _: JObject) -> jlong {
+    let mut error = ExternError::success();
+    bbs_blind_sign_context_init(&mut error) as jlong
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_Bbs_bbs_1blind_1sign_1set_1secret_1key(env: JNIEnv, _: JObject, handle: jlong, secret_key: jbyteArray) -> jint {
+    match env.convert_byte_array(secret_key) {
+        Err(_) => 0,
+        Ok(s) => {
+            if s.len() != FR_COMPRESSED_SIZE {
+                0
+            } else {
+                let mut error = ExternError::success();
+                let byte_array = ByteArray::from(s);
+                bbs_blind_sign_context_set_secret_key(handle as u64, byte_array, &mut error)
+            }
+        }
+    }
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_Bbs_bbs_1blind_1sign_1set_1public_1key(env: JNIEnv, _: JObject, handle: jlong, public_key: jbyteArray) -> jint {
+    match env.convert_byte_array(public_key) {
+        Err(_) => 0,
+        Ok(s) => {
+            if s.len() < G2_COMPRESSED_SIZE {
+                0
+            } else {
+                let mut error = ExternError::success();
+                let byte_array = ByteArray::from(s);
+                bbs_blind_sign_context_set_public_key(handle as u64, byte_array, &mut error)
+            }
+        }
+    }
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_Bbs_bbs_1blind_1sign_1set_1commitment(env: JNIEnv, _: JObject, handle: jlong, commitment: jbyteArray) -> jint {
+    match env.convert_byte_array(commitment) {
+        Err(_) => 0,
+        Ok(s) => {
+            if s.len() != FR_COMPRESSED_SIZE {
+                0
+            } else {
+                let mut error = ExternError::success();
+                let byte_array = ByteArray::from(s);
+                bbs_blind_sign_context_set_commitment(handle as u64, byte_array, &mut error)
+            }
+        }
+    }
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_Bbs_bbs_1blind_1sign_1add_1message_1bytes(env: JNIEnv, _: JObject, handle: jlong, index: jint, message: jbyteArray) -> jint {
+    match env.convert_byte_array(message) {
+        Err(_) => 0,
+        Ok(s) => {
+            let mut error = ExternError::success();
+            let byte_array = ByteArray::from(s);
+            bbs_blind_sign_context_add_message_bytes(handle as u64, index as u32, byte_array, &mut error)
+        }
+    }
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_Bbs_bbs_1blind_1sign_1add_1prehashed(env: JNIEnv, _: JObject, handle: jlong, index: jint, hash: jbyteArray) -> jint {
+    match env.convert_byte_array(hash) {
+        Err(_) => 0,
+        Ok(s) => {
+            let mut error = ExternError::success();
+            let byte_array = ByteArray::from(s);
+            bbs_blind_sign_context_add_message_prehashed(handle as u64, index as u32, byte_array, &mut error)
+        }
+    }
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_Bbs_bbs_1blind_1sign_1finish(env: JNIEnv, _: JObject, handle: jlong, signature: jbyteArray) -> jint {
+    let mut err = ExternError::success();
+    let mut s = ByteBuffer::from_vec(vec![]);
+    let res = bbs_blind_sign_context_finish(handle as u64, &mut s, &mut err);
+    if res == 0 {
+        return res;
+    }
+    let ss: Vec<jbyte> = s.into_vec().iter().map(|b| *b as jbyte).collect();
+    copy_to_jni!(env, signature, ss.as_slice());
+    1
 }
 
 fn get_secret_key(env: &JNIEnv, secret_key: jbyteArray) -> Result<SecretKey, jint> {
