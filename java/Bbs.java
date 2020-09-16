@@ -40,7 +40,7 @@ class Bbs {
     private static native int bbs_blind_commitment_add_prehashed(long handle, int index, byte[] hash);
     private static native int bbs_blind_commitment_set_public_key(long handle, byte[] public_key);
     private static native int bbs_blind_commitment_set_nonce_bytes(long handle, byte[] nonce);
-    private static native int bbs_blind_commitment_finish(long handle, byte[] commitment, ByteArrayOutputStream out_context, byte[] blinding_factor);
+    private static native byte[] bbs_blind_commitment_finish(long handle, byte[] commitment, byte[] blinding_factor);
 
     public static byte[] bbs_sign(byte[] secret_key, byte[] public_key, byte[][] messages) throws Exception {
         long handle = bbs_sign_init();
@@ -107,11 +107,10 @@ class Bbs {
         }
         byte[] blinding_factor = new byte[32];
         byte[] commitment = new byte[48];
-        ByteArrayOutputStream proof_buffer = new ByteArrayOutputStream();
-        if (0 == bbs_blind_commitment_finish(handle, commitment, proof_buffer, blinding_factor)) {
+        byte[] proof = bbs_blind_commitment_finish(handle, commitment, blinding_factor);
+        if (proof == null || proof.length == 0) {
             throw new Exception("Unable to create blind commitment");
         }
-        byte[] proof = proof_buffer.toByteArray();
         BlindCommitmentContext context = new BlindCommitmentContext(commitment, proof, blinding_factor);
         return context;
     }
@@ -127,5 +126,9 @@ class Bbs {
         byte[] secret_key = new byte[32];
         bls_generate_blinded_g1_key(seed, blinding_factor, public_key, secret_key);
         System.out.println("Bbs");
+    }
+
+    public void write(byte[] arr, int off, int len) {
+
     }
 }

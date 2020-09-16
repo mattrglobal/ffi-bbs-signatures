@@ -350,4 +350,9 @@ macro_rules! copy_to_jni {
             return 0;
         }
     };
+    ($env:expr, $var:expr, $from:expr, $val:expr) => {
+        if $env.set_byte_array_region($var, 0, $from).is_err() {
+            return $val;
+        }
+    }
 }

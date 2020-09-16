@@ -194,10 +194,10 @@ JNIEXPORT jint JNICALL Java_Bbs_bbs_1blind_1commitment_1set_1nonce_1bytes
 /*
  * Class:     Bbs
  * Method:    bbs_blind_commitment_finish
- * Signature: (J[BLjava/io/ByteArrayOutputStream;[B)I
+ * Signature: (J[B[B)[B
  */
-JNIEXPORT jint JNICALL Java_Bbs_bbs_1blind_1commitment_1finish
-  (JNIEnv *, jclass, jlong, jbyteArray, jobject, jbyteArray);
+JNIEXPORT jbyteArray JNICALL Java_Bbs_bbs_1blind_1commitment_1finish
+  (JNIEnv *, jclass, jlong, jbyteArray, jbyteArray);
 
 #ifdef __cplusplus
 }
