@@ -95,62 +95,64 @@ pub extern "C" fn Java_Bbs_bls_1generate_1blinded_1g2_1key(env: JNIEnv, _: JObje
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_Bbs_bls_1secret_1key_1to_1bbs_1key(env: JNIEnv, _: JObject, secret_key: jbyteArray, message_count: jint, public_key: JObject) -> jint {
+pub extern "C" fn Java_Bbs_bls_1secret_1key_1to_1bbs_1key(env: JNIEnv, _: JObject, secret_key: jbyteArray, message_count: jint) -> jbyteArray {
+    let bad_res = env.new_byte_array(0).unwrap();
     let sk = get_secret_key(&env, secret_key);
     if sk.is_err() {
-        return 0;
+        return bad_res;
     }
     let sk = sk.unwrap();
     let (dpk, _) = DeterministicPublicKey::new(Some(KeyGenOption::FromSecretKey(sk)));
     let pk;
     match dpk.to_public_key(message_count as usize) {
-        Err(_) => return 0,
+        Err(_) => return bad_res,
         Ok(p) => pk = p
     };
     if pk.validate().is_err() {
-        return 0;
+        return bad_res;
     }
 
-    let pk_bytes: Vec<JValue> = pk.to_bytes_compressed_form().iter().map(|b| JValue::Byte(*b as jbyte)).collect();
-
-    // TODO: test whether this actually works
-    if env.call_method(public_key, "put", "[B", pk_bytes.as_slice()).is_err() {
-        return 0;
+    match env.new_byte_array(pp.len() as jint) {
+        Err(_) => bad_res,
+        Ok(out) => {
+            let pp: Vec<jbyte> = pk.to_bytes_compressed_form().iter().map(|b| *b as jbyte).collect();
+            copy_to_jni!(env, out, pp.as_slice(), bad_res);
+            out
+        }
     }
-
-    1
 }
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_Bbs_bls_1public_1key_1to_1bbs_1key(env: JNIEnv, _: JObject, short_public_key: jbyteArray, message_count: jint, public_key: JObject) -> jint {
+pub extern "C" fn Java_Bbs_bls_1public_1key_1to_1bbs_1key(env: JNIEnv, _: JObject, short_public_key: jbyteArray, message_count: jint) -> jbyteArray {
+    let bad_res = env.new_byte_array(0).unwrap();
     let dpk;
     match env.convert_byte_array(short_public_key) {
-        Err(_) => return 0,
+        Err(_) => return bad_res,
         Ok(s) => {
             if s.len() != DETERMINISTIC_PUBLIC_KEY_COMPRESSED_SIZE {
-                return 0;
+                return bad_res;
             }
             dpk = DeterministicPublicKey::from(*array_ref![s, 0, DETERMINISTIC_PUBLIC_KEY_COMPRESSED_SIZE]);
         }
     }
     let pk;
     match dpk.to_public_key(message_count as usize) {
-        Err(_) => return 0,
+        Err(_) => return bad_res,
         Ok(p) => pk = p
     }
     if pk.validate().is_err() {
-        return 0;
+        return bad_res;
     }
 
-    let pk_bytes: Vec<JValue> = pk.to_bytes_compressed_form().iter().map(|b| JValue::Byte(*b as jbyte)).collect();
-
-    // TODO: test whether this actually works
-    if env.call_method(public_key, "put", "[B", pk_bytes.as_slice()).is_err() {
-        return 0;
+    match env.new_byte_array(pp.len() as jint) {
+        Err(_) => bad_res,
+        Ok(out) => {
+            let pp: Vec<jbyte> = pk.to_bytes_compressed_form().iter().map(|b| *b as jbyte).collect();
+            copy_to_jni!(env, out, pp.as_slice(), bad_res);
+            out
+        }
     }
-
-    1
 }
 
 #[allow(non_snake_case)]

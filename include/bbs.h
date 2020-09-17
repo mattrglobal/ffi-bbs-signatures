@@ -281,16 +281,35 @@ int32_t bbs_verify_proof_context_add_message_prehashed(uint64_t handle,
 
 uint64_t bbs_verify_proof_context_init(ExternError *err);
 
-int32_t bls_generate_key(ByteBuffer seed,
-                         ByteBuffer *public_key,
-                         ByteBuffer *secret_key,
-                         ExternError *err);
+int32_t bls_generate_g2_key(ByteBuffer seed,
+                            ByteBuffer *public_key,
+                            ByteBuffer *secret_key,
+                            ExternError *err);
+
+int32_t bls_generate_g1_key(ByteBuffer seed,
+                            ByteBuffer *public_key,
+                            ByteBuffer *secret_key,
+                            ExternError *err);
+
+int32_t bls_generate_blinded_g2_key(ByteBuffer seed,
+                                    ByteBuffer *public_key,
+                                    ByteBuffer *secret_key,
+                                    ByteBuffer *blinding_factor,
+                                    ExternError *err);
+
+int32_t bls_generate_blinded_g1_key(ByteBuffer seed,
+                                    ByteBuffer *public_key,
+                                    ByteBuffer *secret_key,
+                                    ByteBuffer *blinding_factor,
+                                    ExternError *err);
 
 int32_t bls_get_public_key(ByteBuffer secret_key ,
                            ByteBuffer *public_key,
                            ExternError *err);
 
-int32_t bls_public_key_size(void);
+int32_t bls_public_key_g1_size(void);
+int32_t bls_public_key_g2_size(void);
+int32_t blinding_factor_size(void);
 
 int32_t bls_public_key_to_bbs_key(ByteBuffer d_public_key,
                                   uint32_t message_count,
