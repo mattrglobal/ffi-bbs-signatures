@@ -1,6 +1,10 @@
 {
   "name": "ffi-bbs-signatures",
+  "author": "MATTR",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/mattrglobal/ffi-bbs-signatures",
   "title": "An FFI Wrapper for BBS Signatures",
+  "description": "An FFI Wrapper for BBS Signatures",
   "version": "0.1.0",
   "scripts": {
     "install": "./scripts/install-dependencies.sh",

@@ -1,13 +1,14 @@
 require "json"
 
-# TODO change it so the version of this is managed from the package.json
+package = JSON.parse(File.read(File.join(__dir__, "package.json")))
+
 Pod::Spec.new do |s|
   s.name         = "bbs-signatures"
-  s.version      = "0.1.0"
-  s.authors      = "MATTR"
-  s.license      = { :type => 'Apache 2.0'}
-  s.homepage     = "https://github.com/mattrglobal/ffi-bbs-signatures"
-  s.summary      = "A objective-c wrapper for BBS+ signatures"
+  s.version      = package["version"]
+  s.summary      = package["description"]
+  s.homepage     = package["homepage"]
+  s.license      = package["license"]
+  s.authors      = package["author"]
 
   s.platforms    = { :ios => "9.0" }
   s.source       = { :git => "https://github.com/mattrglobal/ffi-bbs-signatures.git", :tag => "#{s.version}" }
