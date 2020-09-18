@@ -20,21 +20,22 @@
 /** @brief Implementation of A BBS+ Key pair */
 @implementation BbsKeyPair
 
-- (nullable instancetype)initFromPublicKey:(NSData* _Nonnull)data : (size_t)messageCount {
-    self.publicKey = data;
+- (nullable instancetype)initWithData:(NSData* _Nonnull)publicKey : (size_t)messageCount {
+    self.publicKey = publicKey;
+    self.messageCount = messageCount;
+    return self;
+}
+
+- (nullable instancetype)initWithData:(NSData* _Nonnull)publicKey : (size_t)messageCount andSecretKey:(NSData* _Nullable)secretKey {
+    self.publicKey = publicKey;
+    self.secretKey = secretKey;
     self.messageCount = messageCount;
     return self;
 }
 
 /** @brief Initializes a BBS+ key pair from a BLS 12-381 G2 key pair*/
-- (nullable instancetype)initFromBls12381G2KeyPair:(Bls12381G2KeyPair* _Nonnull)keyPair : (size_t)messageCount withError:(NSError *_Nullable*_Nullable)errorPtr {
+- (nullable instancetype)initWithBls12381G2KeyPair:(Bls12381G2KeyPair* _Nonnull)keyPair : (size_t)messageCount withError:(NSError *_Nullable*_Nullable)errorPtr {
     [self bls12381G2ToBbs: keyPair : messageCount withError:errorPtr];
-    return self;
-}
-
-/** @brief Initializes a BBS+ public key from a BLS 12-381 G2 public key*/
-- (nullable instancetype)initFromBls12381G2PublicKey:(NSData* _Nonnull)publicKey : (size_t)messageCount withError:(NSError *_Nullable*_Nullable)errorPtr {
-    [self bls12381G2PublicKeyToBbsPublicKey: publicKey : messageCount withError:errorPtr];
     return self;
 }
 

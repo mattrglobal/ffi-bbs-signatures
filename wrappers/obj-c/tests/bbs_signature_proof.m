@@ -15,7 +15,7 @@
     NSData *signatureData = [[NSData alloc] initWithBase64EncodedString:@"rpldJh9DkYe4FvX7WPYI+GNhBM7uB3UGg3NcJX+NTts9E5R9TtHSYszqVfLxdq0Mb45jyd82laouneFYjB5TreM5Qpo9TyO0yNPdaanmfW0wCeLp3r0bhdfOF67GGL01KHY56ojoaSWBmr2lpqRU2Q==" options:0];
     
     NSError *error = nil;
-    BbsKeyPair *keyPair = [[BbsKeyPair alloc] initFromPublicKey:publicKey :messages.count];
+    BbsKeyPair *keyPair = [[BbsKeyPair alloc] initWithData:publicKey :messages.count];
     BbsSignature *signature = [[BbsSignature alloc] initWithBytes:signatureData withError:&error];
     XCTAssertEqual(signature.value.length, 112);
     
@@ -35,7 +35,7 @@
     NSData *signatureData = [[NSData alloc] initWithBase64EncodedString:@"qg3PfohWGvbOCZWxcWIZ779aOuNSafjCXLdDux01TTNGm/Uqhr/kZZ1wSmxKwbEWAhctrDCp2mGE0M0l6DlA5R38chMbtnyWMfQgbQpzMQZgPBPUvVWivJyYEysZnQWrAYzZzRPe36VFbFy5ynWx0w==" options:0];
     
     NSError *error = nil;
-    BbsKeyPair *keyPair = [[BbsKeyPair alloc] initFromPublicKey:publicKey :messages.count];
+    BbsKeyPair *keyPair = [[BbsKeyPair alloc] initWithData:publicKey :messages.count];
     BbsSignature *signature = [[BbsSignature alloc] initWithBytes:signatureData withError:&error];
     XCTAssertEqual(signature.value.length, 112);
     
@@ -53,7 +53,7 @@
     NSData *signatureData = [[NSData alloc] initWithBase64EncodedString:@"qg3PfohWGvbOCZWxcWIZ779aOuNSafjCXLdDux01TTNGm/Uqhr/kZZ1wSmxKwbEWAhctrDCp2mGE0M0l6DlA5R38chMbtnyWMfQgbQpzMQZgPBPUvVWivJyYEysZnQWrAYzZzRPe36VFbFy5ynWx0w==" options:0];
     
     NSError *error = nil;
-    BbsKeyPair *keyPair = [[BbsKeyPair alloc] initFromPublicKey:publicKey :messages.count];
+    BbsKeyPair *keyPair = [[BbsKeyPair alloc] initWithData:publicKey :messages.count];
     BbsSignature *signature = [[BbsSignature alloc] initWithBytes:signatureData withError:&error];
     XCTAssertEqual(signature.value.length, 112);
     
@@ -71,7 +71,7 @@
     NSData *signatureData = [[NSData alloc] initWithBase64EncodedString:@"qg3PfohWGvbOCZWxcWIZ779aOuNSafjCXLdDux01TTNGm/Uqhr/kZZ1wSmxKwbEWAhctrDCp2mGE0M0l6DlA5R38chMbtnyWMfQgbQpzMQZgPBPUvVWivJyYEysZnQWrAYzZzRPe36VFbFy5ynWx0w==" options:0];
     
     NSError *error = nil;
-    BbsKeyPair *keyPair = [[BbsKeyPair alloc] initFromPublicKey:publicKey :messages.count];
+    BbsKeyPair *keyPair = [[BbsKeyPair alloc] initWithData:publicKey :messages.count];
     BbsSignature *signature = [[BbsSignature alloc] initWithBytes:signatureData withError:&error];
     XCTAssertEqual(signature.value.length, 112);
     
@@ -87,7 +87,7 @@
     NSData *signatureData = [[NSData alloc] initWithBase64EncodedString:@"r00WeXEj+07DUZb3JY6fbbKhHtQcxtLZsJUVU6liFZQKCLQYu77EXFZx4Vaa5VBtKpPK6tDGovHGgrgyizOm70VUZgzzBb0emvRIGSWhAKkcLL1z1HYwApnUE6XFFb96LUF4XM//QhEM774dX4ciqQ==" options:0];
     
     NSError *error = nil;
-    Bls12381G2KeyPair *keyPair = [[Bls12381G2KeyPair alloc] initFromPublicKey:publicKey];
+    Bls12381G2KeyPair *keyPair = [[Bls12381G2KeyPair alloc] initWithPublicKey:publicKey];
     BbsSignature *signature = [[BbsSignature alloc] initWithBytes:signatureData withError:&error];
     XCTAssertEqual(signature.value.length, 112);
     
@@ -107,7 +107,7 @@
     NSData *signatureData = [[NSData alloc] initWithBase64EncodedString:@"uISPYALbiNZwIgu1ndj9onUbkFA9trrhGFQJqJHFOSWCZYAIDUNTysXziar6+MdbPEiJS34OOlKAzxxnxIhFW0lBd4dbLOKf59LZPMRYc91tALAZeriyKcSVa7RzZl50UPjHfs31JrH6RgZ1V9/OVg==" options:0];
     
     NSError *error = nil;
-    Bls12381G2KeyPair *keyPair = [[Bls12381G2KeyPair alloc] initFromPublicKey:publicKey];
+    Bls12381G2KeyPair *keyPair = [[Bls12381G2KeyPair alloc] initWithPublicKey:publicKey];
     BbsSignature *signature = [[BbsSignature alloc] initWithBytes:signatureData withError:&error];
     XCTAssertEqual(signature.value.length, 112);
     
@@ -125,7 +125,7 @@
     NSData *signatureData = [[NSData alloc] initWithBase64EncodedString:@"uISPYALbiNZwIgu1ndj9onUbkFA9trrhGFQJqJHFOSWCZYAIDUNTysXziar6+MdbPEiJS34OOlKAzxxnxIhFW0lBd4dbLOKf59LZPMRYc91tALAZeriyKcSVa7RzZl50UPjHfs31JrH6RgZ1V9/OVg==" options:0];
     
     NSError *error = nil;
-    Bls12381G2KeyPair *keyPair = [[Bls12381G2KeyPair alloc] initFromPublicKey:publicKey];
+    Bls12381G2KeyPair *keyPair = [[Bls12381G2KeyPair alloc] initWithPublicKey:publicKey];
     BbsSignature *signature = [[BbsSignature alloc] initWithBytes:signatureData withError:&error];
     XCTAssertEqual(signature.value.length, 112);
     
@@ -144,7 +144,7 @@
     NSData *signatureData = [[NSData alloc] initWithBase64EncodedString:@"uISPYALbiNZwIgu1ndj9onUbkFA9trrhGFQJqJHFOSWCZYAIDUNTysXziar6+MdbPEiJS34OOlKAzxxnxIhFW0lBd4dbLOKf59LZPMRYc91tALAZeriyKcSVa7RzZl50UPjHfs31JrH6RgZ1V9/OVg==" options:0];
     
     NSError *error = nil;
-    Bls12381G2KeyPair *keyPair = [[Bls12381G2KeyPair alloc] initFromPublicKey:publicKey];
+    Bls12381G2KeyPair *keyPair = [[Bls12381G2KeyPair alloc] initWithPublicKey:publicKey];
     BbsSignature *signature = [[BbsSignature alloc] initWithBytes:signatureData withError:&error];
     XCTAssertEqual(signature.value.length, 112);
     

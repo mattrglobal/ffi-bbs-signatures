@@ -16,7 +16,7 @@
 /**
 * @brief initialise a BLS 12-381 G2 public key from data
 */
-- (nullable instancetype)initFromPublicKey:(NSData* _Nonnull)data;
+- (nullable instancetype)initWithPublicKey:(NSData* _Nonnull)data;
 
 /**
 * @brief initialise a BLS 12-381 G2 key pair by generating secretKey and publicKey

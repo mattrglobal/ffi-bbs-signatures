@@ -128,7 +128,7 @@
 }
 
 - (void) createSignatureProofFromBls12381G2:(BbsSignature* _Nonnull)signature : (Bls12381G2KeyPair* _Nonnull)keyPair : (NSData* _Nonnull)nonce : (NSArray* _Nonnull)messages : (NSArray* _Nonnull)revealed withError:(NSError*_Nullable*_Nullable)errorPtr {
-    BbsKeyPair * bbsKeyPair = [[BbsKeyPair alloc] initFromBls12381G2KeyPair:keyPair :messages.count withError:errorPtr];
+    BbsKeyPair * bbsKeyPair = [[BbsKeyPair alloc] initWithBls12381G2KeyPair:keyPair :messages.count withError:errorPtr];
     
     if (bbsKeyPair == nil) {
         //TODO review
@@ -205,7 +205,7 @@
 
 /** @brief Initializes a key pair */
 - (bool)verifySignatureProofFromBls12381G2:(Bls12381G2KeyPair* _Nonnull)keyPair : (NSArray* _Nonnull)messages : (NSData* _Nonnull)nonce withError:(NSError *_Nullable*_Nullable)errorPtr {
-    BbsKeyPair * bbsKeyPair = [[BbsKeyPair alloc] initFromBls12381G2KeyPair:keyPair :messages.count withError:errorPtr];
+    BbsKeyPair * bbsKeyPair = [[BbsKeyPair alloc] initWithBls12381G2KeyPair:keyPair :messages.count withError:errorPtr];
     
     if (bbsKeyPair == nil) {
         //TODO review

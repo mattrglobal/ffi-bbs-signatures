@@ -11,7 +11,7 @@
 - (void)testSignSingleMessage {
     NSError *error = nil;
     NSData *seed = [[NSData alloc] initWithBase64EncodedString:@"H297BpoOgkfpXcxr1fJyQRiNx1+ZekeQ+OU/AYV/lVxaPXXhFBIbxeIU8kIAAX68cwQ=" options:0];
-    BbsKeyPair *bbsKeyPair = [[BbsKeyPair alloc] initFromBls12381G2KeyPair:[[Bls12381G2KeyPair alloc] initWithSeed: seed withError:&error]:1 withError:&error];
+    BbsKeyPair *bbsKeyPair = [[BbsKeyPair alloc] initWithBls12381G2KeyPair:[[Bls12381G2KeyPair alloc] initWithSeed: seed withError:&error]:1 withError:&error];
     NSArray *messages = [NSArray arrayWithObjects:[[NSData alloc] initWithBase64EncodedString:@"H297BpoOgkfpXc==" options:0], nil];
     
     BbsSignature *signature = [[BbsSignature alloc] sign:bbsKeyPair:messages withError:&error];
@@ -21,7 +21,7 @@
 - (void)testSignMultipleMessages {
     NSError *error = nil;
     NSData *seed = [[NSData alloc] initWithBase64EncodedString:@"H297BpoOgkfpXcxr1fJyQRiNx1+ZekeQ+OU/AYV/lVxaPXXhFBIbxeIU8kIAAX68cwQ=" options:0];
-    BbsKeyPair *bbsKeyPair = [[BbsKeyPair alloc] initFromBls12381G2KeyPair:[[Bls12381G2KeyPair alloc] initWithSeed: seed withError:&error]:3 withError:&error];
+    BbsKeyPair *bbsKeyPair = [[BbsKeyPair alloc] initWithBls12381G2KeyPair:[[Bls12381G2KeyPair alloc] initWithSeed: seed withError:&error]:3 withError:&error];
     
     NSArray *messages = [NSArray arrayWithObjects:[[NSData alloc] initWithBase64EncodedString:@"H297BpoOgkfpXc==" options:0],
                                                   [[NSData alloc] initWithBase64EncodedString:@"xaPXXhFBIbxeIU==" options:0],
@@ -34,7 +34,7 @@
 - (void)testSignMultipleMessagesWhenPublicKeySupportsMore {
     NSError *error = nil;
     NSData *seed = [[NSData alloc] initWithBase64EncodedString:@"H297BpoOgkfpXcxr1fJyQRiNx1+ZekeQ+OU/AYV/lVxaPXXhFBIbxeIU8kIAAX68cwQ=" options:0];
-    BbsKeyPair *bbsKeyPair = [[BbsKeyPair alloc] initFromBls12381G2KeyPair:[[Bls12381G2KeyPair alloc] initWithSeed: seed withError:&error]:5 withError:&error];
+    BbsKeyPair *bbsKeyPair = [[BbsKeyPair alloc] initWithBls12381G2KeyPair:[[Bls12381G2KeyPair alloc] initWithSeed: seed withError:&error]:5 withError:&error];
     
     NSArray *messages = [NSArray arrayWithObjects:[[NSData alloc] initWithBase64EncodedString:@"H297BpoOgkfpXc==" options:0],
                                                   [[NSData alloc] initWithBase64EncodedString:@"xaPXXhFBIbxeIU==" options:0],
@@ -47,7 +47,7 @@
 - (void)testThrowErrorWhenSigningTooManyMessages {
     NSError *error = nil;
     NSData *seed = [[NSData alloc] initWithBase64EncodedString:@"H297BpoOgkfpXcxr1fJyQRiNx1+ZekeQ+OU/AYV/lVxaPXXhFBIbxeIU8kIAAX68cwQ=" options:0];
-    BbsKeyPair *bbsKeyPair = [[BbsKeyPair alloc] initFromBls12381G2KeyPair:[[Bls12381G2KeyPair alloc] initWithSeed: seed withError:&error]:1 withError:&error];
+    BbsKeyPair *bbsKeyPair = [[BbsKeyPair alloc] initWithBls12381G2KeyPair:[[Bls12381G2KeyPair alloc] initWithSeed: seed withError:&error]:1 withError:&error];
     
     NSArray *messages = [NSArray arrayWithObjects:[[NSData alloc] initWithBase64EncodedString:@"H297BpoOgkfpXc==" options:0],
                                                   [[NSData alloc] initWithBase64EncodedString:@"xaPXXhFBIbxeIU==" options:0],
@@ -83,7 +83,7 @@
 - (void)testSignAndVerifySingleMessage {
     NSError *error = nil;
     NSData *seed = [[NSData alloc] initWithBase64EncodedString:@"H297BpoOgkfpXcxr1fJyQRiNx1+ZekeQ+OU/AYV/lVxaPXXhFBIbxeIU8kIAAX68cwQ=" options:0];
-    BbsKeyPair *bbsKeyPair = [[BbsKeyPair alloc] initFromBls12381G2KeyPair:[[Bls12381G2KeyPair alloc] initWithSeed: seed withError:&error]:1 withError:&error];
+    BbsKeyPair *bbsKeyPair = [[BbsKeyPair alloc] initWithBls12381G2KeyPair:[[Bls12381G2KeyPair alloc] initWithSeed: seed withError:&error]:1 withError:&error];
     NSArray *messages = [NSArray arrayWithObjects:[[NSData alloc] initWithBase64EncodedString:@"H297BpoOgkfpXc==" options:0], nil];
     
     BbsSignature *signature = [[BbsSignature alloc] sign:bbsKeyPair:messages withError:&error];
@@ -95,7 +95,7 @@
 - (void)testSignAndVerifyMultipleMessages {
     NSError *error = nil;
     NSData *seed = [[NSData alloc] initWithBase64EncodedString:@"H297BpoOgkfpXcxr1fJyQRiNx1+ZekeQ+OU/AYV/lVxaPXXhFBIbxeIU8kIAAX68cwQ=" options:0];
-    BbsKeyPair *bbsKeyPair = [[BbsKeyPair alloc] initFromBls12381G2KeyPair:[[Bls12381G2KeyPair alloc] initWithSeed: seed withError:&error]:3 withError:&error];
+    BbsKeyPair *bbsKeyPair = [[BbsKeyPair alloc] initWithBls12381G2KeyPair:[[Bls12381G2KeyPair alloc] initWithSeed: seed withError:&error]:3 withError:&error];
     
     NSArray *messages = [NSArray arrayWithObjects:[[NSData alloc] initWithBase64EncodedString:@"H297BpoOgkfpXc==" options:0],
                                                   [[NSData alloc] initWithBase64EncodedString:@"xaPXXhFBIbxeIU==" options:0],
@@ -111,7 +111,7 @@
     NSError *error = nil;
     NSData *seed = [[NSData alloc] initWithBase64EncodedString:@"H297BpoOgkfpXcxr1fJyQRiNx1+ZekeQ+OU/AYV/lVxaPXXhFBIbxeIU8kIAAX68cwQ=" options:0];
     NSData *signatureBuffer = [[NSData alloc] initWithBase64EncodedString:@"kTV8dar9xLWQZ5EzaWYqTRmgA6dw6wcrUw5c///crRD2QQPXX9Di+lgCPCXAA5D8Pytuh6bNSx6k4NZTR9KfSNdaejKl2zTU9poRfzZ2SIskdgSHTZ2y7jLm/UEGKsAs3tticBVj1Pm2GNhQI/OlXQ==" options:0];
-    BbsKeyPair *bbsKeyPair = [[BbsKeyPair alloc] initFromBls12381G2KeyPair:[[Bls12381G2KeyPair alloc] initWithSeed: seed withError:&error]:1 withError:&error];
+    BbsKeyPair *bbsKeyPair = [[BbsKeyPair alloc] initWithBls12381G2KeyPair:[[Bls12381G2KeyPair alloc] initWithSeed: seed withError:&error]:1 withError:&error];
     
     NSArray *messages = [NSArray arrayWithObjects:[[NSData alloc] initWithBase64EncodedString:@"H297BpoOgkfpXc==" options:0], nil];
     
@@ -125,7 +125,7 @@
     NSError *error = nil;
     NSData *seed = [[NSData alloc] initWithBase64EncodedString:@"H297BpoOgkfpXcxr1fJyQRiNx1+ZekeQ+OU/AYV/lVxaPXXhFBIbxeIU8kIAAX68cwQ=" options:0];
     NSData *signatureBuffer = [[NSData alloc] initWithBase64EncodedString:@"jYidhsdqxvAyNXMV4/vNfGM/4AULfSyfvQiwh+dDd4JtnT5xHnwpzMYdLdHzBYwXaGE1k6ln/pwtI4RwQZpl03SCv/mT/3AdK8PB2y43MGdMSeGTyZGfZf+rUrEDEs3lTfmPK54E+JBzd96gnrF2iQ==" options:0];
-    BbsKeyPair *bbsKeyPair = [[BbsKeyPair alloc] initFromBls12381G2KeyPair:[[Bls12381G2KeyPair alloc] initWithSeed: seed withError:&error]:3 withError:&error];
+    BbsKeyPair *bbsKeyPair = [[BbsKeyPair alloc] initWithBls12381G2KeyPair:[[Bls12381G2KeyPair alloc] initWithSeed: seed withError:&error]:3 withError:&error];
     
     NSArray *messages = [NSArray arrayWithObjects:[[NSData alloc] initWithBase64EncodedString:@"H297BpoOgkfpXc==" options:0],
                                                   [[NSData alloc] initWithBase64EncodedString:@"xaPXXhFBIbxeIU==" options:0],
@@ -141,7 +141,7 @@
     NSError *error = nil;
     NSData *seed = [[NSData alloc] initWithBase64EncodedString:@"H297BpoOgkfpXcxr1fJyQRiNx1+ZekeQ+OU/AYV/lVxaPXXhFBIbxeIU8kIAAX68cwQ=" options:0];
     NSData *signatureBuffer = [[NSData alloc] initWithBase64EncodedString:@"jYidhsdqxvAyNXMV4/vNfGM/4AULfSyfvQiwh+dDd4JtnT5xHnwpzMYdLdHzBYwXaGE1k6ln/pwtI4RwQZpl03SCv/mT/3AdK8PB2y43MGdMSeGTyZGfZf+rUrEDEs3lTfmPK54E+JBzd96gnrF2iQ==" options:0];
-    BbsKeyPair *bbsKeyPair = [[BbsKeyPair alloc] initFromBls12381G2KeyPair:[[Bls12381G2KeyPair alloc] initWithSeed: seed withError:&error]:3 withError:&error];
+    BbsKeyPair *bbsKeyPair = [[BbsKeyPair alloc] initWithBls12381G2KeyPair:[[Bls12381G2KeyPair alloc] initWithSeed: seed withError:&error]:3 withError:&error];
     
     NSArray *messages = [NSArray array];
     

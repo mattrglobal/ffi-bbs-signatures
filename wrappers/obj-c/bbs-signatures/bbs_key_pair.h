@@ -19,17 +19,17 @@
 /**
 * @brief Creates a BBS key pair from data
 */
-- (nullable instancetype)initFromPublicKey:(NSData* _Nonnull)data : (size_t)messageCount;
+- (nullable instancetype)initWithData:(NSData* _Nonnull)publicKey : (size_t)messageCount;
+
+/**
+* @brief Creates a BBS key pair from data
+*/
+- (nullable instancetype)initWithData:(NSData* _Nonnull)publicKey : (size_t)messageCount andSecretKey:(NSData* _Nullable)secretKey;
 
 /**
 * @brief Initializes a BBS+ key pair from a BLS 12-381 G2 key pair
 */
-- (nullable instancetype)initFromBls12381G2KeyPair:(Bls12381G2KeyPair* _Nonnull)keyPair : (size_t)messageCount withError:(NSError *_Nullable*_Nullable)errorPtr;
-
-/**
-* @brief Initializes a BBS+ public key from a BLS 12-381 G2 public key
-*/
-- (nullable instancetype)initFromBls12381G2PublicKey:(NSData* _Nonnull)publicKey : (size_t)messageCount withError:(NSError *_Nullable*_Nullable)errorPtr;
+- (nullable instancetype)initWithBls12381G2KeyPair:(Bls12381G2KeyPair* _Nonnull)keyPair : (size_t)messageCount withError:(NSError *_Nullable*_Nullable)errorPtr;
 
 @end
 

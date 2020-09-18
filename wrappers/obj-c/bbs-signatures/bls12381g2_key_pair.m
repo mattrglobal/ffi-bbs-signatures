@@ -15,8 +15,9 @@
 /** @brief Implementation of a BLS 12-381 G2 Key pair */
 @implementation Bls12381G2KeyPair
 
-- (nullable instancetype)initFromPublicKey:(NSData* _Nonnull)data {
-    self.publicKey = data;
+/** @brief Initializes a key pair from a public key*/
+- (nullable instancetype)initWithPublicKey:(NSData* _Nonnull)publicKey {
+    self.publicKey = [[NSData alloc] initWithData:publicKey];
     return self;
 }
 
@@ -29,12 +30,6 @@
 /** @brief Initializes a key pair from a secret key*/
 - (nullable instancetype)initWithSecretKey:(NSData* _Nonnull)secretKey withError:(NSError *_Nullable*_Nullable)errorPtr {
     [self keyPairFromSecretKey: secretKey withError:errorPtr];
-    return self;
-}
-
-/** @brief Initializes a key pair from a public key*/
-- (nullable instancetype)initWithPublicKey:(NSData* _Nonnull)publicKey {
-    self.publicKey = [[NSData alloc] initWithData:publicKey];
     return self;
 }
 

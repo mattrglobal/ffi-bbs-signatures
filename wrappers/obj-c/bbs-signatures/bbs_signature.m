@@ -49,7 +49,7 @@
 
 /** @brief Initializes a key pair */
 - (bool)verifySignatureFromBlsKeyPair:(Bls12381G2KeyPair* _Nonnull)keyPair : (NSArray* _Nonnull)messages withError:(NSError *_Nullable*_Nullable)errorPtr {
-    BbsKeyPair * bbsKeyPair = [[BbsKeyPair alloc] initFromBls12381G2KeyPair:keyPair :messages.count withError:errorPtr];
+    BbsKeyPair * bbsKeyPair = [[BbsKeyPair alloc] initWithBls12381G2KeyPair:keyPair :messages.count withError:errorPtr];
     
     if (bbsKeyPair == nil) {
         //TODO review
@@ -115,7 +115,7 @@
 }
 
 - (void) createSignatureFromBls12381G2:(Bls12381G2KeyPair* _Nonnull)keyPair : (NSArray* _Nonnull)messages withError:(NSError **)errorPtr {
-    BbsKeyPair * bbsKeyPair = [[BbsKeyPair alloc] initFromBls12381G2KeyPair:keyPair :messages.count withError:errorPtr];
+    BbsKeyPair * bbsKeyPair = [[BbsKeyPair alloc] initWithBls12381G2KeyPair:keyPair :messages.count withError:errorPtr];
     
     if (bbsKeyPair == nil) {
         //TODO review
