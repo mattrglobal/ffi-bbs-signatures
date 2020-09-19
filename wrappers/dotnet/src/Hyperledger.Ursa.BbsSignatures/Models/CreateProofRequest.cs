@@ -29,7 +29,7 @@ namespace Hyperledger.Ursa.BbsSignatures
         /// </exception>
         public CreateProofRequest(BbsKey publicKey, ProofMessage[] messages, byte[] signature, byte[]? blindingFactor, string nonce)
         {
-            PublicKey = publicKey ?? throw new ArgumentNullException(nameof(publicKey));
+            Key = publicKey ?? throw new ArgumentNullException(nameof(publicKey));
             Messages = messages ?? throw new ArgumentNullException(nameof(messages));
             Signature = signature ?? throw new ArgumentNullException(nameof(signature));
             BlindingFactor = blindingFactor;
@@ -47,7 +47,7 @@ namespace Hyperledger.Ursa.BbsSignatures
         /// <value>
         /// The public key.
         /// </value>
-        public BbsKey PublicKey { get; set; }
+        public BbsKey Key { get; set; }
 
         /// <summary>
         /// The messages that were originally signed

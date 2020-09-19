@@ -7,6 +7,19 @@ namespace Hyperledger.Ursa.BbsSignatures
     /// </summary>
     public class VerifyRequest
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VerifyRequest"/> class.
+        /// </summary>
+        /// <param name="keyPair">The key pair.</param>
+        /// <param name="signature">The signature.</param>
+        /// <param name="messages">The messages.</param>
+        /// <exception cref="ArgumentNullException">
+        /// keyPair
+        /// or
+        /// signature
+        /// or
+        /// messages
+        /// </exception>
         public VerifyRequest(BlsKeyPair keyPair, byte[] signature, string[] messages)
         {
             KeyPair = keyPair ?? throw new ArgumentNullException(nameof(keyPair));

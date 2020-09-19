@@ -7,9 +7,22 @@ namespace Hyperledger.Ursa.BbsSignatures
     /// </summary>
     public class CreateBlindedCommitmentRequest
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CreateBlindedCommitmentRequest"/> class.
+        /// </summary>
+        /// <param name="publicKey">The public key.</param>
+        /// <param name="messages">The messages.</param>
+        /// <param name="nonce">The nonce.</param>
+        /// <exception cref="ArgumentNullException">
+        /// publicKey
+        /// or
+        /// messages
+        /// or
+        /// nonce
+        /// </exception>
         public CreateBlindedCommitmentRequest(BbsKey publicKey, IndexedMessage[] messages, string nonce)
         {
-            PublicKey = publicKey ?? throw new ArgumentNullException(nameof(publicKey));
+            Key = publicKey ?? throw new ArgumentNullException(nameof(publicKey));
             Messages = messages ?? throw new ArgumentNullException(nameof(messages));
             Nonce = nonce ?? throw new ArgumentNullException(nameof(nonce));
         }
@@ -17,7 +30,7 @@ namespace Hyperledger.Ursa.BbsSignatures
         /// <summary>
         /// The public key
         /// </summary>
-        public BbsKey PublicKey { get; set; }
+        public BbsKey Key { get; set; }
 
         /// <summary>
         /// The known messages to sign

@@ -29,6 +29,12 @@ namespace Hyperledger.Ursa.BbsSignatures
         /// </summary>
         public int SecretKeySize => NativeMethods.bls_secret_key_size();
 
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BlsKeyPair" /> class.
+        /// </summary>
+        /// <param name="keyData">The key data to instantiate this instance. Can be secret or public key.</param>
+        /// <exception cref="BbsException">Invalid key size</exception>
         public BlsKeyPair(byte[] keyData)
         {
             if (keyData.Length == SecretKeySize)

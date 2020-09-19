@@ -104,10 +104,10 @@ namespace Hyperledger.Ursa.BbsSignatures
                 context.ThrowOnError(error);
             }
 
-            NativeMethods.bbs_blind_sign_context_set_public_key(handle, context.ToBuffer(request.PublicKey), out error);
+            NativeMethods.bbs_blind_sign_context_set_public_key(handle, context.ToBuffer(request.Key), out error);
             context.ThrowOnError(error);
 
-            NativeMethods.bbs_blind_sign_context_set_secret_key(handle, context.ToBuffer(request.SecretKey.SecretKey.ToArray()), out error);
+            NativeMethods.bbs_blind_sign_context_set_secret_key(handle, context.ToBuffer(request.KeyPair.SecretKey.ToArray()), out error);
             context.ThrowOnError(error);
 
             NativeMethods.bbs_blind_sign_context_set_commitment(handle, context.ToBuffer(request.Commitment), out error);
@@ -155,7 +155,7 @@ namespace Hyperledger.Ursa.BbsSignatures
             NativeMethods.bbs_blind_commitment_context_set_nonce_string(handle, request.Nonce, out error);
             context.ThrowOnError(error);
 
-            NativeMethods.bbs_blind_commitment_context_set_public_key(handle, context.ToBuffer(request.PublicKey), out error);
+            NativeMethods.bbs_blind_commitment_context_set_public_key(handle, context.ToBuffer(request.Key), out error);
             context.ThrowOnError(error);
 
             NativeMethods.bbs_blind_commitment_context_finish(handle, out var commitment, out var outContext, out var blindingFactor, out error);
@@ -182,7 +182,7 @@ namespace Hyperledger.Ursa.BbsSignatures
             NativeMethods.bbs_verify_blind_commitment_context_set_proof(handle, context.ToBuffer(request.Proof), out error);
             context.ThrowOnError(error);
 
-            NativeMethods.bbs_verify_blind_commitment_context_set_public_key(handle, context.ToBuffer(request.PublicKey), out error);
+            NativeMethods.bbs_verify_blind_commitment_context_set_public_key(handle, context.ToBuffer(request.Key), out error);
             context.ThrowOnError(error);
 
             foreach (var index in request.BlindedIndices)
@@ -220,7 +220,7 @@ namespace Hyperledger.Ursa.BbsSignatures
             NativeMethods.bbs_create_proof_context_set_nonce_string(handle, proofRequest.Nonce, out error);
             context.ThrowOnError(error);
 
-            NativeMethods.bbs_create_proof_context_set_public_key(handle, context.ToBuffer(proofRequest.PublicKey), out error);
+            NativeMethods.bbs_create_proof_context_set_public_key(handle, context.ToBuffer(proofRequest.Key), out error);
 
              context.ThrowOnError(error);
 
@@ -248,7 +248,7 @@ namespace Hyperledger.Ursa.BbsSignatures
             var handle = NativeMethods.bbs_verify_proof_context_init(out var error);
             context.ThrowOnError(error);
 
-            NativeMethods.bbs_verify_proof_context_set_public_key(handle, context.ToBuffer(request.PublicKey), out error);
+            NativeMethods.bbs_verify_proof_context_set_public_key(handle, context.ToBuffer(request.Key), out error);
             context.ThrowOnError(error);
 
             NativeMethods.bbs_verify_proof_context_set_nonce_string(handle, request.Nonce, out error);
