@@ -7,7 +7,7 @@ namespace Hyperledger.Ursa.BbsSignatures
     /// </summary>
     public class BlindSignRequest
     {
-        public BlindSignRequest(BlsKeyPair secretKey, BbsKeyPair publicKey, byte[] commitment, IndexedMessage[] messages)
+        public BlindSignRequest(BlsKeyPair secretKey, BbsKey publicKey, byte[] commitment, IndexedMessage[] messages)
         {
             SecretKey = secretKey ?? throw new ArgumentNullException(nameof(secretKey));
             PublicKey = publicKey ?? throw new ArgumentNullException(nameof(publicKey));
@@ -23,7 +23,7 @@ namespace Hyperledger.Ursa.BbsSignatures
         /// <summary>
         /// The public key of the signer
         /// </summary>
-        public BbsKeyPair PublicKey { get; set; }
+        public BbsKey PublicKey { get; set; }
 
         /// <summary>
         /// The resulting commitment of the blinded messages to sign

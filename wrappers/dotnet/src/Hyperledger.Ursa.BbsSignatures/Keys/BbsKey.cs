@@ -6,9 +6,9 @@ namespace Hyperledger.Ursa.BbsSignatures
     /// <summary>
     /// A BBS+ key pair
     /// </summary>
-    public class BbsKeyPair
+    public class BbsKey
     {
-        public BbsKeyPair(byte[] publicKey, uint messageCount)
+        public BbsKey(byte[] publicKey, uint messageCount)
         {
             PublicKey = new ReadOnlyCollection<byte>(publicKey);
             MessageCount = messageCount;

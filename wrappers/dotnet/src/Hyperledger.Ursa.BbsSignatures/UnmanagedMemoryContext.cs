@@ -47,11 +47,11 @@ namespace Hyperledger.Ursa.BbsSignatures
         internal ByteBuffer ToBuffer(ReadOnlyCollection<byte> buffer) => ToBuffer(buffer.ToArray());
 
         /// <summary>
-        /// Create a <see cref="ByteBuffer"/> from a <see cref="BbsKeyPair"/>
+        /// Create a <see cref="ByteBuffer"/> from a <see cref="BbsKey"/>
         /// </summary>
         /// <param name="buffer"></param>
         /// <returns></returns>
-        internal ByteBuffer ToBuffer(BbsKeyPair keyPair) => ToBuffer(keyPair.PublicKey.ToArray());
+        internal ByteBuffer ToBuffer(BbsKey keyPair) => ToBuffer(keyPair.PublicKey.ToArray());
 
         /// <summary>
         /// Create a <see cref="byte[]"/> from a <see cref="ByteBuffer"/>

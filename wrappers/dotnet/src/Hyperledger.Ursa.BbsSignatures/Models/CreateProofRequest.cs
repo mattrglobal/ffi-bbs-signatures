@@ -27,7 +27,7 @@ namespace Hyperledger.Ursa.BbsSignatures
         /// or
         /// Blinding factor must be provided
         /// </exception>
-        public CreateProofRequest(BbsKeyPair publicKey, ProofMessage[] messages, byte[] signature, byte[]? blindingFactor, string nonce)
+        public CreateProofRequest(BbsKey publicKey, ProofMessage[] messages, byte[] signature, byte[]? blindingFactor, string nonce)
         {
             PublicKey = publicKey ?? throw new ArgumentNullException(nameof(publicKey));
             Messages = messages ?? throw new ArgumentNullException(nameof(messages));
@@ -47,7 +47,7 @@ namespace Hyperledger.Ursa.BbsSignatures
         /// <value>
         /// The public key.
         /// </value>
-        public BbsKeyPair PublicKey { get; set; }
+        public BbsKey PublicKey { get; set; }
 
         /// <summary>
         /// The messages that were originally signed

@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Text;
 
 namespace Hyperledger.Ursa.BbsSignatures
 {
@@ -70,7 +71,7 @@ namespace Hyperledger.Ursa.BbsSignatures
         /// </summary>
         /// <param name="messageCount">The message count.</param>
         /// <returns></returns>
-        public BbsKeyPair GeyBbsKeyPair(uint messageCount)
+        public BbsKey GetBbsKey(uint messageCount)
         {
             using var context = new UnmanagedMemoryContext();
 
@@ -79,15 +80,35 @@ namespace Hyperledger.Ursa.BbsSignatures
                 NativeMethods.bls_public_key_to_bbs_key(context.ToBuffer(PublicKey), messageCount, out var publicKey, out var error);
                 context.ThrowOnError(error);
 
-                return new BbsKeyPair(context.ToByteArray(publicKey), messageCount);
+                return new BbsKey(context.ToByteArray(publicKey), messageCount);
             }
             else
             {
                 NativeMethods.bls_secret_key_to_bbs_key(context.ToBuffer(SecretKey), messageCount, out var publicKey, out var error);
                 context.ThrowOnError(error);
 
-                return new BbsKeyPair(context.ToByteArray(publicKey), messageCount);
+                return new BbsKey(context.ToByteArray(publicKey), messageCount);
             }
+        }
+
+        /// <summary>
+        /// Creates new <see cref="BlsKeyPair"/> using a input seed as byte array.
+        /// </summary>
+        /// <param name="seed">The seed.</param>
+        /// <returns></returns>
+        public static BlsKeyPair Generate(string? seed = null)
+        {
+            using var context = new UnmanagedMemoryContext();
+
+            var result = NativeMethods.bls_generate_key(
+                seed is null ? ByteBuffer.None : context.ToBuffer(Encoding.UTF8.GetBytes(seed)),
+                out var publicKey,
+                out var secretKey,
+                out var error);
+
+            context.ThrowOnError(error);
+
+            return new BlsKeyPair(context.ToByteArray(secretKey), context.ToByteArray(publicKey));
         }
     }
 }

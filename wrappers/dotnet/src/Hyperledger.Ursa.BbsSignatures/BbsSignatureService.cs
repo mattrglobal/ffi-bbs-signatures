@@ -26,7 +26,7 @@ namespace Hyperledger.Ursa.BbsSignatures
             if (signRequest?.KeyPair?.SecretKey is null) throw new BbsException("Secret key not found");
             if (signRequest?.Messages is null) throw new BbsException("Messages cannot be null");
 
-            var bbsKeyPair = signRequest.KeyPair.GeyBbsKeyPair((uint)signRequest.Messages.Length);
+            var bbsKeyPair = signRequest.KeyPair.GetBbsKey((uint)signRequest.Messages.Length);
 
             using var context = new UnmanagedMemoryContext();
 
@@ -60,7 +60,7 @@ namespace Hyperledger.Ursa.BbsSignatures
         /// </returns>
         public bool Verify(VerifyRequest verifyRequest)
         {
-            var bbsKeyPair = verifyRequest.KeyPair.GeyBbsKeyPair((uint)verifyRequest.Messages.Length);
+            var bbsKeyPair = verifyRequest.KeyPair.GetBbsKey((uint)verifyRequest.Messages.Length);
             using var context = new UnmanagedMemoryContext();
 
             var handle = NativeMethods.bbs_verify_context_init(out var error);
@@ -268,27 +268,10 @@ namespace Hyperledger.Ursa.BbsSignatures
 
             return (SignatureProofStatus)result;
         }
-
-        /// <summary>
-        /// Creates new <see cref="BlsKeyPair"/> using a input seed as byte array.
-        /// </summary>
-        /// <param name="seed">The seed.</param>
-        /// <returns></returns>
-        public BlsKeyPair GenerateBlsKey(byte[] seed)
-        {
-            using var context = new UnmanagedMemoryContext();
-
-            var result = NativeMethods.bls_generate_key(context.ToBuffer(seed), out var publicKey, out var secretKey, out var error);
-            context.ThrowOnError(error);
-
-            return new BlsKeyPair(context.ToByteArray(secretKey), context.ToByteArray(publicKey));
-        }
     }
 
     public interface IBbsSignatureService
     {
-        BlsKeyPair GenerateBlsKey(byte[] seed);
-
         byte[] Sign(SignRequest signRequest);
 
         bool Verify(VerifyRequest verifyRequest);

@@ -23,7 +23,7 @@ namespace Hyperledger.Ursa.BbsSignatures.Tests
         [Test(Description = "Sign message")]
         public void SignSingleMessageUsingApi()
         {
-            var myKey = Service.GenerateBlsKey();
+            var myKey = BlsKeyPair.Generate();
 
             var signature = Service.Sign(new SignRequest(myKey, new[] { "message" }));
 
@@ -34,7 +34,7 @@ namespace Hyperledger.Ursa.BbsSignatures.Tests
         [Test(Description = "Sign multiple messages")]
         public void SignMultipleeMessages()
         {
-            var keyPair = Service.GenerateBlsKey();
+            var keyPair = BlsKeyPair.Generate();
 
             var signature = Service.Sign(new SignRequest(keyPair, new[] { "message_1", "message_2" }));
 
@@ -45,8 +45,8 @@ namespace Hyperledger.Ursa.BbsSignatures.Tests
         [Test(Description = "Verify throws if invalid signature")]
         public void VerifyThrowsIfInvalidSignature()
         {
-            var blsKeyPair = Service.GenerateBlsKey();
-            var bbsKeyPair = blsKeyPair.GeyBbsKeyPair(1);
+            var blsKeyPair = BlsKeyPair.Generate();
+            var bbsKeyPair = blsKeyPair.GetBbsKey(1);
 
             Assert.Throws<BbsException>(() => Service.Verify(new VerifyRequest(blsKeyPair, Array.Empty<byte>(), new[] { "message_0" })), "Signature cannot be empty array");
         }
@@ -54,7 +54,7 @@ namespace Hyperledger.Ursa.BbsSignatures.Tests
         [Test(Description = "Sign message with one public key, verify with another")]
         public void SignAndVerifyDifferentKeys()
         {
-            var keyPair = Service.GenerateBlsKey();
+            var keyPair = BlsKeyPair.Generate();
             var messages = new[] { "message_1", "message_2" };
 
             var signature = Service.Sign(new SignRequest(keyPair, messages));

@@ -4,7 +4,7 @@ namespace Hyperledger.Ursa.BbsSignatures
 {
     public class VerifyBlindedCommitmentRequest
     {
-        public VerifyBlindedCommitmentRequest(BbsKeyPair publicKey, byte[] proof, uint[] blindedIndices, string nonce)
+        public VerifyBlindedCommitmentRequest(BbsKey publicKey, byte[] proof, uint[] blindedIndices, string nonce)
         {
             PublicKey = publicKey ?? throw new ArgumentNullException(nameof(publicKey));
             Proof = proof ?? throw new ArgumentNullException(nameof(proof));
@@ -12,7 +12,7 @@ namespace Hyperledger.Ursa.BbsSignatures
             Nonce = nonce ?? throw new ArgumentNullException(nameof(nonce));
         }
 
-        public BbsKeyPair PublicKey { get; set; }
+        public BbsKey PublicKey { get; set; }
 
         public byte[] Proof { get; set; }
 

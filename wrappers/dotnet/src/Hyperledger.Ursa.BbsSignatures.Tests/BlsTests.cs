@@ -34,9 +34,9 @@ namespace Hyperledger.Ursa.BbsSignatures.Tests
         [Test(Description = "Generate new BLS key pair with seed")]
         public void GenerateKeyWithSeed()
         {
-            var seed = new byte[] { 1, 2, 3 };
+            var seed = "my seed";
 
-            var actual = Service.GenerateBlsKey(seed);
+            var actual = BlsKeyPair.Generate(seed);
 
             Assert.NotNull(actual);
             Assert.NotNull(actual.SecretKey);
@@ -48,7 +48,7 @@ namespace Hyperledger.Ursa.BbsSignatures.Tests
         [Test(Description = "Generate BLS key pair without seed using wrapper class")]
         public void GenerateBlsKeyWithoutSeed()
         {
-            var blsKeyPair = Service.GenerateBlsKey();
+            var blsKeyPair = BlsKeyPair.Generate();
             var dPublicKey = blsKeyPair.PublicKey;
 
             Assert.NotNull(blsKeyPair);
@@ -62,8 +62,8 @@ namespace Hyperledger.Ursa.BbsSignatures.Tests
         [Test(Description = "Create BBS public key from BLS secret key with message count 1")]
         public void CreateBbsKeyFromBlsSecretKey()
         {
-            var secretKey = Service.GenerateBlsKey();
-            var publicKey = secretKey.GeyBbsKeyPair(1);
+            var secretKey = BlsKeyPair.Generate();
+            var publicKey = secretKey.GetBbsKey(1);
 
             Assert.NotNull(secretKey);
             Assert.NotNull(publicKey);
@@ -76,12 +76,12 @@ namespace Hyperledger.Ursa.BbsSignatures.Tests
         [Test(Description = "Create BBS public key from BLS public key with message count 1")]
         public void CreateBbsKeyFromBlsPublicKey()
         {
-            var blsKeypair = Service.GenerateBlsKey();
+            var blsKeypair = BlsKeyPair.Generate();
             var bbsKeyPair = new BlsKeyPair(blsKeypair.PublicKey.ToArray());
 
             Assert.IsNull(bbsKeyPair.SecretKey);
 
-            var publicKey = bbsKeyPair.GeyBbsKeyPair(1);
+            var publicKey = bbsKeyPair.GetBbsKey(1);
 
             Assert.NotNull(blsKeypair.SecretKey);
             Assert.NotNull(publicKey);

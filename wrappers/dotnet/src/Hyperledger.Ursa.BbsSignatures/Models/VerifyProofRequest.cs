@@ -3,7 +3,7 @@ namespace Hyperledger.Ursa.BbsSignatures
 {
     public class VerifyProofRequest
     {
-        public VerifyProofRequest(BbsKeyPair publicKey, byte[] proof, IndexedMessage[] messages, string nonce)
+        public VerifyProofRequest(BbsKey publicKey, byte[] proof, IndexedMessage[] messages, string nonce)
         {
             Proof = proof ?? throw new ArgumentNullException(nameof(proof));
             Messages = messages ?? throw new ArgumentNullException(nameof(messages));
@@ -17,6 +17,6 @@ namespace Hyperledger.Ursa.BbsSignatures
 
         public string Nonce { get; set; }
 
-        public BbsKeyPair PublicKey { get; set; }
+        public BbsKey PublicKey { get; set; }
     }
 }
