@@ -28,7 +28,7 @@ namespace Hyperledger.Ursa.BbsSignatures
 
             var bbsKeyPair = signRequest.KeyPair.GetBbsKey((uint)signRequest.Messages.Length);
 
-            using var context = new UnmanagedMemoryContext();
+            using var context = new UnmanagedMemory();
 
             var handle = NativeMethods.bbs_sign_context_init(out var error);
             context.ThrowOnError(error);
@@ -61,7 +61,7 @@ namespace Hyperledger.Ursa.BbsSignatures
         public bool Verify(VerifyRequest verifyRequest)
         {
             var bbsKeyPair = verifyRequest.KeyPair.GetBbsKey((uint)verifyRequest.Messages.Length);
-            using var context = new UnmanagedMemoryContext();
+            using var context = new UnmanagedMemory();
 
             var handle = NativeMethods.bbs_verify_context_init(out var error);
             context.ThrowOnError(error);
@@ -93,7 +93,7 @@ namespace Hyperledger.Ursa.BbsSignatures
         /// <returns></returns>
         public byte[] BlindSign(BlindSignRequest request)
         {
-            using var context = new UnmanagedMemoryContext();
+            using var context = new UnmanagedMemory();
 
             var handle = NativeMethods.bbs_blind_sign_context_init(out var error);
             context.ThrowOnError(error);
@@ -126,7 +126,7 @@ namespace Hyperledger.Ursa.BbsSignatures
         /// <returns></returns>
         public byte[] UnblindSignature(UnblindSignatureRequest request)
         {
-            using var context = new UnmanagedMemoryContext();
+            using var context = new UnmanagedMemory();
 
             NativeMethods.bbs_unblind_signature(context.ToBuffer(request.BlindedSignature), context.ToBuffer(request.BlindingFactor), out var unblindedSignature, out var error);
             context.ThrowOnError(error);
@@ -141,7 +141,7 @@ namespace Hyperledger.Ursa.BbsSignatures
         /// <returns></returns>
         public BlindedCommitment CreateBlindedCommitment(CreateBlindedCommitmentRequest request)
         {
-            using var context = new UnmanagedMemoryContext();
+            using var context = new UnmanagedMemory();
 
             var handle = NativeMethods.bbs_blind_commitment_context_init(out var error);
             context.ThrowOnError(error);
@@ -171,7 +171,7 @@ namespace Hyperledger.Ursa.BbsSignatures
         /// <returns></returns>
         public SignatureProofStatus VerifyBlindedCommitment(VerifyBlindedCommitmentRequest request)
         {
-            using var context = new UnmanagedMemoryContext();
+            using var context = new UnmanagedMemory();
 
             var handle = NativeMethods.bbs_verify_blind_commitment_context_init(out var error);
             context.ThrowOnError(error);
@@ -206,7 +206,7 @@ namespace Hyperledger.Ursa.BbsSignatures
         /// <returns></returns>
         public byte[] CreateProof(CreateProofRequest proofRequest)
         {
-            using var context = new UnmanagedMemoryContext();
+            using var context = new UnmanagedMemory();
 
             var handle = NativeMethods.bbs_create_proof_context_init(out var error);
             context.ThrowOnError(error);
@@ -243,7 +243,7 @@ namespace Hyperledger.Ursa.BbsSignatures
         /// <returns></returns>
         public SignatureProofStatus VerifyProof(VerifyProofRequest request)
         {
-            using var context = new UnmanagedMemoryContext();
+            using var context = new UnmanagedMemory();
 
             var handle = NativeMethods.bbs_verify_proof_context_init(out var error);
             context.ThrowOnError(error);

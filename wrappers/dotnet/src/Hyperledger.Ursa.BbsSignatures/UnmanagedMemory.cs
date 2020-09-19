@@ -11,7 +11,7 @@ namespace Hyperledger.Ursa.BbsSignatures
     /// and strings when working with FFI interface
     /// </summary>
     /// <seealso cref="System.IDisposable" />
-    internal class UnmanagedMemoryContext : IDisposable
+    internal class UnmanagedMemory : IDisposable
     {
         private bool disposedValue;
 
@@ -126,9 +126,9 @@ namespace Hyperledger.Ursa.BbsSignatures
         }
 
         /// <summary>
-        /// Finalizes an instance of the <see cref="UnmanagedMemoryContext" /> class.
+        /// Finalizes an instance of the <see cref="UnmanagedMemory" /> class.
         /// </summary>
-        ~UnmanagedMemoryContext() => Dispose(disposing: false);
+        ~UnmanagedMemory() => Dispose(disposing: false);
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.

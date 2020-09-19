@@ -35,7 +35,7 @@ namespace Hyperledger.Ursa.BbsSignatures
             {
                 SecretKey = new ReadOnlyCollection<byte>(keyData);
 
-                using var context = new UnmanagedMemoryContext();
+                using var context = new UnmanagedMemory();
 
                 NativeMethods.bls_get_public_key(context.ToBuffer(keyData), out var publicKey, out var error);
                 context.ThrowOnError(error);
@@ -73,7 +73,7 @@ namespace Hyperledger.Ursa.BbsSignatures
         /// <returns></returns>
         public BbsKey GetBbsKey(uint messageCount)
         {
-            using var context = new UnmanagedMemoryContext();
+            using var context = new UnmanagedMemory();
 
             if (SecretKey is null)
             {
@@ -98,7 +98,7 @@ namespace Hyperledger.Ursa.BbsSignatures
         /// <returns></returns>
         public static BlsKeyPair Generate(string? seed = null)
         {
-            using var context = new UnmanagedMemoryContext();
+            using var context = new UnmanagedMemory();
 
             var result = NativeMethods.bls_generate_key(
                 seed is null ? ByteBuffer.None : context.ToBuffer(Encoding.UTF8.GetBytes(seed)),
