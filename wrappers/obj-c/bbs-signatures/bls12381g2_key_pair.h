@@ -1,5 +1,5 @@
-#ifndef bls12381_key_pair_h
-#define bls12381_key_pair_h
+#ifndef bls12381g2_key_pair_h
+#define bls12381g2_key_pair_h
 
 #import <Foundation/Foundation.h>
 #import "bbs.h"
@@ -14,20 +14,22 @@
 @property(nonatomic, readonly) NSData *_Nonnull publicKey;
 
 /**
-* @brief initialise a BLS 12-381 G2 public key from data
+* @brief Initialises a BLS 12-381 G2 public key from the raw bytes of the public key
 */
 - (nullable instancetype)initWithPublicKey:(NSData* _Nonnull)data;
 
 /**
-* @brief initialise a BLS 12-381 G2 key pair by generating secretKey and publicKey
+* @brief Generates a new BLS 12-381 G2 key pair by using an optionally supplied seed
 */
-- (nullable instancetype)initWithSeed:(NSData* _Nullable)seed withError:(NSError *_Nullable*_Nullable)errorPtr;
+- (nullable instancetype)initWithSeed:(NSData* _Nullable)seed
+                            withError:(NSError *_Nullable*_Nullable)errorPtr;
 
 /**
-* @brief initialise a BLS 12-381 G2 key pair from the secretKey
+* @brief initialise a BLS 12-381 G2 key pair  from the raw bytes of the secretKey
 */
-- (nullable instancetype)initWithSecretKey:(NSData* _Nonnull)secretKey withError:(NSError *_Nullable*_Nullable)errorPtr;
+- (nullable instancetype)initWithSecretKey:(NSData* _Nonnull)secretKey
+                                 withError:(NSError *_Nullable*_Nullable)errorPtr;
 
 @end
 
-#endif /* bls12381_key_pair_h */
+#endif /* bls12381g2_key_pair_h */

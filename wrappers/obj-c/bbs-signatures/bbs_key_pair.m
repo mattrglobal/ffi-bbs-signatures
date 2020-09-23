@@ -3,7 +3,7 @@
 #import "bbs_key_pair.h"
 #import "BbsSignatureError.h"
 
-/** @brief BBS+ key pair */
+/** @brief BBS key pair */
 @interface BbsKeyPair ()
 
 /** @brief secret key */
@@ -17,29 +17,40 @@
 
 @end
 
-/** @brief Implementation of A BBS+ Key pair */
 @implementation BbsKeyPair
 
-- (nullable instancetype)initWithData:(NSData* _Nonnull)publicKey : (size_t)messageCount {
+- (nullable instancetype)initWithData:(NSData* _Nonnull)publicKey
+                         messageCount:(size_t)messageCount {
+    
     self.publicKey = publicKey;
     self.messageCount = messageCount;
     return self;
 }
 
-- (nullable instancetype)initWithData:(NSData* _Nonnull)publicKey : (size_t)messageCount andSecretKey:(NSData* _Nullable)secretKey {
+- (nullable instancetype)initWithData:(NSData* _Nonnull)publicKey
+                         messageCount:(size_t)messageCount
+                         andSecretKey:(NSData* _Nullable)secretKey {
+    
     self.publicKey = publicKey;
     self.secretKey = secretKey;
     self.messageCount = messageCount;
     return self;
 }
 
-/** @brief Initializes a BBS+ key pair from a BLS 12-381 G2 key pair*/
-- (nullable instancetype)initWithBls12381G2KeyPair:(Bls12381G2KeyPair* _Nonnull)keyPair : (size_t)messageCount withError:(NSError *_Nullable*_Nullable)errorPtr {
-    [self bls12381G2ToBbs: keyPair : messageCount withError:errorPtr];
+- (nullable instancetype)initWithBls12381G2KeyPair:(Bls12381G2KeyPair* _Nonnull)keyPair
+                                      messageCount:(size_t)messageCount
+                                         withError:(NSError *_Nullable*_Nullable)errorPtr {
+    
+    [self bls12381G2ToBbs:keyPair
+             messageCount:messageCount
+                withError:errorPtr];
     return self;
 }
 
-- (void) bls12381G2ToBbs:(Bls12381G2KeyPair* _Nonnull)keyPair : (size_t)messageCount withError:(NSError *_Nullable*_Nullable)errorPtr {
+- (void) bls12381G2ToBbs:(Bls12381G2KeyPair* _Nonnull)keyPair
+            messageCount:(size_t)messageCount
+               withError:(NSError *_Nullable*_Nullable)errorPtr {
+    
     bbs_signature_byte_buffer_t publicKey;
     publicKey.len = keyPair.publicKey.length;
     publicKey.data = (uint8_t *)keyPair.publicKey.bytes;
@@ -52,14 +63,19 @@
         return;
     }
     
-    self.publicKey = [[NSData alloc] initWithBytesNoCopy:bbsPublicKey->data length:(NSUInteger)bbsPublicKey->len freeWhenDone:true];
+    self.publicKey = [[NSData alloc] initWithBytesNoCopy:bbsPublicKey->data
+                                                  length:(NSUInteger)bbsPublicKey->len
+                                            freeWhenDone:true];
+    
     self.secretKey = keyPair.secretKey;
     self.messageCount = messageCount;
     
     free(err);
 }
 
-- (void) bls12381G2PublicKeyToBbsPublicKey:(NSData* _Nonnull)publicKeyData : (size_t)messageCount withError:(NSError *_Nullable*_Nullable)errorPtr {
+- (void) bls12381G2PublicKeyToBbsPublicKey:(NSData* _Nonnull)publicKeyData
+                              messageCount:(size_t)messageCount
+                                 withError:(NSError *_Nullable*_Nullable)errorPtr {
     
     bbs_signature_byte_buffer_t publicKeyBuffer;
     publicKeyBuffer.len = publicKeyData.length;

@@ -15,11 +15,21 @@
     NSData *signatureData = [[NSData alloc] initWithBase64EncodedString:@"rpldJh9DkYe4FvX7WPYI+GNhBM7uB3UGg3NcJX+NTts9E5R9TtHSYszqVfLxdq0Mb45jyd82laouneFYjB5TreM5Qpo9TyO0yNPdaanmfW0wCeLp3r0bhdfOF67GGL01KHY56ojoaSWBmr2lpqRU2Q==" options:0];
     
     NSError *error = nil;
-    BbsKeyPair *keyPair = [[BbsKeyPair alloc] initWithData:publicKey :messages.count];
-    BbsSignature *signature = [[BbsSignature alloc] initWithBytes:signatureData withError:&error];
+    BbsKeyPair *keyPair = [[BbsKeyPair alloc] initWithData:publicKey
+                                              messageCount:messages.count];
+    
+    BbsSignature *signature = [[BbsSignature alloc] initWithBytes:signatureData
+                                                        withError:&error];
+    
     XCTAssertEqual(signature.value.length, 112);
     
-    BbsSignatureProof *proof = [[BbsSignatureProof alloc] createProof:signature :keyPair :nonce :messages :revealed withError:&error];
+    BbsSignatureProof *proof = [[BbsSignatureProof alloc] createProof:signature
+                                                              keyPair:keyPair
+                                                                nonce:nonce
+                                                             messages:messages
+                                                             revealed:revealed
+                                                            withError:&error];
+    
     XCTAssertEqual(proof.value.length, 383);
 }
 
@@ -35,11 +45,21 @@
     NSData *signatureData = [[NSData alloc] initWithBase64EncodedString:@"qg3PfohWGvbOCZWxcWIZ779aOuNSafjCXLdDux01TTNGm/Uqhr/kZZ1wSmxKwbEWAhctrDCp2mGE0M0l6DlA5R38chMbtnyWMfQgbQpzMQZgPBPUvVWivJyYEysZnQWrAYzZzRPe36VFbFy5ynWx0w==" options:0];
     
     NSError *error = nil;
-    BbsKeyPair *keyPair = [[BbsKeyPair alloc] initWithData:publicKey :messages.count];
-    BbsSignature *signature = [[BbsSignature alloc] initWithBytes:signatureData withError:&error];
+    BbsKeyPair *keyPair = [[BbsKeyPair alloc] initWithData:publicKey
+                                              messageCount:messages.count];
+    
+    BbsSignature *signature = [[BbsSignature alloc] initWithBytes:signatureData
+                                                        withError:&error];
+    
     XCTAssertEqual(signature.value.length, 112);
     
-    BbsSignatureProof *proof = [[BbsSignatureProof alloc] createProof:signature :keyPair :nonce :messages :revealed withError:&error];
+    BbsSignatureProof *proof = [[BbsSignatureProof alloc] createProof:signature
+                                                              keyPair:keyPair
+                                                                nonce:nonce
+                                                             messages:messages
+                                                             revealed:revealed
+                                                            withError:&error];
+    
     XCTAssertEqual(proof.value.length, 383);
 }
 
@@ -53,16 +73,27 @@
     NSData *signatureData = [[NSData alloc] initWithBase64EncodedString:@"qg3PfohWGvbOCZWxcWIZ779aOuNSafjCXLdDux01TTNGm/Uqhr/kZZ1wSmxKwbEWAhctrDCp2mGE0M0l6DlA5R38chMbtnyWMfQgbQpzMQZgPBPUvVWivJyYEysZnQWrAYzZzRPe36VFbFy5ynWx0w==" options:0];
     
     NSError *error = nil;
-    BbsKeyPair *keyPair = [[BbsKeyPair alloc] initWithData:publicKey :messages.count];
-    BbsSignature *signature = [[BbsSignature alloc] initWithBytes:signatureData withError:&error];
+    BbsKeyPair *keyPair = [[BbsKeyPair alloc] initWithData:publicKey
+                                              messageCount:messages.count];
+    
+    BbsSignature *signature = [[BbsSignature alloc] initWithBytes:signatureData
+                                                        withError:&error];
+    
     XCTAssertEqual(signature.value.length, 112);
     
-    BbsSignatureProof *proof = [[BbsSignatureProof alloc] createProof:signature :keyPair :nonce :messages :revealed withError:&error];
+    BbsSignatureProof *proof = [[BbsSignatureProof alloc] createProof:signature
+                                                              keyPair:keyPair
+                                                                nonce:nonce
+                                                             messages:messages
+                                                             revealed:revealed
+                                                            withError:&error];
+    
     XCTAssertEqual(proof.value.length, 447);
 }
 
 - (void)testCreateProofRevealingMultipleMessagesFromMultiMessageSignature {
-    //TODO ADJUST REVEAL
+    NSArray *revealed = [NSArray arrayWithObjects:[[NSNumber alloc] initWithInt:0],
+                                                  [[NSNumber alloc] initWithInt:2], nil];
     NSData *nonce = [[NSData alloc] initWithBase64EncodedString:@"MDEyMzQ1Njc4OQ==" options:0];
     NSArray *messages = [NSArray arrayWithObjects:[[NSData alloc] initWithBase64EncodedString:@"SjQyQXhoY2lPVmtFOXc9PQ==" options:0],
                                                   [[NSData alloc] initWithBase64EncodedString:@"UE5NbkFSV0lIUCtzMmc9PQ==" options:0],
@@ -71,12 +102,21 @@
     NSData *signatureData = [[NSData alloc] initWithBase64EncodedString:@"qg3PfohWGvbOCZWxcWIZ779aOuNSafjCXLdDux01TTNGm/Uqhr/kZZ1wSmxKwbEWAhctrDCp2mGE0M0l6DlA5R38chMbtnyWMfQgbQpzMQZgPBPUvVWivJyYEysZnQWrAYzZzRPe36VFbFy5ynWx0w==" options:0];
     
     NSError *error = nil;
-    BbsKeyPair *keyPair = [[BbsKeyPair alloc] initWithData:publicKey :messages.count];
-    BbsSignature *signature = [[BbsSignature alloc] initWithBytes:signatureData withError:&error];
+    BbsKeyPair *keyPair = [[BbsKeyPair alloc] initWithData:publicKey
+                                              messageCount:messages.count];
+    
+    BbsSignature *signature = [[BbsSignature alloc] initWithBytes:signatureData
+                                                        withError:&error];
+    
     XCTAssertEqual(signature.value.length, 112);
     
-    BbsSignatureProof *proof = [[BbsSignatureProof alloc] createProof:signature :keyPair :nonce :messages :messages withError:&error];
-    XCTAssertEqual(proof.value.length, 479);
+    BbsSignatureProof *proof = [[BbsSignatureProof alloc] createProof:signature
+                                                              keyPair:keyPair
+                                                                nonce:nonce
+                                                             messages:messages
+                                                             revealed:revealed
+                                                            withError:&error];
+    XCTAssertEqual(proof.value.length, 415);
 }
 
 - (void)testBlsCreateProofRevealingSingleMessageFromSingleMessageSignature {
@@ -88,10 +128,18 @@
     
     NSError *error = nil;
     Bls12381G2KeyPair *keyPair = [[Bls12381G2KeyPair alloc] initWithPublicKey:publicKey];
-    BbsSignature *signature = [[BbsSignature alloc] initWithBytes:signatureData withError:&error];
+    
+    BbsSignature *signature = [[BbsSignature alloc] initWithBytes:signatureData
+                                                        withError:&error];
+    
     XCTAssertEqual(signature.value.length, 112);
     
-    BbsSignatureProof *proof = [[BbsSignatureProof alloc] blsCreateProof:signature :keyPair :nonce :messages :revealed withError:&error];
+    BbsSignatureProof *proof = [[BbsSignatureProof alloc] blsCreateProof:signature
+                                                                 keyPair:keyPair
+                                                                   nonce:nonce
+                                                                messages:messages
+                                                                revealed:revealed
+                                                               withError:&error];
     XCTAssertEqual(proof.value.length, 383);
 }
 
@@ -111,7 +159,12 @@
     BbsSignature *signature = [[BbsSignature alloc] initWithBytes:signatureData withError:&error];
     XCTAssertEqual(signature.value.length, 112);
     
-    BbsSignatureProof *proof = [[BbsSignatureProof alloc] blsCreateProof:signature :keyPair :nonce :messages :revealed withError:&error];
+    BbsSignatureProof *proof = [[BbsSignatureProof alloc] blsCreateProof:signature
+                                                                 keyPair:keyPair
+                                                                   nonce:nonce
+                                                                messages:messages
+                                                                revealed:revealed
+                                                               withError:&error];
     XCTAssertEqual(proof.value.length, 383);
 }
 
@@ -129,7 +182,13 @@
     BbsSignature *signature = [[BbsSignature alloc] initWithBytes:signatureData withError:&error];
     XCTAssertEqual(signature.value.length, 112);
     
-    BbsSignatureProof *proof = [[BbsSignatureProof alloc] blsCreateProof:signature :keyPair :nonce :messages :revealed withError:&error];
+    BbsSignatureProof *proof = [[BbsSignatureProof alloc] blsCreateProof:signature
+                                                                 keyPair:keyPair
+                                                                   nonce:nonce
+                                                                messages:messages
+                                                                revealed:revealed
+                                                               withError:&error];
+    
     XCTAssertEqual(proof.value.length, 447);
 }
 
@@ -148,7 +207,13 @@
     BbsSignature *signature = [[BbsSignature alloc] initWithBytes:signatureData withError:&error];
     XCTAssertEqual(signature.value.length, 112);
     
-    BbsSignatureProof *proof = [[BbsSignatureProof alloc] blsCreateProof:signature :keyPair :nonce :messages :revealed withError:&error];
+    BbsSignatureProof *proof = [[BbsSignatureProof alloc] blsCreateProof:signature
+                                                                 keyPair:keyPair
+                                                                   nonce:nonce
+                                                                messages:messages
+                                                                revealed:revealed
+                                                               withError:&error];
+    
     XCTAssertEqual(proof.value.length, 415);
 }
 @end

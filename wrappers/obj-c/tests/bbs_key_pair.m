@@ -14,7 +14,9 @@
     Bls12381G2KeyPair *keyPair = [[Bls12381G2KeyPair alloc] initWithSeed: seed withError:&error];
     NSUInteger *messageCount = 10;
     
-    BbsKeyPair *bbsKeyPair = [[BbsKeyPair alloc] initWithBls12381G2KeyPair:keyPair: messageCount withError:&error];
+    BbsKeyPair *bbsKeyPair = [[BbsKeyPair alloc] initWithBls12381G2KeyPair:keyPair
+                                                              messageCount:messageCount
+                                                                 withError:&error];
     
     XCTAssertEqual(bbsKeyPair.secretKey.length, 32);
     XCTAssertEqual(bbsKeyPair.messageCount, 10);
@@ -27,10 +29,12 @@
     Bls12381G2KeyPair *keyPair = [[Bls12381G2KeyPair alloc] initWithPublicKey:publicKey];
     NSUInteger *messageCount = 10;
     
-    //TODO
-    BbsKeyPair *bbsKeyPair = [[BbsKeyPair alloc] initWithBls12381G2KeyPair:keyPair :messageCount withError:&error];
+    BbsKeyPair *bbsKeyPair = [[BbsKeyPair alloc] initWithBls12381G2KeyPair:keyPair
+                                                              messageCount:messageCount
+                                                                 withError:&error];
     
     XCTAssertEqual(bbsKeyPair.secretKey, nil);
     XCTAssertEqual(bbsKeyPair.messageCount, 10);
+    XCTAssertEqual(bbsKeyPair.publicKey.length, 628);
 }
 @end

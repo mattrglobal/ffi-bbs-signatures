@@ -23,7 +23,8 @@
     NSData *expectedSecretKey = [[NSData alloc] initWithBase64EncodedString:@"YoASulEi3WV7yfJ+yWctJRCbHfr7WjK7JjcMrRqbL6E=" options:0];
     NSData *seed = [[NSData alloc] initWithBase64EncodedString:@"H297BpoOgkfpXcxr1fJyQRiNx1+ZekeQ+OU/AYV/lVxaPXXhFBIbxeIU8kIAAX68cwQ=" options:0];
     
-    Bls12381G2KeyPair *keyPair = [[Bls12381G2KeyPair alloc] initWithSeed: seed withError:&error];
+    Bls12381G2KeyPair *keyPair = [[Bls12381G2KeyPair alloc] initWithSeed:seed
+                                                               withError:&error];
 
     XCTAssertEqualObjects(keyPair.publicKey, expectedPublicKey);
     XCTAssertEqualObjects(keyPair.secretKey, expectedSecretKey);
@@ -33,7 +34,8 @@
     NSData *seed = NULL;
     NSError *error = nil;
     
-    Bls12381G2KeyPair *keyPair = [[Bls12381G2KeyPair alloc] initWithSeed: seed withError:&error];
+    Bls12381G2KeyPair *keyPair = [[Bls12381G2KeyPair alloc] initWithSeed:seed
+                                                               withError:&error];
     
     XCTAssertEqual(keyPair.publicKey.length, 96);
     XCTAssertEqual(keyPair.secretKey.length, 32);

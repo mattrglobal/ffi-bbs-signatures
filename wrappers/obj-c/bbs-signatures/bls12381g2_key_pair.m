@@ -12,28 +12,28 @@
 
 @end
 
-/** @brief Implementation of a BLS 12-381 G2 Key pair */
 @implementation Bls12381G2KeyPair
 
-/** @brief Initializes a key pair from a public key*/
 - (nullable instancetype)initWithPublicKey:(NSData* _Nonnull)publicKey {
     self.publicKey = [[NSData alloc] initWithData:publicKey];
     return self;
 }
 
-/** @brief Initializes a key pair */
-- (nullable instancetype)initWithSeed:(NSData* _Nullable)seed withError:(NSError *_Nullable*_Nullable)errorPtr {
+- (nullable instancetype)initWithSeed:(NSData* _Nullable)seed
+                            withError:(NSError *_Nullable*_Nullable)errorPtr {
     [self generateKeyPair: seed withError:errorPtr];
     return self;
 }
 
-/** @brief Initializes a key pair from a secret key*/
-- (nullable instancetype)initWithSecretKey:(NSData* _Nonnull)secretKey withError:(NSError *_Nullable*_Nullable)errorPtr {
+- (nullable instancetype)initWithSecretKey:(NSData* _Nonnull)secretKey
+                                 withError:(NSError *_Nullable*_Nullable)errorPtr {
     [self keyPairFromSecretKey: secretKey withError:errorPtr];
     return self;
 }
 
-- (void) generateKeyPair:(NSData* _Nullable)seed withError:(NSError *_Nullable*_Nullable)errorPtr {
+- (void) generateKeyPair:(NSData* _Nullable)seed
+               withError:(NSError *_Nullable*_Nullable)errorPtr {
+    
     //TODO deal with seed being null
     bbs_signature_byte_buffer_t seedBuffer;
     seedBuffer.len = seed.length;
@@ -56,7 +56,9 @@
     free(err);
 }
 
-- (void) keyPairFromSecretKey:(NSData* _Nonnull)secretKey withError:(NSError *_Nullable*_Nullable)errorPtr {
+- (void) keyPairFromSecretKey:(NSData* _Nonnull)secretKey
+                    withError:(NSError *_Nullable*_Nullable)errorPtr {
+    
     bbs_signature_byte_buffer_t secretKeyBuffer;
     secretKeyBuffer.len = secretKey.length;
     secretKeyBuffer.data = (uint8_t *)secretKey.bytes;

@@ -16,40 +16,87 @@
 @implementation BbsSignatureProof
 
 /** @brief Creates a BBS signature proof from the raw bytes  */
-- (nullable instancetype)initWithBytes:(NSData* _Nonnull)bytes withError:(NSError *_Nullable*_Nullable)errorPtr {
-    [self createFromBytes:bytes withError:errorPtr];
+- (nullable instancetype)initWithBytes:(NSData* _Nonnull)bytes
+                             withError:(NSError *_Nullable*_Nullable)errorPtr {
+    
+    [self createFromBytes:bytes
+                withError:errorPtr];
     return self;
 }
 
 /** @brief Creates a BBS signature proof */
-- (nullable instancetype)createProof:(BbsSignature* _Nonnull)signature : (BbsKeyPair* _Nonnull)keyPair : (NSData* _Nonnull)nonce : (NSArray* _Nonnull)messages : (NSArray* _Nonnull)revealed withError:(NSError*_Nullable*_Nullable)errorPtr {
-    [self createSignatureProof: signature : keyPair : nonce : messages : revealed withError:errorPtr];
+- (nullable instancetype)createProof:(BbsSignature* _Nonnull)signature
+                             keyPair:(BbsKeyPair* _Nonnull)keyPair
+                               nonce:(NSData* _Nonnull)nonce
+                            messages:(NSArray* _Nonnull)messages
+                            revealed:(NSArray* _Nonnull)revealed
+                           withError:(NSError*_Nullable*_Nullable)errorPtr {
+    
+    [self createSignatureProof:signature
+                       keyPair:keyPair
+                         nonce:nonce
+                      messages:messages
+                      revealed:revealed
+                     withError:errorPtr];
     return self;
 }
 
 /** @brief Creates a BBS signature proof  from a BLS12-381G2 public key */
-- (nullable instancetype)blsCreateProof:(BbsSignature* _Nonnull)signature : (Bls12381G2KeyPair* _Nonnull)keyPair : (NSData* _Nonnull)nonce : (NSArray* _Nonnull)messages : (NSArray* _Nonnull)revealed withError:(NSError*_Nullable*_Nullable)errorPtr {
-    [self createSignatureProofFromBls12381G2: signature : keyPair : nonce : messages : revealed withError:errorPtr];
+- (nullable instancetype)blsCreateProof:(BbsSignature* _Nonnull)signature
+                                keyPair:(Bls12381G2KeyPair* _Nonnull)keyPair
+                                  nonce:(NSData* _Nonnull)nonce
+                               messages:(NSArray* _Nonnull)messages
+                               revealed:(NSArray* _Nonnull)revealed
+                              withError:(NSError*_Nullable*_Nullable)errorPtr {
+    
+    [self createSignatureProofFromBls12381G2:signature
+                                     keyPair:keyPair
+                                       nonce:nonce
+                                    messages:messages
+                                    revealed:revealed
+                                   withError:errorPtr];
     return self;
 }
 
 /** @brief Initializes a key pair */
-- (bool)verifyProof:(BbsKeyPair* _Nonnull)keyPair : (NSArray* _Nonnull)messages : (NSData* _Nonnull)nonce withError:(NSError *_Nullable*_Nullable)errorPtr {
-    return [self verifySignatureProof:keyPair: messages: nonce withError:errorPtr];
+- (bool)verifyProof:(BbsKeyPair* _Nonnull)keyPair
+           messages:(NSArray* _Nonnull)messages
+              nonce:(NSData* _Nonnull)nonce
+          withError:(NSError *_Nullable*_Nullable)errorPtr {
+    
+    return [self verifySignatureProof:keyPair
+                             messages:messages
+                                nonce:nonce
+                            withError:errorPtr];
 }
 
 /** @brief Initializes a key pair */
-- (bool)blsVerifyProof:(Bls12381G2KeyPair* _Nonnull)keyPair : (NSArray* _Nonnull)messages : (NSData* _Nonnull)nonce withError:(NSError *_Nullable*_Nullable)errorPtr {
-    return [self verifySignatureProofFromBls12381G2:keyPair: messages: nonce withError:errorPtr];
+- (bool)blsVerifyProof:(Bls12381G2KeyPair* _Nonnull)keyPair
+              messages:(NSArray* _Nonnull)messages
+                 nonce:(NSData* _Nonnull)nonce
+             withError:(NSError *_Nullable*_Nullable)errorPtr {
+    
+    return [self verifySignatureProofFromBls12381G2:keyPair
+                                           messages:messages
+                                              nonce:nonce
+                                          withError:errorPtr];
 }
 
 /** @brief Initializes a key pair */
-- (nullable instancetype)createFromBytes:(NSData* _Nonnull)bytes withError:(NSError *_Nullable*_Nullable)errorPtr {
+- (nullable instancetype)createFromBytes:(NSData* _Nonnull)bytes
+                               withError:(NSError *_Nullable*_Nullable)errorPtr {
+    
     self.value = [[NSData alloc] initWithData:bytes];
     return self;
 }
 
-- (void) createSignatureProof:(BbsSignature* _Nonnull)signature : (BbsKeyPair* _Nonnull)keyPair : (NSData* _Nonnull)nonce : (NSArray* _Nonnull)messages : (NSArray* _Nonnull)revealed withError:(NSError*_Nullable*_Nullable)errorPtr {
+- (void) createSignatureProof:(BbsSignature* _Nonnull)signature
+                      keyPair:(BbsKeyPair* _Nonnull)keyPair
+                        nonce:(NSData* _Nonnull)nonce
+                     messages:(NSArray* _Nonnull)messages
+                     revealed:(NSArray* _Nonnull)revealed
+                    withError:(NSError*_Nullable*_Nullable)errorPtr {
+    
     bbs_signature_error_t *err = (bbs_signature_error_t*) malloc(sizeof(bbs_signature_error_t));
     
     uint64_t createProofHandle = bbs_create_proof_context_init(err);
@@ -70,7 +117,6 @@
         
         Boolean isRevealed = [revealed containsObject:[[NSNumber alloc] initWithInt:i]];
         
-        //TODO need to revist this
         bbs_signature_proof_message_t messageRevealType;
         
         if (isRevealed) {
@@ -122,13 +168,23 @@
         return;
     }
     
-    self.value = [[NSData alloc] initWithBytesNoCopy:proof->data length:(NSUInteger)proof->len freeWhenDone:true];
+    self.value = [[NSData alloc] initWithBytesNoCopy:proof->data
+                                              length:(NSUInteger)proof->len
+                                        freeWhenDone:true];
     
     free(err);
 }
 
-- (void) createSignatureProofFromBls12381G2:(BbsSignature* _Nonnull)signature : (Bls12381G2KeyPair* _Nonnull)keyPair : (NSData* _Nonnull)nonce : (NSArray* _Nonnull)messages : (NSArray* _Nonnull)revealed withError:(NSError*_Nullable*_Nullable)errorPtr {
-    BbsKeyPair * bbsKeyPair = [[BbsKeyPair alloc] initWithBls12381G2KeyPair:keyPair :messages.count withError:errorPtr];
+- (void) createSignatureProofFromBls12381G2:(BbsSignature* _Nonnull)signature
+                                    keyPair:(Bls12381G2KeyPair* _Nonnull)keyPair
+                                      nonce:(NSData* _Nonnull)nonce
+                                   messages:(NSArray* _Nonnull)messages
+                                   revealed:(NSArray* _Nonnull)revealed
+                                  withError:(NSError*_Nullable*_Nullable)errorPtr {
+    
+    BbsKeyPair * bbsKeyPair = [[BbsKeyPair alloc] initWithBls12381G2KeyPair:keyPair
+                                                               messageCount:messages.count
+                                                                  withError:errorPtr];
     
     if (bbsKeyPair == nil) {
         //TODO review
@@ -136,12 +192,21 @@
         return;
     }
     
-    [self createSignatureProof: signature : bbsKeyPair : nonce : messages : revealed withError:errorPtr];
+    [self createSignatureProof:signature
+                       keyPair:bbsKeyPair
+                         nonce:nonce
+                      messages:messages
+                      revealed:revealed
+                     withError:errorPtr];
     return;
 }
 
 /** @brief Initializes a key pair */
-- (bool)verifySignatureProof:(BbsKeyPair* _Nonnull)keyPair : (NSArray* _Nonnull)messages : (NSData* _Nonnull)nonce withError:(NSError *_Nullable*_Nullable)errorPtr {
+- (bool)verifySignatureProof:(BbsKeyPair* _Nonnull)keyPair
+                    messages:(NSArray* _Nonnull)messages
+                       nonce:(NSData* _Nonnull)nonce
+                   withError:(NSError *_Nullable*_Nullable)errorPtr {
+    
     bbs_signature_error_t *err = (bbs_signature_error_t*) malloc(sizeof(bbs_signature_error_t));
     
     uint64_t verifyProofHandle = bbs_verify_proof_context_init(err);
@@ -204,8 +269,14 @@
 }
 
 /** @brief Initializes a key pair */
-- (bool)verifySignatureProofFromBls12381G2:(Bls12381G2KeyPair* _Nonnull)keyPair : (NSArray* _Nonnull)messages : (NSData* _Nonnull)nonce withError:(NSError *_Nullable*_Nullable)errorPtr {
-    BbsKeyPair * bbsKeyPair = [[BbsKeyPair alloc] initWithBls12381G2KeyPair:keyPair :messages.count withError:errorPtr];
+- (bool)verifySignatureProofFromBls12381G2:(Bls12381G2KeyPair* _Nonnull)keyPair
+                                  messages:(NSArray* _Nonnull)messages
+                                     nonce:(NSData* _Nonnull)nonce
+                                 withError:(NSError *_Nullable*_Nullable)errorPtr {
+    
+    BbsKeyPair * bbsKeyPair = [[BbsKeyPair alloc] initWithBls12381G2KeyPair:keyPair
+                                                               messageCount:messages.count
+                                                                  withError:errorPtr];
     
     if (bbsKeyPair == nil) {
         //TODO review
@@ -213,7 +284,10 @@
         return false;
     }
     
-    return [self verifySignatureProof:bbsKeyPair :messages :nonce withError:errorPtr];
+    return [self verifySignatureProof:bbsKeyPair
+                             messages:messages
+                                nonce:nonce
+                            withError:errorPtr];
 }
 
 @end
