@@ -24,7 +24,7 @@ jobs:
         run: yarn build:ios
 
       - name: Update binary for wrapper
-        run: cp out/ios wrappers/obj-c/libraries
+        run: cp out/ios/universal/libbbs.a wrappers/obj-c/libraries/libbbs.a
 
       - name: Build and test wrapper
         run: yarn wrapper:obj-c:build
