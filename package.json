@@ -11,8 +11,9 @@
     "build": "yarn build:ios && yarn build:android",
     "build:ios": "mkdir -p ./out && ./scripts/build.sh IOS ./out",
     "build:android": "mkdir -p ./out && ./scripts/build.sh ANDROID ./out",
-    "wrapper:obj-c:build": "pod lib lint --allow-warnings",
     "test": "make test",
+    "wrapper:obj-c:build": "pod lib lint --allow-warnings",
+    "wrapper:obj-c:update-binary": "yarn build:ios && cp out/ios/universal/libbbs.a wrappers/obj-c/libraries/libbbs.a",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md",
     "release:prepare": "./scripts/prepare-release-artifacts.sh",
     "version:release": "yarn version --minor --message \"chore(release): publish [skip ci]\""

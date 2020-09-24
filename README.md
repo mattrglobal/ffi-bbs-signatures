@@ -22,3 +22,34 @@ prover.
 
 Every release of this repository publishes a new [github release](https://github.com/mattrglobal/ffi-bbs-signatures/releases/tag/v0.1.0) including publishing the platform specific artifacts required to run the library in different environments. See the [release process](./docs/RELEASE.md) for
 more details on this process
+
+# Getting started
+
+This repository makes use of [Yarn](https://yarnpkg.com/) to manage the dependencies related to the development environment
+
+To install the development dependencies run
+
+```
+yarn install --frozen-lockfile
+``
+
+To build the library for all available platforms run
+
+```
+
+yarn build
+
+```
+
+To build a particular wrapper run
+
+```
+
+yarn wrappers:<name-of-wrapper>:build
+
+```
+
+Where the available wrappers are
+
+- obj-c => Objective-C wrapper
+```

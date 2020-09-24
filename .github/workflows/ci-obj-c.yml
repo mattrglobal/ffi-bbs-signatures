@@ -1,4 +1,4 @@
-name: obj-c-ci
+name: ci-obj-c
 
 on:
   pull_request:
@@ -24,7 +24,7 @@ jobs:
         run: yarn build:ios
 
       - name: Update binary for wrapper
-        run: cp out/ios/universal/libbbs.a wrappers/obj-c/libraries/libbbs.a
+        run: yarn wrapper:obj-c:update-binary
 
       - name: Build and test wrapper
         run: yarn wrapper:obj-c:build

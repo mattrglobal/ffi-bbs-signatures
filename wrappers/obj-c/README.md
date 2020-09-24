@@ -2,13 +2,11 @@
 
 # Building
 
-From the root of the repository run
+From the root of the repository after setting up the [development toolchain](../../README.md) run
 
 ```
-pod lib lint
+yarn wrapper:obj-c:build
 ```
-
-If you encounter an error run with the `--verbose` flag
 
 # Supported Architectures
 
