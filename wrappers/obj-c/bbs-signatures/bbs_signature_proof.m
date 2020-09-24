@@ -2,7 +2,6 @@
 
 #import "bbs.h"
 #import "bbs_signature_proof.h"
-#import "bbs_signatures.h"
 #import "BbsSignatureError.h"
 
 @interface BbsSignatureProof ()

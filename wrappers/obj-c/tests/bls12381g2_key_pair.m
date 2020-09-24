@@ -1,5 +1,6 @@
 #import <XCTest/XCTest.h>
-#import "../bbs-signatures/bbs_signatures.h"
+#import "../bbs-signatures/bbs_key_pair.h"
+#import "../bbs-signatures/bls12381g2_key_pair.h"
 #import "../bbs-signatures/bbs.h"
 
 @interface Bls12381G2KeyPairTests : XCTestCase

@@ -1,7 +1,9 @@
 #ifndef bbs_signature_proof_h
 #define bbs_signature_proof_h
 
-#import "bbs_signatures.h"
+#import "bbs_key_pair.h"
+#import "bbs_signature.h"
+#import "bls12381g2_key_pair.h"
 
 /** @brief BBS Signature Proof */
 @interface BbsSignatureProof : NSObject
@@ -19,7 +21,7 @@
 * @brief Creates a BBS signature proof
 */
 - (nullable instancetype)createProof:(BbsSignature* _Nonnull)signature
-                             keyPair: (BbsKeyPair* _Nonnull)keyPair
+                             keyPair:(BbsKeyPair* _Nonnull)keyPair
                                nonce:(NSData* _Nonnull)nonce
                             messages:(NSArray* _Nonnull)messages
                             revealed:(NSArray* _Nonnull)revealed

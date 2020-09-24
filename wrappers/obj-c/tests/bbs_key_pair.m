@@ -1,5 +1,5 @@
 #import <XCTest/XCTest.h>
-#import "../bbs-signatures/bbs_signatures.h"
+#import "../bbs-signatures/bbs_key_pair.h"
 
 @interface BbsKeyPairTests : XCTestCase
 
