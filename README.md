@@ -31,25 +31,22 @@ To install the development dependencies run
 
 ```
 yarn install --frozen-lockfile
-``
+```
 
 To build the library for all available platforms run
 
 ```
-
 yarn build
-
 ```
 
 To build a particular wrapper run
 
 ```
-
 yarn wrappers:<name-of-wrapper>:build
-
 ```
 
 Where the available wrappers are
 
 - obj-c => Objective-C wrapper
-```
+
+**Note** The dotnet wrapper has its own build process documented [here](./wrappers/dotnet/README.md)
