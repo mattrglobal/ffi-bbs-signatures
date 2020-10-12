@@ -59,7 +59,6 @@
 		9387DA0924FF9ED300C402F2 /* bbs_signature.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bbs_signature.h; sourceTree = "<group>"; };
 		9387DA0A24FF9EEE00C402F2 /* bbs_signature.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = bbs_signature.m; sourceTree = "<group>"; };
 		9387DA0C250047EB00C402F2 /* bbs_key_pair.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = bbs_key_pair.m; sourceTree = "<group>"; };
-		9387DA0E2500497F00C402F2 /* bbs_signatures.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bbs_signatures.h; sourceTree = "<group>"; };
 		9387DA0F2500715700C402F2 /* bbs_signature.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = bbs_signature.m; path = tests/bbs_signature.m; sourceTree = SOURCE_ROOT; };
 		9387DA112501C25000C402F2 /* bbs_signature_proof.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bbs_signature_proof.h; sourceTree = "<group>"; };
 		9387DA122501C3C900C402F2 /* bbs_signature_proof.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = bbs_signature_proof.m; sourceTree = "<group>"; };
@@ -117,7 +116,6 @@
 				935A71AD24FF05F10083FC6D /* bbs_key_pair.m */,
 				9387DA0924FF9ED300C402F2 /* bbs_signature.h */,
 				9387DA0A24FF9EEE00C402F2 /* bbs_signature.m */,
-				9387DA0E2500497F00C402F2 /* bbs_signatures.h */,
 				9387DA112501C25000C402F2 /* bbs_signature_proof.h */,
 				9387DA122501C3C900C402F2 /* bbs_signature_proof.m */,
 				9387DA1625058FF400C402F2 /* BbsSignatureError.h */,

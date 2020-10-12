@@ -34,10 +34,14 @@
 - (void) generateKeyPair:(NSData* _Nullable)seed
                withError:(NSError *_Nullable*_Nullable)errorPtr {
     
-    //TODO deal with seed being null
     bbs_signature_byte_buffer_t seedBuffer;
-    seedBuffer.len = seed.length;
-    seedBuffer.data = (uint8_t *)seed.bytes;
+    if (seed != nil) {
+        seedBuffer.len = seed.length;
+        seedBuffer.data = (uint8_t *)seed.bytes;
+    }
+    else {
+        seedBuffer.len = 0;
+    }
     
     bbs_signature_byte_buffer_t *publicKey = (bbs_signature_byte_buffer_t*) malloc(sizeof(bbs_signature_byte_buffer_t));
     bbs_signature_byte_buffer_t *secretKey = (bbs_signature_byte_buffer_t*) malloc(sizeof(bbs_signature_byte_buffer_t));

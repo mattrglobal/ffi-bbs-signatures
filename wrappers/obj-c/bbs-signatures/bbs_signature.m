@@ -83,17 +83,14 @@
 }
 
 - (bool)verifySignatureFromBlsKeyPair:(Bls12381G2KeyPair* _Nonnull)keyPair
-                             messages:(NSArray* _Nonnull)messages withError:(NSError *_Nullable*_Nullable)errorPtr {
+                             messages:(NSArray* _Nonnull)messages
+                            withError:(NSError* _Nullable*_Nullable)errorPtr {
     
     BbsKeyPair * bbsKeyPair = [[BbsKeyPair alloc] initWithBls12381G2KeyPair:keyPair
                                                                messageCount:messages.count
                                                                   withError:errorPtr];
     
-    if (bbsKeyPair == nil) {
-        //TODO review
-        *errorPtr = [NSError errorWithDomain:@"bbs-signatures"
-                                        code:1
-                                    userInfo:nil];
+    if (*errorPtr != nil) {
         return false;
     }
     
@@ -160,15 +157,13 @@
 
 - (void) createSignatureFromBls12381G2:(Bls12381G2KeyPair* _Nonnull)keyPair
                               messages:(NSArray* _Nonnull)messages
-                             withError:(NSError **)errorPtr {
+                             withError:(NSError* _Nullable*_Nullable)errorPtr {
     
     BbsKeyPair * bbsKeyPair = [[BbsKeyPair alloc] initWithBls12381G2KeyPair:keyPair
                                                                messageCount:messages.count
                                                                   withError:errorPtr];
     
-    if (bbsKeyPair == nil) {
-        //TODO review
-        *errorPtr = [NSError errorWithDomain:@"bbs-signatures" code:1 userInfo:nil];
+    if (*errorPtr != nil) {
         return;
     }
     
@@ -180,7 +175,7 @@
 
 - (void) createSignature:(BbsKeyPair* _Nonnull)keyPair
                 messages:(NSArray* _Nonnull)messages
-               withError:(NSError **)errorPtr {
+               withError:(NSError* _Nullable*_Nullable)errorPtr {
     
     bbs_signature_error_t *err = (bbs_signature_error_t*) malloc(sizeof(bbs_signature_error_t));
     

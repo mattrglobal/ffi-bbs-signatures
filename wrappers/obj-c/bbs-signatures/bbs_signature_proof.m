@@ -185,9 +185,7 @@
                                                                messageCount:messages.count
                                                                   withError:errorPtr];
     
-    if (bbsKeyPair == nil) {
-        //TODO review
-        *errorPtr = [NSError errorWithDomain:@"bbs-signatures" code:1 userInfo:nil];
+    if (*errorPtr != nil) {
         return;
     }
     
@@ -212,12 +210,6 @@
     
     if (verifyProofHandle == 0) {
         *errorPtr = [BbsSignatureError errorFromBbsSignatureError:err];
-        return false;
-    }
-    
-    if (messages.count == 0){
-        //TODO review
-        *errorPtr = [NSError errorWithDomain:@"bbs-signatures" code:err->code userInfo:@{@"Message": [NSString stringWithUTF8String:err->message]}];
         return false;
     }
     
@@ -277,9 +269,7 @@
                                                                messageCount:messages.count
                                                                   withError:errorPtr];
     
-    if (bbsKeyPair == nil) {
-        //TODO review
-        *errorPtr = [NSError errorWithDomain:@"bbs-signatures" code:1 userInfo:nil];
+    if (*errorPtr != nil) {
         return false;
     }
     
