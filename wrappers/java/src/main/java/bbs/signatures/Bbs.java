@@ -31,6 +31,7 @@ class KeyPair {
     }
 }
 
+
 class BlindedKeyPair {
     public byte[] secretKey;
     public byte[] publicKey;
@@ -40,6 +41,21 @@ class BlindedKeyPair {
         this.publicKey = publicKey;
         this.secretKey = secretKey;
         this.blindingFactor = blindingFactor;
+    }
+}
+
+class ProofMessage {
+    public static final int PROOF_MESSAGE_TYPE_REVEALED = 1;
+    public static final int PROOF_MESSAGE_TYPE_HIDDEN_PROOF_SPECIFIC_BLINDING = 2;
+    public static final int PROOF_MESSAGE_TYPE_HIDDEN_EXTERNAL_BLINDING = 3;
+    public int type;
+    public byte[] message;
+    public byte[] blinding_factor;
+
+    public ProofMessage(int type, byte[] message, byte[] blinding_factor) {
+        this.type = type;
+        this.message = message;
+        this.blinding_factor = blinding_factor;
     }
 }
 
@@ -55,6 +71,7 @@ class Bbs {
     private static native byte[] bls_secret_key_to_bbs_key(byte[] secret_key, int message_count);
     private static native byte[] bls_public_key_to_bbs_key(byte[] short_public_key, int message_count);
 
+    private static native int bbs_signature_size();
     private static native long bbs_sign_init();
     private static native int bbs_sign_set_secret_key(long handle, byte[] secret_key);
     private static native int bbs_sign_set_public_key(long handle, byte[] public_key);
@@ -87,6 +104,12 @@ class Bbs {
 
     private static native int bbs_unblind_signature(byte[] blind_signature, byte[] blinding_factor, byte[] unblind_signature);
 
+    private static native long bbs_create_proof_context_init();
+    private static native int bbs_create_proof_context_set_public_key(long handle, byte[] public_key);
+    private static native int bbs_create_proof_context_set_signature(long handle, byte[] signature);
+    private static native int bbs_create_proof_context_set_nonce_bytes(long handle, byte[] message);
+    private static native int bbs_create_proof_context_add_proof_message_bytes(long handle, byte[] message, int xtype, byte[] blinding_factor);
+    private static native byte[] bbs_create_proof_context_finish(long handle);
 
     public static KeyPair generateG1Key(byte[] seed) throws Exception {
         byte[] public_key = new byte[bls_public_key_g1_size()];
@@ -175,7 +198,7 @@ class Bbs {
         }
     }
 
-    public static BlindCommitmentContext blind_commitment(byte[] public_key, Map<Integer, byte[]> messages, byte[] nonce) throws Exception {
+    public static BlindCommitmentContext blindCommitment(byte[] public_key, Map<Integer, byte[]> messages, byte[] nonce) throws Exception {
         long handle = bbs_blind_commitment_init();
         if (0 == handle) {
             throw new Exception("Unable to create blind commitment context");
@@ -201,7 +224,7 @@ class Bbs {
         return context;
     }
 
-    public static byte[] blind_sign(byte[] secret_key, byte[] public_key, byte[] commitment, Map<Integer, byte[]> messages) throws Exception {
+    public static byte[] blindSign(byte[] secret_key, byte[] public_key, byte[] commitment, Map<Integer, byte[]> messages) throws Exception {
         long handle = bbs_blind_sign_init();
         if (0 == handle)
             throw new Exception("Unable to create blind sign context");
@@ -220,6 +243,40 @@ class Bbs {
         if (0 == bbs_blind_sign_finish(handle, blind_signature))
             throw new Exception("Unable to create blind signature");
         return blind_signature;
+    }
+
+    public static byte[] unblindSignature(byte[] blindSignature, byte[] blindingFactor) {
+        byte[] signature = new byte[bbs_signature_size()];
+        if (0 == bbs_unblind_signature(blindSignature, blindingFactor, signature)) {
+            return null;
+        }
+        return signature;
+    }
+
+    public static byte[] createProof(byte[] publicKey, byte[] nonce, byte[] signature, ProofMessage[] messages) throws Exception {
+        long handle = bbs_create_proof_context_init();
+        if (0 == handle) {
+            throw new Exception("Unable to create proof context");
+        }
+        if (0 == bbs_create_proof_context_set_public_key(handle, publicKey)) {
+            throw new Exception("Unable to set public key");
+        }
+        if (0 == bbs_create_proof_context_set_nonce_bytes(handle, nonce)) {
+            throw new Exception("Unable to set nonce");
+        }
+        if (0 == bbs_create_proof_context_set_signature(handle, signature)) {
+            throw new Exception("Unable to set signature");
+        }
+        for (int i = 0; i < messages.length; i++) {
+            if (0 == bbs_create_proof_context_add_proof_message_bytes(handle, messages[i].message, messages[i].type, messages[i].blinding_factor)) {
+                throw new Exception("Unable to add proof message");
+            }
+        }
+        byte[] proof = bbs_create_proof_context_finish(handle);
+        if (proof == null || proof.length == 0) {
+            throw new Exception("Unable to create proof");
+        }
+        return proof;
     }
 
     static {

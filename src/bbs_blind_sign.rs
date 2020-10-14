@@ -18,6 +18,9 @@ struct BlindSignContext {
 }
 
 #[no_mangle]
+pub extern "C" fn bbs_blinding_factor_size() -> i32 { FR_COMPRESSED_SIZE as i32 }
+
+#[no_mangle]
 pub extern "C" fn bbs_blind_sign_context_init(err: &mut ExternError) -> u64 {
     BLIND_SIGN_CONTEXT.insert_with_output(err, || BlindSignContext {
         commitment: None,

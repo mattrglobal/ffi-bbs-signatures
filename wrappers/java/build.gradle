@@ -55,3 +55,13 @@ task buildAndCopyBinaries {
     dependsOn ':buildAndroidBinaries'
     dependsOn ':copyAndroidBinaries'
 }
+
+tasks.withType(Test) {
+    systemProperty "java.library.path", "build/libs/bbs/shared"
+}
+
+test {
+    useJUnit()
+
+    maxHeapSize = '1G'
+}

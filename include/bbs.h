@@ -114,6 +114,7 @@ int32_t bbs_blind_sign_context_set_commitment(uint64_t handle,
 uint64_t bbs_blind_sign_context_init(ExternError *err);
 
 int32_t bbs_blind_signature_size(void);
+int32_t bbs_signature_size(void);
 
 int32_t bbs_unblind_signature(ByteBuffer blind_signature,
                               ByteBuffer blinding_factor,
@@ -185,8 +186,6 @@ int32_t bbs_sign_context_set_public_key(uint64_t handle,
 int32_t bbs_sign_context_finish(uint64_t handle, ByteBuffer *signature, ExternError *err);
 
 uint64_t bbs_sign_context_init(ExternError *err);
-
-int32_t bbs_signature_size(void);
 
 int32_t bbs_verify_context_add_message_bytes(uint64_t handle,
                                              ByteBuffer message,

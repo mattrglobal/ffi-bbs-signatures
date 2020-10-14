@@ -6,7 +6,7 @@ use jni::JNIEnv;
 // These objects are what you should use as arguments to your native function.
 // They carry extra lifetime information to prevent them escaping this context
 // and getting used after being GC'd.
-use jni::objects::{JObject, JValue};
+use jni::objects::JObject;
 
 // This is just a pointer. We'll be returning it from our function.
 // We can't return one of the objects with lifetime information because the
@@ -16,10 +16,49 @@ use jni::sys::{jbyteArray, jint, jlong, jbyte};
 use crate::*;
 use bbs::keys::{DeterministicPublicKey, KeyGenOption, SecretKey, DETERMINISTIC_PUBLIC_KEY_COMPRESSED_SIZE};
 use bbs::{ToVariableLengthBytes, FR_COMPRESSED_SIZE, G1_COMPRESSED_SIZE, G2_COMPRESSED_SIZE};
+use crate::{bls_generate_blinded_g2_key, bls_generate_blinded_g1_key, bls_generate_g2_key, bls_generate_g1_key};
 use crate::bbs_sign::*;
-use crate::bbs_blind_commitment::{bbs_blind_commitment_context_init, bbs_blind_commitment_context_add_message_bytes, bbs_blind_commitment_context_add_message_prehashed, bbs_blind_commitment_context_set_public_key, bbs_blind_commitment_context_set_nonce_bytes, bbs_blind_commitment_context_finish};
-use crate::bbs_blind_sign::{bbs_blind_sign_context_init, bbs_blind_sign_context_set_secret_key, bbs_blind_sign_context_set_public_key, bbs_blind_sign_context_set_commitment, bbs_blind_sign_context_add_message_bytes, bbs_blind_sign_context_add_message_prehashed, bbs_blind_sign_context_finish};
+use crate::bls::{
+    bls_secret_key_size, bls_public_key_g1_size, bls_public_key_g2_size, bls_get_public_key};
+use crate::bbs_blind_commitment::{bbs_blind_commitment_context_init, bbs_blind_commitment_context_add_message_bytes, bbs_blind_commitment_context_add_message_prehashed, bbs_blind_commitment_context_set_public_key, bbs_blind_commitment_context_set_nonce_bytes, bbs_blind_commitment_context_finish, bbs_blind_signature_size};
+use crate::bbs_blind_sign::{bbs_blind_sign_context_init, bbs_blind_sign_context_set_secret_key, bbs_blind_sign_context_set_public_key, bbs_blind_sign_context_set_commitment, bbs_blind_sign_context_add_message_bytes, bbs_blind_sign_context_add_message_prehashed, bbs_blind_sign_context_finish, bbs_blinding_factor_size, bbs_unblind_signature};
 
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_bbs_signatures_Bbs_bls_1public_1key_1g1_1size(_: JNIEnv, _: JObject) -> jint {
+    bls_public_key_g1_size()
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_bbs_signatures_Bbs_bls_1public_1key_1g2_1size(_: JNIEnv, _: JObject) -> jint {
+    bls_public_key_g2_size()
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_bbs_signatures_Bbs_blinding_1factor_1size(_: JNIEnv, _: JObject) -> jint {
+    bbs_blinding_factor_size()
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_bbs_signatures_Bbs_bls_1secret_1key_1size(_: JNIEnv, _: JObject) -> jint {
+    bls_secret_key_size()
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1signature_1size(_: JNIEnv, _: JObject) -> jint {
+    bbs_signature_size()
+}
+
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1signature_1size(_: JNIEnv, _: JObject) -> jint {
+    bbs_blind_signature_size()
+}
 
 #[allow(non_snake_case)]
 #[no_mangle]
@@ -503,6 +542,73 @@ pub extern "C" fn Java_Bbs_bbs_1blind_1sign_1finish(env: JNIEnv, _: JObject, han
     let ss: Vec<jbyte> = s.into_vec().iter().map(|b| *b as jbyte).collect();
     copy_to_jni!(env, signature, ss.as_slice());
     1
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1unblind_1signature(env: JNIEnv,
+                                                                  _: JObject,
+                                                                  blind_signature: jbyteArray,
+                                                                  blinding_factor: jbyteArray,
+                                                                  unblind_signature: jbyteArray) -> jint {
+    let mut err = ExternError::success();
+    let bs;
+    match env.convert_byte_array(blind_signature) {
+        Err(_) => return 0,
+        Ok(s) => bs = s,
+    };
+    let bf;
+    match env.convert_byte_array(blinding_factor) {
+        Err(_) => return 0,
+        Ok(s) => bf = s,
+    };
+
+    let mut signature = ByteBuffer::default();
+    let res = bbs_unblind_signature(ByteArray::from(bs), ByteArray::from(bf), &mut signature, &mut err);
+    if res == 0 {
+        return res;
+    }
+    let signature: Vec<jbyte> = signature.into_vec().iter().map(|b| *b as jbyte).collect();
+    copy_to_jni!(env, unblind_signature, signature.as_slice());
+    1
+}
+
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1init(env: JNIEnv, _: JObject) -> jlong {
+    0
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1set_1public_1key(env: JNIEnv, _: JObject, handle: jlong, public_key: jbyteArray) -> jint {
+    0
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1set_1signature(env: JNIEnv, _: JObject, handle: jlong, signature: jbyteArray) -> jint {
+    0
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1set_1nonce_1bytes(env: JNIEnv, _: JObject, handle: jlong, nonce: jbyteArray) -> jint {
+    0
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1add_1proof_1message_1bytes(env: JNIEnv, _: JObject, handle: jlong, message: jbyteArray, xtype: jint, blinding_factor: jbyteArray) -> jint {
+    0
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1finish(env: JNIEnv, _: JObject, handle: jlong) -> jbyteArray {
+    let bad_res = env.new_byte_array(0).unwrap();
+    bad_res
 }
 
 fn get_secret_key(env: &JNIEnv, secret_key: jbyteArray) -> Result<SecretKey, jint> {
