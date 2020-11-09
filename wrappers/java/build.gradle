@@ -56,11 +56,18 @@ task buildAndCopyBinaries {
     dependsOn ':copyAndroidBinaries'
 }
 
-tasks.withType(Test) {
-    systemProperty "java.library.path", "build/libs/bbs/shared"
+/* Copy the native bbs file */
+task copyNativeDeps(type: Copy) {
+    from (configurations.compile+configurations.testCompile) {
+        include "bbs.dylib"
+    }
+    into 'build/libs'
 }
 
 test {
+    dependsOn copyNativeDeps
+    systemProperty "java.library.path", 'build/libs'
+
     useJUnit()
 
     maxHeapSize = '1G'

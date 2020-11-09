@@ -165,16 +165,3 @@ pub extern "C" fn bls_public_key_to_bbs_key(
         }
     }
 }
-
-fn generate_keys(
-    seed: Option<KeyGenOption>,
-    public_key: &mut ByteBuffer,
-    secret_key: &mut ByteBuffer,
-    err: &mut ExternError,
-) -> i32 {
-    let (dpk, sk) = DeterministicPublicKey::new(seed);
-    *public_key = ByteBuffer::from_vec(dpk.to_bytes_compressed_form().to_vec());
-    *secret_key = ByteBuffer::from_vec(sk.to_bytes_compressed_form().to_vec());
-    *err = ExternError::success();
-    0
-}

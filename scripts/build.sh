@@ -24,12 +24,21 @@ then
   ANDROID_NDK_HOME=$3
 fi
 
+echo "Building for PLATFORM: $1"
+echo "To OUTPUT_LOCATION: $2"
+
 case $PLATFORM in
   WINDOWS)
-    echo "Building for PLATFORM: $1"
-    echo "To OUTPUT_LOCATION: $2"
     # rustup target install i686-pc-windows-gnu x86_64-pc-windows-gnu
     cargo build --release
+    ;;
+  MACOS)
+    mkdir -p $OUTPUT_LOCATION/macos
+
+    # TODO if we aren't running on macos then we cannot build
+    cargo build --release --features java
+    cp "./target/release/libbbs.a" $OUTPUT_LOCATION/macos
+
     ;;
   IOS)
       mkdir -p $OUTPUT_LOCATION/ios
@@ -84,14 +93,6 @@ case $PLATFORM in
         mkdir -p $OUTPUT_LOCATION/android/x86/
         cargo build --target i686-linux-android --release
         cp ./target/i686-linux-android/release/libbbs.so $OUTPUT_LOCATION/android/x86/
-
-        # x86_64 build
-        # echo "Building for Android x86_64"
-        # "$ANDROID_NDK_HOME/build/tools/make_standalone_toolchain.py" --api $ANDROID_API_LEVEL --arch x86_64 --install-dir .NDK/x86_64 --force;
-        # rustup target add x86_64-linux-android
-        # mkdir -p $OUTPUT_LOCATION/android/x86_64/
-        # cargo build --target x86_64-linux-android --release
-        # cp ./target/x86_64-linux-android/release/libbbs.so $OUTPUT_LOCATION/android/x86_64/
       ;;
   *)
     echo "ERROR: PLATFORM unknown: $1"

@@ -9,9 +9,10 @@ import static org.junit.Assert.*;
 public class LibraryTest {
     @Test public void testSomeLibraryMethod() {
         try {
-            KeyPair keyPair = Bbs.generateG1Key(null);
+            KeyPair keyPair = Bbs.generateBls12381G1Key(null);
         }
         catch (Exception e) {
+            System.out.println(e);
         }
     }
 }

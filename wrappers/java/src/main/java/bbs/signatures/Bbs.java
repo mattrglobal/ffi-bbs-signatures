@@ -60,6 +60,11 @@ class ProofMessage {
 }
 
 class Bbs {
+
+    static {
+        System.loadLibrary("bbs");
+    }
+
     private static native int bls_public_key_g1_size();
     private static native int bls_public_key_g2_size();
     private static native int blinding_factor_size(void);
@@ -111,7 +116,7 @@ class Bbs {
     private static native int bbs_create_proof_context_add_proof_message_bytes(long handle, byte[] message, int xtype, byte[] blinding_factor);
     private static native byte[] bbs_create_proof_context_finish(long handle);
 
-    public static KeyPair generateG1Key(byte[] seed) throws Exception {
+    public static KeyPair generateBls12381G1Key(byte[] seed) throws Exception {
         byte[] public_key = new byte[bls_public_key_g1_size()];
         byte[] secret_key = new byte[bls_secret_key_size()];
         if (0 == bls_generate_g1_key(seed, public_key, secret_key)) {
@@ -120,7 +125,7 @@ class Bbs {
         return new KeyPair(public_key, secret_key);
     }
 
-    public static KeyPair generateG2Key(byte[] seed) throws Exception {
+    public static KeyPair generateBls12381G2Key(byte[] seed) throws Exception {
         byte[] public_key = new byte[bls_public_key_g2_size()];
         byte[] secret_key = new byte[bls_secret_key_size()];
         if (0 == bls_generate_g2_key(seed, public_key, secret_key)) {
@@ -129,7 +134,11 @@ class Bbs {
         return new KeyPair(public_key, secret_key);
     }
 
+<<<<<<< Updated upstream
     public static BlindedKeyPair generateBlindedG1Key(byte[] seed) throw Exception {
+=======
+    public static BlindedKeyPair generateBlindedBls12381G1Key(byte[] seed) throws Exception {
+>>>>>>> Stashed changes
         byte[] public_key = new byte[bls_public_key_g1_size()];
         byte[] secret_key = new byte[bls_secret_key_size()];
         byte[] blinding_factor = new byte[blinding_factor_size()];
@@ -140,7 +149,11 @@ class Bbs {
         return new BlindedKeyPair(public_key, secret_key, blinding_factor);
     }
 
+<<<<<<< Updated upstream
     public static BlindedKeyPair generateBlindedG2Key(byte[] seed) throw Exception {
+=======
+    public static BlindedKeyPair generateBlindedBls12381G2Key(byte[] seed) throws Exception {
+>>>>>>> Stashed changes
         byte[] public_key = new byte[bls_public_key_g2_size()];
         byte[] secret_key = new byte[bls_secret_key_size()];
         byte[] blinding_factor = new byte[blinding_factor_size()];
@@ -277,18 +290,5 @@ class Bbs {
             throw new Exception("Unable to create proof");
         }
         return proof;
-    }
-
-    static {
-        System.loadLibrary("bbs");
-    }
-
-    public static void main(String[] args) {
-        byte[] seed = new byte[32];
-        byte[] blinding_factor = new byte[32];
-        byte[] public_key = new byte[96];
-        byte[] secret_key = new byte[32];
-        bls_generate_blinded_g1_key(seed, blinding_factor, public_key, secret_key);
-        System.out.println("Bbs");
     }
 }
