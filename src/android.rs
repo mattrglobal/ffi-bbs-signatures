@@ -153,7 +153,8 @@ pub extern "C" fn Java_Bbs_bls_1secret_1key_1to_1bbs_1key(env: JNIEnv, _: JObjec
         return bad_res;
     }
 
-    match env.new_byte_array(pp.len() as jint) {
+    // TODO
+    match env.new_byte_array(10 as jint) {
         Err(_) => bad_res,
         Ok(out) => {
             let pp: Vec<jbyte> = pk.to_bytes_compressed_form().iter().map(|b| *b as jbyte).collect();
@@ -186,7 +187,8 @@ pub extern "C" fn Java_Bbs_bls_1public_1key_1to_1bbs_1key(env: JNIEnv, _: JObjec
         return bad_res;
     }
 
-    match env.new_byte_array(pp.len() as jint) {
+    // TODO
+    match env.new_byte_array(10 as jint) {
         Err(_) => bad_res,
         Ok(out) => {
             let pp: Vec<jbyte> = pk.to_bytes_compressed_form().iter().map(|b| *b as jbyte).collect();

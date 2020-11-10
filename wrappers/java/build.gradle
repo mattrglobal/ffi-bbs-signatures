@@ -28,44 +28,67 @@ dependencies {
     testImplementation 'junit:junit:4.13'
 }
 
-// Builds the android binaries
+// Builds all the available binaries
+// given the current host
 task buildAndroidBinaries(type:Exec) {  
     workingDir '../../'
 
-    //on windows
-    //TODO add support
+    // Builds the Android Binaries
+    commandLine './scripts/build.sh' ,'ANDROID' ,'out'
+}
 
-    //on linux
-    commandLine './scripts/build.sh' ,'ANDROID' ,'out' //TODO what about other environments other than android
+// Builds all the available binaries
+// given the current host
+task buildMacosBinaries(type:Exec) {  
+    workingDir '../../'
+
+    // Build MacOS Binaries (if on Mac)
+    commandLine './scripts/build.sh' ,'MACOS', 'out'
+}
+
+// Builds and copies the required binaries for the java wrapper
+task buildBinaries {
+    dependsOn ':buildAndroidBinaries'
+    dependsOn ':buildMacosBinaries'
 }
 
 // Copies the android binaries to the JNI libraries folder
 task copyAndroidBinaries(type:Exec) {
     workingDir '../../'
-    
-    //on windows
-    //TODO add support
 
     //on linux
     commandLine 'cp', '-r', 'out/android/', 'wrappers/java/src/main/jniLibs/'
 }
 
+// Copies the android binaries to the JNI libraries folder
+task copyMacosBinaries(type:Exec) {
+    workingDir '../../'
+    
+    //on macos
+    commandLine 'cp', '-r', 'out/macos/', 'wrappers/java/src/main/jniLibs/'
+}
+
+// Copies the required binaries for the java wrapper
+task copyBinaries {
+    dependsOn ':copyAndroidBinaries'
+    dependsOn ':copyMacosBinaries'
+}
+
 // Builds and copies the required binaries for the java wrapper
 task buildAndCopyBinaries {
-    dependsOn ':buildAndroidBinaries'
-    dependsOn ':copyAndroidBinaries'
+    dependsOn ':buildBinaries'
+    dependsOn ':copyBinaries'
 }
 
 /* Copy the native bbs file */
-task copyNativeDeps(type: Copy) {
-    from (configurations.compile+configurations.testCompile) {
-        include "bbs.dylib"
-    }
+task copyMacosNativeDep(type: Copy) {
+    from 'src/main/jniLibs/darwin-x86_64/libbbs.dylib'
     into 'build/libs'
 }
 
+/* Test with JUNIT on Macos */
 test {
-    dependsOn copyNativeDeps
+    dependsOn copyMacosNativeDep
     systemProperty "java.library.path", 'build/libs'
 
     useJUnit()

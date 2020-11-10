@@ -67,7 +67,7 @@ class Bbs {
 
     private static native int bls_public_key_g1_size();
     private static native int bls_public_key_g2_size();
-    private static native int blinding_factor_size(void);
+    private static native int blinding_factor_size();
     private static native int bls_secret_key_size();
     private static native int bls_generate_g1_key(byte[] seed, byte[] public_key, byte[] secret_key);
     private static native int bls_generate_g2_key(byte[] seed, byte[] public_key, byte[] secret_key);
@@ -116,6 +116,14 @@ class Bbs {
     private static native int bbs_create_proof_context_add_proof_message_bytes(long handle, byte[] message, int xtype, byte[] blinding_factor);
     private static native byte[] bbs_create_proof_context_finish(long handle);
 
+    public static int getBls12381G1PublicKeySize() {
+        return bls_public_key_g1_size();
+    }
+
+    public static int getBls12381G2PublicKeySize() {
+        return bls_public_key_g2_size();
+    }
+
     public static KeyPair generateBls12381G1Key(byte[] seed) throws Exception {
         byte[] public_key = new byte[bls_public_key_g1_size()];
         byte[] secret_key = new byte[bls_secret_key_size()];
@@ -134,11 +142,7 @@ class Bbs {
         return new KeyPair(public_key, secret_key);
     }
 
-<<<<<<< Updated upstream
-    public static BlindedKeyPair generateBlindedG1Key(byte[] seed) throw Exception {
-=======
     public static BlindedKeyPair generateBlindedBls12381G1Key(byte[] seed) throws Exception {
->>>>>>> Stashed changes
         byte[] public_key = new byte[bls_public_key_g1_size()];
         byte[] secret_key = new byte[bls_secret_key_size()];
         byte[] blinding_factor = new byte[blinding_factor_size()];
@@ -149,11 +153,7 @@ class Bbs {
         return new BlindedKeyPair(public_key, secret_key, blinding_factor);
     }
 
-<<<<<<< Updated upstream
-    public static BlindedKeyPair generateBlindedG2Key(byte[] seed) throw Exception {
-=======
     public static BlindedKeyPair generateBlindedBls12381G2Key(byte[] seed) throws Exception {
->>>>>>> Stashed changes
         byte[] public_key = new byte[bls_public_key_g2_size()];
         byte[] secret_key = new byte[bls_secret_key_size()];
         byte[] blinding_factor = new byte[blinding_factor_size()];

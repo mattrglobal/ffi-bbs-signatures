@@ -29,18 +29,22 @@ echo "To OUTPUT_LOCATION: $2"
 
 case $PLATFORM in
   WINDOWS)
-    # rustup target install i686-pc-windows-gnu x86_64-pc-windows-gnu
-    cargo build --release
+      # rustup target install i686-pc-windows-gnu x86_64-pc-windows-gnu
+      cargo build --release
     ;;
   MACOS)
-    mkdir -p $OUTPUT_LOCATION/macos
+      # TODO Check that the current OS is MAC
+      mkdir -p $OUTPUT_LOCATION/macos
 
-    # TODO if we aren't running on macos then we cannot build
-    cargo build --release --features java
-    cp "./target/release/libbbs.a" $OUTPUT_LOCATION/macos
-
+      # ARM x86_64 darwin build
+      echo "Building for Apple Darwin x86_64"
+      rustup target add x86_64-apple-darwin
+      mkdir -p $OUTPUT_LOCATION/macos/darwin-x86_64/
+      cargo build --target x86_64-apple-darwin --release --features java
+      cp ./target/x86_64-apple-darwin/release/libbbs.dylib $OUTPUT_LOCATION/macos/darwin-x86_64/
     ;;
   IOS)
+      # Create the root directory for the IOS release binaries
       mkdir -p $OUTPUT_LOCATION/ios
 
       # Create the directories at the output location for the release binaries
