@@ -20,7 +20,7 @@ debug = false
 
 [dependencies]
 arrayref = "0.3"
-bbs = { version = "0.4", git = "https://github.com/mikelodder7/ursa", branch = "master" }
+bbs = "0.4"
 ffi-support = "0.4"
 lazy_static = "1.4"
 serde = { version = "1.0", features = ["serde_derive"] }
