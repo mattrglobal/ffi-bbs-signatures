@@ -28,3 +28,5 @@ jobs:
 
       - name: Build and test wrapper
         run: yarn wrapper:obj-c:build
+        env:
+          DEVELOPER_DIR: /Applications/Xcode_11.7.app/Contents/Developer
