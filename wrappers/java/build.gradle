@@ -9,6 +9,17 @@
 plugins {
     // Apply the java-library plugin to add support for Java Library
     id 'java-library'
+    id "application"
+}
+
+apply plugin : "java" 
+
+ext {
+   javaMainClass = "bbs.signatures.Bbs"
+}
+ 
+application {
+    mainClassName = javaMainClass
 }
 
 repositories {
@@ -94,4 +105,15 @@ test {
     useJUnit()
 
     maxHeapSize = '1G'
+    
+    // Enable logging output to stderr
+    testLogging.showStandardStreams = true
+}
+
+task runMain(type: JavaExec) {
+    systemProperty "java.library.path", 'build/libs'
+    group = "Execution"
+    description = "Run the main class with JavaExecTask"
+    classpath = sourceSets.main.runtimeClasspath
+    main = javaMainClass
 }
