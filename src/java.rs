@@ -64,7 +64,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1signature_1size(_: JNIEnv,
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_Bbs_bls_1generate_1g1_1key(env: JNIEnv, _: JObject, seed: jbyteArray, public_key: jbyteArray, secret_key: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1g1_1key(env: JNIEnv, _: JObject, seed: jbyteArray, public_key: jbyteArray, secret_key: jbyteArray) -> jint {
     let ikm;
     match env.convert_byte_array(seed) {
         Err(_) => return 0,
@@ -81,7 +81,7 @@ pub extern "C" fn Java_Bbs_bls_1generate_1g1_1key(env: JNIEnv, _: JObject, seed:
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_Bbs_bls_1generate_1g2_1key(env: JNIEnv, _: JObject, seed: jbyteArray, public_key: jbyteArray, secret_key: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1g2_1key(env: JNIEnv, _: JObject, seed: jbyteArray, public_key: jbyteArray, secret_key: jbyteArray) -> jint {
     let ikm;
     match env.convert_byte_array(seed) {
         Err(_) => return 0,
@@ -98,7 +98,7 @@ pub extern "C" fn Java_Bbs_bls_1generate_1g2_1key(env: JNIEnv, _: JObject, seed:
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_Bbs_bls_1generate_1blinded_1g1_1key(env: JNIEnv, _: JObject, seed: jbyteArray, bf: jbyteArray, public_key: jbyteArray, secret_key: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1blinded_1g1_1key(env: JNIEnv, _: JObject, seed: jbyteArray, bf: jbyteArray, public_key: jbyteArray, secret_key: jbyteArray) -> jint {
     let ikm;
     match env.convert_byte_array(seed) {
         Err(_) => return 0,
@@ -117,7 +117,7 @@ pub extern "C" fn Java_Bbs_bls_1generate_1blinded_1g1_1key(env: JNIEnv, _: JObje
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_Bbs_bls_1generate_1blinded_1g2_1key(env: JNIEnv, _: JObject, seed: jbyteArray, bf: jbyteArray, public_key: jbyteArray, secret_key: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1blinded_1g2_1key(env: JNIEnv, _: JObject, seed: jbyteArray, bf: jbyteArray, public_key: jbyteArray, secret_key: jbyteArray) -> jint {
     let ikm;
     match env.convert_byte_array(seed) {
         Err(_) => return 0,

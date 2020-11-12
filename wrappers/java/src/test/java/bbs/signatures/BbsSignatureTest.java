@@ -47,7 +47,9 @@ public class BbsSignatureTest {
             exception.printStackTrace();
         }
 
-        assertNotNull("The Bls12381G1 key pair generated is not null", keyPair);
+        assertNotNull(keyPair);
+        assertEquals(keyPair.publicKey.length, Bbs.getBls12381G1PublicKeySize());
+        assertEquals(keyPair.secretKey.length, Bbs.getSecretKeySize());
     }
 
 //    @Test
