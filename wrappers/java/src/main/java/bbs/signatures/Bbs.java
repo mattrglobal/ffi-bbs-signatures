@@ -7,58 +7,7 @@ package bbs.signatures;
  * used by the src/android.rs
  */
 
-import java.lang.reflect.Field;
 import java.util.Map;
-
-class BlindCommitmentContext {
-    public byte[] commitment;
-    public byte[] proof;
-    public byte[] blinding_factor;
-
-    public BlindCommitmentContext(byte[] commitment, byte[] proof, byte[] blinding_factor) {
-        this.commitment = commitment;
-        this.proof = proof;
-        this.blinding_factor = blinding_factor;
-    }
-}
-
-class KeyPair {
-    public byte[] secretKey;
-    public byte[] publicKey;
-
-    public KeyPair(byte[] publicKey, byte[] secretKey) {
-        this.publicKey = publicKey;
-        this.secretKey = secretKey;
-    }
-}
-
-
-class BlindedKeyPair {
-    public byte[] secretKey;
-    public byte[] publicKey;
-    public byte[] blindingFactor;
-
-    public BlindedKeyPair(byte[] publicKey, byte[] secretKey, byte[] blindingFactor) {
-        this.publicKey = publicKey;
-        this.secretKey = secretKey;
-        this.blindingFactor = blindingFactor;
-    }
-}
-
-class ProofMessage {
-    public static final int PROOF_MESSAGE_TYPE_REVEALED = 1;
-    public static final int PROOF_MESSAGE_TYPE_HIDDEN_PROOF_SPECIFIC_BLINDING = 2;
-    public static final int PROOF_MESSAGE_TYPE_HIDDEN_EXTERNAL_BLINDING = 3;
-    public int type;
-    public byte[] message;
-    public byte[] blinding_factor;
-
-    public ProofMessage(int type, byte[] message, byte[] blinding_factor) {
-        this.type = type;
-        this.message = message;
-        this.blinding_factor = blinding_factor;
-    }
-}
 
 public class Bbs {
 
@@ -122,7 +71,7 @@ public class Bbs {
 
     private static native int bbs_verify_add_message_bytes(long handle, byte[] message); // [Opt]
 
-    private static native int bbs_verify_add_message_prehashed(long handle, byte[] hash);
+    private static native int bbs_verify_add_message_prehashed(long handle, byte[] hash); // ?
 
     private static native int bbs_verify_set_public_key(long handle, byte[] public_key); // [Opt]
 
@@ -199,8 +148,7 @@ public class Bbs {
     public static KeyPair generateBls12381G1Key(byte[] seed) throws Exception {
         byte[] public_key = new byte[bls_public_key_g1_size()];
         byte[] secret_key = new byte[bls_secret_key_size()];
-
-        if (0 == bls_generate_g1_key(seed, public_key, secret_key)) {
+        if (0 != bls_generate_g1_key(seed, public_key, secret_key)) {
             throw new Exception("Unable to generate keys");
         }
         return new KeyPair(public_key, secret_key);
@@ -209,7 +157,7 @@ public class Bbs {
     public static KeyPair generateBls12381G2Key(byte[] seed) throws Exception {
         byte[] public_key = new byte[bls_public_key_g2_size()];
         byte[] secret_key = new byte[bls_secret_key_size()];
-        if (0 == bls_generate_g2_key(seed, public_key, secret_key)) {
+        if (0 != bls_generate_g2_key(seed, public_key, secret_key)) {
             throw new Exception("Unable to generate keys");
         }
         return new KeyPair(public_key, secret_key);
@@ -217,10 +165,9 @@ public class Bbs {
 
     public static BlindedKeyPair generateBlindedBls12381G1Key(byte[] seed) throws Exception {
         byte[] public_key = new byte[bls_public_key_g1_size()];
-        byte[] secret_key = new byte[bls_secret_key_size()];
+        byte[] secret_key = new byte[bls_public_key_g1_size()]; // TODO Check secret key size, 32b throws exception
         byte[] blinding_factor = new byte[blinding_factor_size()];
-
-        if (0 == bls_generate_blinded_g1_key(seed, public_key, secret_key, blinding_factor)) {
+        if (0 != bls_generate_blinded_g1_key(seed, public_key, secret_key, blinding_factor)) {
             throw new Exception("Unable to generate keys");
         }
         return new BlindedKeyPair(public_key, secret_key, blinding_factor);
@@ -228,10 +175,10 @@ public class Bbs {
 
     public static BlindedKeyPair generateBlindedBls12381G2Key(byte[] seed) throws Exception {
         byte[] public_key = new byte[bls_public_key_g2_size()];
-        byte[] secret_key = new byte[bls_secret_key_size()];
+        byte[] secret_key = new byte[bls_public_key_g2_size()]; // TODO Check secret key size, 32b throws exception
         byte[] blinding_factor = new byte[blinding_factor_size()];
 
-        if (0 == bls_generate_blinded_g2_key(seed, public_key, secret_key, blinding_factor)) {
+        if (0 != bls_generate_blinded_g2_key(seed, public_key, secret_key, blinding_factor)) {
             throw new Exception("Unable to generate keys");
         }
         return new BlindedKeyPair(public_key, secret_key, blinding_factor);
@@ -242,19 +189,19 @@ public class Bbs {
         if (0 == handle) {
             throw new Exception("Unable to create signing context");
         }
-        if (0 == bbs_sign_set_secret_key(handle, secret_key)) {
+        if (0 != bbs_sign_set_secret_key(handle, secret_key)) {
             throw new Exception("Unable to set secret key");
         }
-        if (0 == bbs_sign_set_public_key(handle, public_key)) {
+        if (0 != bbs_sign_set_public_key(handle, public_key)) {
             throw new Exception("Unable to set public key");
         }
         for (byte[] msg : messages) {
-            if (0 == bbs_sign_add_message_bytes(handle, msg)) {
+            if (0 != bbs_sign_add_message_bytes(handle, msg)) {
                 throw new Exception("Unable to add message");
             }
         }
         byte[] signature = new byte[96];
-        if (0 == bbs_sign_finish(handle, signature)) {
+        if (0 != bbs_sign_finish(handle, signature)) {
             throw new Exception("Unable to create signature");
         }
         return signature;
@@ -265,22 +212,22 @@ public class Bbs {
         if (0 == handle) {
             throw new Exception("Unable to create verify signature context");
         }
-        if (0 == bbs_verify_set_public_key(handle, public_key)) {
+        if (0 != bbs_verify_set_public_key(handle, public_key)) {
             throw new Exception("Unable to set public key");
         }
-        if (0 == bbs_verify_set_signature(handle, signature)) {
+        if (0 != bbs_verify_set_signature(handle, signature)) {
             throw new Exception("Unable to set signature");
         }
         for (byte[] msg : messages) {
-            if (0 == bbs_verify_add_message_bytes(handle, msg)) {
+            if (0 != bbs_verify_add_message_bytes(handle, msg)) {
                 throw new Exception("Unable to add message");
             }
         }
         int res = bbs_verify_finish(handle);
         switch (res) {
-            case 1:
-                return true;
             case 0:
+                return true;
+            case 1:
                 return false;
             default:
                 throw new Exception("Unable to verify signature");
@@ -292,14 +239,14 @@ public class Bbs {
         if (0 == handle) {
             throw new Exception("Unable to create blind commitment context");
         }
-        if (0 == bbs_blind_commitment_set_public_key(handle, public_key)) {
+        if (0 != bbs_blind_commitment_set_public_key(handle, public_key)) {
             throw new Exception("Unable to set public key");
         }
-        if (0 == bbs_blind_commitment_set_nonce_bytes(handle, nonce)) {
+        if (0 != bbs_blind_commitment_set_nonce_bytes(handle, nonce)) {
             throw new Exception("Unable to set nonce");
         }
         for (Map.Entry<Integer, byte[]> entry : messages.entrySet()) {
-            if (0 == bbs_blind_commitment_add_message_bytes(handle, entry.getKey(), entry.getValue())) {
+            if (0 != bbs_blind_commitment_add_message_bytes(handle, entry.getKey(), entry.getValue())) {
                 throw new Exception("Unable to add message");
             }
         }
@@ -317,26 +264,26 @@ public class Bbs {
         long handle = bbs_blind_sign_init();
         if (0 == handle)
             throw new Exception("Unable to create blind sign context");
-        if (0 == bbs_blind_sign_set_secret_key(handle, secret_key))
+        if (0 != bbs_blind_sign_set_secret_key(handle, secret_key))
             throw new Exception("Unable to set secret key");
-        if (0 == bbs_blind_sign_set_public_key(handle, public_key))
+        if (0 != bbs_blind_sign_set_public_key(handle, public_key))
             throw new Exception("Unable to set public key");
-        if (0 == bbs_blind_sign_set_commitment(handle, commitment))
+        if (0 != bbs_blind_sign_set_commitment(handle, commitment))
             throw new Exception("Unable to set commitment");
         for (Map.Entry<Integer, byte[]> entry : messages.entrySet()) {
-            if (0 == bbs_blind_sign_add_message_bytes(handle, entry.getKey(), entry.getValue())) {
+            if (0 != bbs_blind_sign_add_message_bytes(handle, entry.getKey(), entry.getValue())) {
                 throw new Exception("Unable to add message");
             }
         }
         byte[] blind_signature = new byte[bbs_blind_signature_size()];
-        if (0 == bbs_blind_sign_finish(handle, blind_signature))
+        if (0 != bbs_blind_sign_finish(handle, blind_signature))
             throw new Exception("Unable to create blind signature");
         return blind_signature;
     }
 
     public static byte[] unblindSignature(byte[] blindSignature, byte[] blindingFactor) {
         byte[] signature = new byte[bbs_signature_size()];
-        if (0 == bbs_unblind_signature(blindSignature, blindingFactor, signature)) {
+        if (0 != bbs_unblind_signature(blindSignature, blindingFactor, signature)) {
             return null;
         }
         return signature;
@@ -347,17 +294,17 @@ public class Bbs {
         if (0 == handle) {
             throw new Exception("Unable to create proof context");
         }
-        if (0 == bbs_create_proof_context_set_public_key(handle, publicKey)) {
+        if (0 != bbs_create_proof_context_set_public_key(handle, publicKey)) {
             throw new Exception("Unable to set public key");
         }
-        if (0 == bbs_create_proof_context_set_nonce_bytes(handle, nonce)) {
+        if (0 != bbs_create_proof_context_set_nonce_bytes(handle, nonce)) {
             throw new Exception("Unable to set nonce");
         }
-        if (0 == bbs_create_proof_context_set_signature(handle, signature)) {
+        if (0 != bbs_create_proof_context_set_signature(handle, signature)) {
             throw new Exception("Unable to set signature");
         }
         for (int i = 0; i < messages.length; i++) {
-            if (0 == bbs_create_proof_context_add_proof_message_bytes(handle, messages[i].message, messages[i].type, messages[i].blinding_factor)) {
+            if (0 != bbs_create_proof_context_add_proof_message_bytes(handle, messages[i].message, messages[i].type, messages[i].blinding_factor)) {
                 throw new Exception("Unable to add proof message");
             }
         }

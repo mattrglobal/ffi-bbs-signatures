@@ -11,6 +11,7 @@
     "build": "yarn build:ios && yarn build:android",
     "build:ios": "mkdir -p ./out && ./scripts/build.sh IOS ./out",
     "build:android": "mkdir -p ./out && ./scripts/build.sh ANDROID ./out",
+    "build:macos": "mkdir -p ./out && ./scripts/build.sh MACOS ./out",
     "test": "make test",
     "wrapper:obj-c:build": "pod lib lint --allow-warnings",
     "wrapper:obj-c:update-binary": "yarn build:ios && cp out/ios/universal/libbbs.a wrappers/obj-c/libraries/libbbs.a",
