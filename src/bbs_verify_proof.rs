@@ -1,7 +1,10 @@
 use crate::{BbsFfiError, ByteArray, SignatureProofStatus};
 use bbs::prelude::*;
 use ffi_support::*;
-use serde::{Deserialize, Deserializer, Serialize, Serializer, de::{Error as DError, Visitor}};
+use serde::{
+    de::{Error as DError, Visitor},
+    Deserialize, Deserializer, Serialize, Serializer,
+};
 use std::{
     collections::{BTreeMap, BTreeSet},
     convert::TryFrom,
@@ -52,7 +55,10 @@ impl TryFrom<Vec<u8>> for PoKOfSignatureProofWrapper {
 
 impl PoKOfSignatureProofWrapper {
     pub fn unpack(&self) -> (BTreeSet<usize>, PoKOfSignatureProof) {
-        (bitvector_to_revealed(&self.bit_vector[2..]), self.proof.clone())
+        (
+            bitvector_to_revealed(&self.bit_vector[2..]),
+            self.proof.clone(),
+        )
     }
 
     pub fn to_bytes(&self) -> Vec<u8> {
@@ -169,16 +175,11 @@ pub extern "C" fn bbs_verify_proof_context_finish(handle: u64, err: &mut ExternE
                 Err(BbsFfiError::new("Indices are not equal"))?;
             }
 
-            let mut challenge_bytes =
-                proof.get_bytes_for_challenge(revealed.clone(), public_key);
+            let mut challenge_bytes = proof.get_bytes_for_challenge(revealed.clone(), public_key);
             challenge_bytes.extend_from_slice(&nonce.to_bytes_compressed_form()[..]);
 
             let challenge_verifier = ProofChallenge::hash(&challenge_bytes);
-            let res = proof.verify(
-                public_key,
-                &ctx.messages,
-                &challenge_verifier,
-            )?;
+            let res = proof.verify(public_key, &ctx.messages, &challenge_verifier)?;
             Ok(SignatureProofStatus::from(res) as i32)
         },
     );

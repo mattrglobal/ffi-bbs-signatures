@@ -359,6 +359,62 @@ JNIEXPORT jint JNICALL Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1add_
 JNIEXPORT jbyteArray JNICALL Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1finish
   (JNIEnv *, jclass, jlong);
 
+/*
+ * Class:     bbs_signatures_Bbs
+ * Method:    bbs_verify_proof_context_init
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1init
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     bbs_signatures_Bbs
+ * Method:    bbs_verify_proof_context_add_message_bytes
+ * Signature: (JI[B)I
+ */
+JNIEXPORT jint JNICALL Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1add_1message_1bytes
+  (JNIEnv *, jclass, jlong, jint, jbyteArray);
+
+/*
+ * Class:     bbs_signatures_Bbs
+ * Method:    bbs_verify_proof_context_add_message_prehashed
+ * Signature: (JI[B)I
+ */
+JNIEXPORT jint JNICALL Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1add_1message_1prehashed
+  (JNIEnv *, jclass, jlong, jint, jbyteArray);
+
+/*
+ * Class:     bbs_signatures_Bbs
+ * Method:    bbs_verify_proof_context_set_proof
+ * Signature: (J[B)I
+ */
+JNIEXPORT jint JNICALL Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1set_1proof
+  (JNIEnv *, jclass, jlong, jbyteArray);
+
+/*
+ * Class:     bbs_signatures_Bbs
+ * Method:    bbs_verify_proof_context_set_public_key
+ * Signature: (J[B)I
+ */
+JNIEXPORT jint JNICALL Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1set_1public_1key
+  (JNIEnv *, jclass, jlong, jbyteArray);
+
+/*
+ * Class:     bbs_signatures_Bbs
+ * Method:    bbs_verify_proof_context_set_nonce_bytes
+ * Signature: (J[B)I
+ */
+JNIEXPORT jint JNICALL Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1set_1nonce_1bytes
+  (JNIEnv *, jclass, jlong, jbyteArray);
+
+/*
+ * Class:     bbs_signatures_Bbs
+ * Method:    bbs_verify_proof_context_finish
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1finish
+  (JNIEnv *, jclass, jlong);
+
 #ifdef __cplusplus
 }
 #endif

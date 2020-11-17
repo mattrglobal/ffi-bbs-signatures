@@ -146,7 +146,10 @@ pub extern "C" fn bls_public_key_to_bbs_key(
     let res = DeterministicPublicKey::try_from(bytes.clone());
     match res {
         Err(e) => {
-            *err = ExternError::new_error(ErrorCode::new(1), format!("{:?}. Found length {} with {:?}", e, bytes.len(), bytes));
+            *err = ExternError::new_error(
+                ErrorCode::new(1),
+                format!("{:?}. Found length {} with {:?}", e, bytes.len(), bytes),
+            );
             1
         }
         Ok(dpk) => {

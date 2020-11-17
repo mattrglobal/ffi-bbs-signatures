@@ -121,6 +121,20 @@ public class Bbs {
 
     private static native byte[] bbs_create_proof_context_finish(long handle); // [V]
 
+    private static native long bbs_verify_proof_context_init();
+
+    private static native int bbs_verify_proof_context_add_message_bytes(long handle, int index, byte[] message);
+
+    private static native int bbs_verify_proof_context_add_message_prehashed(long handle, int index, byte[] hash);
+
+    private static native int bbs_verify_proof_context_set_proof(long handle, byte[] proof);
+
+    private static native int bbs_verify_proof_context_set_public_key(long handle, byte[] public_key);
+
+    private static native int bbs_verify_proof_context_set_nonce_bytes(long handle, byte[] nonce);
+
+    private static native int bbs_verify_proof_context_finish(long handle);
+
     public static int getBls12381G1PublicKeySize() {
         return bls_public_key_g1_size();
     }
@@ -313,5 +327,36 @@ public class Bbs {
             throw new Exception("Unable to create proof");
         }
         return proof;
+    }
+
+    public static boolean verifyProof(byte[] public_key, byte[] proof, byte[] nonce, Map<Integer, byte[]> messages) throws Exception {
+        long handle = bbs_verify_proof_context_init();
+        if (0 == handle) {
+            throw new Exception("Unable to create verify signature context");
+        }
+        if (0 != bbs_verify_proof_context_set_public_key(handle, public_key)) {
+            throw new Exception("Unable to set public key");
+        }
+        if (0 != bbs_verify_proof_context_set_proof(handle, proof)) {
+            throw new Exception("Unable to set signature");
+        }
+        if (0 != bbs_verify_proof_context_set_nonce_bytes(handle, nonce)) {
+            throw new Exception("Unable to set nonce");
+        }
+        for (Map.Entry<Integer, byte[]> entry : messages.entrySet()) {
+            if (0 != bbs_verify_proof_context_add_message_bytes(handle, entry.getKey(), entry.getValue())) {
+                throw new Exception("Unable to add message");
+            }
+        }
+        int res = bbs_verify_proof_context_finish(handle);
+
+        switch (res) {
+            case 1:
+                return true;
+            case 0:
+                return false;
+            default:
+                throw new Exception("Unable to verify proof");
+        }
     }
 }

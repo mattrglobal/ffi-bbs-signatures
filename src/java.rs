@@ -1,4 +1,3 @@
-
 // This is the interface to the JVM that we'll
 // call the majority of our methods on.
 use jni::JNIEnv;
@@ -11,29 +10,59 @@ use jni::objects::JObject;
 // This is just a pointer. We'll be returning it from our function.
 // We can't return one of the objects with lifetime information because the
 // lifetime checker won't let us.
-use jni::sys::{jbyteArray, jint, jlong, jbyte};
+use jni::sys::{jbyte, jbyteArray, jint, jlong};
 
-use crate::*;
-use bbs::keys::{DeterministicPublicKey, KeyGenOption, SecretKey, DETERMINISTIC_PUBLIC_KEY_COMPRESSED_SIZE};
-use bbs::{ToVariableLengthBytes, FR_COMPRESSED_SIZE, G1_COMPRESSED_SIZE, G2_COMPRESSED_SIZE};
-use crate::{bls_generate_blinded_g2_key, bls_generate_blinded_g1_key, bls_generate_g2_key, bls_generate_g1_key};
+use crate::bbs_blind_commitment::{
+    bbs_blind_commitment_context_add_message_bytes,
+    bbs_blind_commitment_context_add_message_prehashed, bbs_blind_commitment_context_finish,
+    bbs_blind_commitment_context_init, bbs_blind_commitment_context_set_nonce_bytes,
+    bbs_blind_commitment_context_set_public_key, bbs_blind_signature_size,
+};
+use crate::bbs_blind_sign::{
+    bbs_blind_sign_context_add_message_bytes, bbs_blind_sign_context_add_message_prehashed,
+    bbs_blind_sign_context_finish, bbs_blind_sign_context_init,
+    bbs_blind_sign_context_set_commitment, bbs_blind_sign_context_set_public_key,
+    bbs_blind_sign_context_set_secret_key, bbs_blinding_factor_size, bbs_unblind_signature,
+};
+use crate::bbs_create_proof::{
+    bbs_create_proof_context_add_proof_message_bytes, bbs_create_proof_context_finish,
+    bbs_create_proof_context_init, bbs_create_proof_context_set_nonce_bytes,
+    bbs_create_proof_context_set_public_key, bbs_create_proof_context_set_signature,
+};
 use crate::bbs_sign::*;
-use crate::bls::{
-    bls_secret_key_size, bls_public_key_g1_size, bls_public_key_g2_size};
-use crate::bbs_blind_commitment::{bbs_blind_commitment_context_init, bbs_blind_commitment_context_add_message_bytes, bbs_blind_commitment_context_add_message_prehashed, bbs_blind_commitment_context_set_public_key, bbs_blind_commitment_context_set_nonce_bytes, bbs_blind_commitment_context_finish, bbs_blind_signature_size};
-use crate::bbs_blind_sign::{bbs_blind_sign_context_init, bbs_blind_sign_context_set_secret_key, bbs_blind_sign_context_set_public_key, bbs_blind_sign_context_set_commitment, bbs_blind_sign_context_add_message_bytes, bbs_blind_sign_context_add_message_prehashed, bbs_blind_sign_context_finish, bbs_blinding_factor_size, bbs_unblind_signature};
-use crate::bbs_create_proof::{bbs_create_proof_context_init, bbs_create_proof_context_set_public_key, bbs_create_proof_context_set_signature, bbs_create_proof_context_set_nonce_bytes, bbs_create_proof_context_add_proof_message_bytes, bbs_create_proof_context_finish};
+use crate::bbs_verify_proof::{
+    bbs_verify_proof_context_add_message_bytes, bbs_verify_proof_context_add_message_prehashed,
+    bbs_verify_proof_context_finish, bbs_verify_proof_context_init,
+    bbs_verify_proof_context_set_nonce_bytes, bbs_verify_proof_context_set_proof,
+    bbs_verify_proof_context_set_public_key,
+};
+use crate::bls::{bls_public_key_g1_size, bls_public_key_g2_size, bls_secret_key_size};
+use crate::*;
+use crate::{
+    bls_generate_blinded_g1_key, bls_generate_blinded_g2_key, bls_generate_g1_key,
+    bls_generate_g2_key,
+};
+use bbs::keys::{
+    DeterministicPublicKey, KeyGenOption, SecretKey, DETERMINISTIC_PUBLIC_KEY_COMPRESSED_SIZE,
+};
 use bbs::signature::SIGNATURE_COMPRESSED_SIZE;
+use bbs::{ToVariableLengthBytes, FR_COMPRESSED_SIZE, G1_COMPRESSED_SIZE, G2_COMPRESSED_SIZE};
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bls_1public_1key_1g1_1size(_: JNIEnv, _: JObject) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bls_1public_1key_1g1_1size(
+    _: JNIEnv,
+    _: JObject,
+) -> jint {
     bls_public_key_g1_size()
 }
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bls_1public_1key_1g2_1size(_: JNIEnv, _: JObject) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bls_1public_1key_1g2_1size(
+    _: JNIEnv,
+    _: JObject,
+) -> jint {
     bls_public_key_g2_size()
 }
 
@@ -55,16 +84,24 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1signature_1size(_: JNIEnv, _: JOb
     bbs_signature_size()
 }
 
-
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1signature_1size(_: JNIEnv, _: JObject) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1signature_1size(
+    _: JNIEnv,
+    _: JObject,
+) -> jint {
     bbs_blind_signature_size()
 }
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1g1_1key(env: JNIEnv, _: JObject, seed: jbyteArray, public_key: jbyteArray, secret_key: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1g1_1key(
+    env: JNIEnv,
+    _: JObject,
+    seed: jbyteArray,
+    public_key: jbyteArray,
+    secret_key: jbyteArray,
+) -> jint {
     let ikm;
     match env.convert_byte_array(seed) {
         Err(_) => return 0,
@@ -81,7 +118,13 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1g1_1key(env: JNIEnv, _:
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1g2_1key(env: JNIEnv, _: JObject, seed: jbyteArray, public_key: jbyteArray, secret_key: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1g2_1key(
+    env: JNIEnv,
+    _: JObject,
+    seed: jbyteArray,
+    public_key: jbyteArray,
+    secret_key: jbyteArray,
+) -> jint {
     let ikm;
     match env.convert_byte_array(seed) {
         Err(_) => return 0,
@@ -98,7 +141,14 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1g2_1key(env: JNIEnv, _:
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1blinded_1g1_1key(env: JNIEnv, _: JObject, seed: jbyteArray, bf: jbyteArray, public_key: jbyteArray, secret_key: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1blinded_1g1_1key(
+    env: JNIEnv,
+    _: JObject,
+    seed: jbyteArray,
+    bf: jbyteArray,
+    public_key: jbyteArray,
+    secret_key: jbyteArray,
+) -> jint {
     let ikm;
     match env.convert_byte_array(seed) {
         Err(_) => return 0,
@@ -117,7 +167,14 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1blinded_1g1_1key(env: J
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1blinded_1g2_1key(env: JNIEnv, _: JObject, seed: jbyteArray, bf: jbyteArray, public_key: jbyteArray, secret_key: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1blinded_1g2_1key(
+    env: JNIEnv,
+    _: JObject,
+    seed: jbyteArray,
+    bf: jbyteArray,
+    public_key: jbyteArray,
+    secret_key: jbyteArray,
+) -> jint {
     let ikm;
     match env.convert_byte_array(seed) {
         Err(_) => return 0,
@@ -136,7 +193,12 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1blinded_1g2_1key(env: J
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bls_1secret_1key_1to_1bbs_1key(env: JNIEnv, _: JObject, secret_key: jbyteArray, message_count: jint) -> jbyteArray {
+pub extern "C" fn Java_bbs_signatures_Bbs_bls_1secret_1key_1to_1bbs_1key(
+    env: JNIEnv,
+    _: JObject,
+    secret_key: jbyteArray,
+    message_count: jint,
+) -> jbyteArray {
     let bad_res = env.new_byte_array(0).unwrap();
     let sk = get_secret_key(&env, secret_key);
     if sk.is_err() {
@@ -147,7 +209,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bls_1secret_1key_1to_1bbs_1key(env: JN
     let pk;
     match dpk.to_public_key(message_count as usize) {
         Err(_) => return bad_res,
-        Ok(p) => pk = p
+        Ok(p) => pk = p,
     };
     if pk.validate().is_err() {
         return bad_res;
@@ -157,7 +219,11 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bls_1secret_1key_1to_1bbs_1key(env: JN
     match env.new_byte_array(10 as jint) {
         Err(_) => bad_res,
         Ok(out) => {
-            let pp: Vec<jbyte> = pk.to_bytes_compressed_form().iter().map(|b| *b as jbyte).collect();
+            let pp: Vec<jbyte> = pk
+                .to_bytes_compressed_form()
+                .iter()
+                .map(|b| *b as jbyte)
+                .collect();
             copy_to_jni!(env, out, pp.as_slice(), bad_res);
             out
         }
@@ -166,7 +232,12 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bls_1secret_1key_1to_1bbs_1key(env: JN
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bls_1public_1key_1to_1bbs_1key(env: JNIEnv, _: JObject, short_public_key: jbyteArray, message_count: jint) -> jbyteArray {
+pub extern "C" fn Java_bbs_signatures_Bbs_bls_1public_1key_1to_1bbs_1key(
+    env: JNIEnv,
+    _: JObject,
+    short_public_key: jbyteArray,
+    message_count: jint,
+) -> jbyteArray {
     let bad_res = env.new_byte_array(0).unwrap();
     let dpk;
     match env.convert_byte_array(short_public_key) {
@@ -175,13 +246,17 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bls_1public_1key_1to_1bbs_1key(env: JN
             if s.len() != DETERMINISTIC_PUBLIC_KEY_COMPRESSED_SIZE {
                 return bad_res;
             }
-            dpk = DeterministicPublicKey::from(*array_ref![s, 0, DETERMINISTIC_PUBLIC_KEY_COMPRESSED_SIZE]);
+            dpk = DeterministicPublicKey::from(*array_ref![
+                s,
+                0,
+                DETERMINISTIC_PUBLIC_KEY_COMPRESSED_SIZE
+            ]);
         }
     }
     let pk;
     match dpk.to_public_key(message_count as usize) {
         Err(_) => return bad_res,
-        Ok(p) => pk = p
+        Ok(p) => pk = p,
     }
     if pk.validate().is_err() {
         return bad_res;
@@ -191,7 +266,11 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bls_1public_1key_1to_1bbs_1key(env: JN
     match env.new_byte_array(10 as jint) {
         Err(_) => bad_res,
         Ok(out) => {
-            let pp: Vec<jbyte> = pk.to_bytes_compressed_form().iter().map(|b| *b as jbyte).collect();
+            let pp: Vec<jbyte> = pk
+                .to_bytes_compressed_form()
+                .iter()
+                .map(|b| *b as jbyte)
+                .collect();
             copy_to_jni!(env, out, pp.as_slice(), bad_res);
             out
         }
@@ -207,7 +286,12 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1sign_1init(_: JNIEnv, _: JObject)
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1sign_1set_1secret_1key(env: JNIEnv, _: JObject, handle: jlong, secret_key: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1sign_1set_1secret_1key(
+    env: JNIEnv,
+    _: JObject,
+    handle: jlong,
+    secret_key: jbyteArray,
+) -> jint {
     match env.convert_byte_array(secret_key) {
         Err(_) => 0,
         Ok(s) => {
@@ -224,7 +308,12 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1sign_1set_1secret_1key(env: JNIEn
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1sign_1set_1public_1key(env: JNIEnv, _: JObject, handle: jlong, public_key: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1sign_1set_1public_1key(
+    env: JNIEnv,
+    _: JObject,
+    handle: jlong,
+    public_key: jbyteArray,
+) -> jint {
     match env.convert_byte_array(public_key) {
         Err(_) => 0,
         Ok(s) => {
@@ -241,7 +330,12 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1sign_1set_1public_1key(env: JNIEn
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1sign_1add_1message_1bytes(env: JNIEnv, _: JObject, handle: jlong, message: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1sign_1add_1message_1bytes(
+    env: JNIEnv,
+    _: JObject,
+    handle: jlong,
+    message: jbyteArray,
+) -> jint {
     match env.convert_byte_array(message) {
         Err(_) => 0,
         Ok(s) => {
@@ -254,7 +348,12 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1sign_1add_1message_1bytes(env: JN
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1sign_1add_1message_1prehashed(env: JNIEnv, _: JObject, handle: jlong, message: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1sign_1add_1message_1prehashed(
+    env: JNIEnv,
+    _: JObject,
+    handle: jlong,
+    message: jbyteArray,
+) -> jint {
     match env.convert_byte_array(message) {
         Err(_) => 0,
         Ok(s) => {
@@ -267,7 +366,12 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1sign_1add_1message_1prehashed(env
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1sign_1finish(env: JNIEnv, _: JObject, handle: jlong, signature: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1sign_1finish(
+    env: JNIEnv,
+    _: JObject,
+    handle: jlong,
+    signature: jbyteArray,
+) -> jint {
     let mut error = ExternError::success();
     let mut sig = ByteBuffer::from_vec(vec![]);
     let result = bbs_sign_context_finish(handle as u64, &mut sig, &mut error);
@@ -288,7 +392,12 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1init(_: JNIEnv, _: JObjec
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1add_1message_1bytes(env: JNIEnv, _: JObject, handle: jlong, message: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1add_1message_1bytes(
+    env: JNIEnv,
+    _: JObject,
+    handle: jlong,
+    message: jbyteArray,
+) -> jint {
     match env.convert_byte_array(message) {
         Err(_) => 0,
         Ok(s) => {
@@ -301,7 +410,12 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1add_1message_1bytes(env: 
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1add_1message_1prehashed(env: JNIEnv, _: JObject, handle: jlong, message: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1add_1message_1prehashed(
+    env: JNIEnv,
+    _: JObject,
+    handle: jlong,
+    message: jbyteArray,
+) -> jint {
     match env.convert_byte_array(message) {
         Err(_) => 0,
         Ok(s) => {
@@ -314,7 +428,12 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1add_1message_1prehashed(e
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1set_1public_1key(env: JNIEnv, _: JObject, handle: jlong, public_key: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1set_1public_1key(
+    env: JNIEnv,
+    _: JObject,
+    handle: jlong,
+    public_key: jbyteArray,
+) -> jint {
     match env.convert_byte_array(public_key) {
         Err(_) => 0,
         Ok(s) => {
@@ -331,7 +450,12 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1set_1public_1key(env: JNI
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1set_1signature(env: JNIEnv, _: JObject, handle: jlong, signature: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1set_1signature(
+    env: JNIEnv,
+    _: JObject,
+    handle: jlong,
+    signature: jbyteArray,
+) -> jint {
     match env.convert_byte_array(signature) {
         Err(_) => 0,
         Ok(s) => {
@@ -348,47 +472,81 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1set_1signature(env: JNIEn
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1finish(_: JNIEnv, _: JObject, handle: jlong) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1finish(
+    _: JNIEnv,
+    _: JObject,
+    handle: jlong,
+) -> jint {
     let mut error = ExternError::success();
     bbs_verify_context_finish(handle as u64, &mut error)
 }
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1commitment_1init(_: JNIEnv, _: JObject) -> jlong {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1commitment_1init(
+    _: JNIEnv,
+    _: JObject,
+) -> jlong {
     let mut error = ExternError::success();
     bbs_blind_commitment_context_init(&mut error) as jlong
 }
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1commitment_1add_1message_1bytes(env: JNIEnv, _: JObject, handle: jlong, index: jint, message: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1commitment_1add_1message_1bytes(
+    env: JNIEnv,
+    _: JObject,
+    handle: jlong,
+    index: jint,
+    message: jbyteArray,
+) -> jint {
     match env.convert_byte_array(message) {
         Err(_) => 0,
         Ok(s) => {
             let mut error = ExternError::success();
             let byte_array = ByteArray::from(s);
-            bbs_blind_commitment_context_add_message_bytes(handle as u64, index as u32, byte_array, &mut error)
+            bbs_blind_commitment_context_add_message_bytes(
+                handle as u64,
+                index as u32,
+                byte_array,
+                &mut error,
+            )
         }
     }
 }
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1commitment_1add_1prehashed(env: JNIEnv, _: JObject, handle: jlong, index: jint, message: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1commitment_1add_1prehashed(
+    env: JNIEnv,
+    _: JObject,
+    handle: jlong,
+    index: jint,
+    message: jbyteArray,
+) -> jint {
     match env.convert_byte_array(message) {
         Err(_) => 0,
         Ok(s) => {
             let mut error = ExternError::success();
             let byte_array = ByteArray::from(s);
-            bbs_blind_commitment_context_add_message_prehashed(handle as u64, index as u32, byte_array, &mut error)
+            bbs_blind_commitment_context_add_message_prehashed(
+                handle as u64,
+                index as u32,
+                byte_array,
+                &mut error,
+            )
         }
     }
 }
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1commitment_1set_1public_1key(env: JNIEnv, _: JObject, handle: jlong, public_key: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1commitment_1set_1public_1key(
+    env: JNIEnv,
+    _: JObject,
+    handle: jlong,
+    public_key: jbyteArray,
+) -> jint {
     match env.convert_byte_array(public_key) {
         Err(_) => 0,
         Ok(s) => {
@@ -405,7 +563,12 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1commitment_1set_1public_1k
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1commitment_1set_1nonce_1bytes(env: JNIEnv, _: JObject, handle: jlong, nonce: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1commitment_1set_1nonce_1bytes(
+    env: JNIEnv,
+    _: JObject,
+    handle: jlong,
+    nonce: jbyteArray,
+) -> jint {
     match env.convert_byte_array(nonce) {
         Err(_) => 0,
         Ok(s) => {
@@ -425,12 +588,19 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1commitment_1set_1nonce_1by
 /// return proof: []byte
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1commitment_1finish(env: JNIEnv, _: JObject, handle: jlong, commitment: jbyteArray, blinding_factor: jbyteArray) -> jbyteArray {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1commitment_1finish(
+    env: JNIEnv,
+    _: JObject,
+    handle: jlong,
+    commitment: jbyteArray,
+    blinding_factor: jbyteArray,
+) -> jbyteArray {
     let mut error = ExternError::success();
     let mut c = ByteBuffer::from_vec(vec![]);
     let mut p = ByteBuffer::from_vec(vec![]);
     let mut r = ByteBuffer::from_vec(vec![]);
-    let res = bbs_blind_commitment_context_finish(handle as u64, &mut c, &mut p, &mut r, &mut error);
+    let res =
+        bbs_blind_commitment_context_finish(handle as u64, &mut c, &mut p, &mut r, &mut error);
     let bad_res = env.new_byte_array(0).unwrap();
     if res == 0 {
         return bad_res;
@@ -459,7 +629,12 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1sign_1init(_: JNIEnv, _: J
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1sign_1set_1secret_1key(env: JNIEnv, _: JObject, handle: jlong, secret_key: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1sign_1set_1secret_1key(
+    env: JNIEnv,
+    _: JObject,
+    handle: jlong,
+    secret_key: jbyteArray,
+) -> jint {
     match env.convert_byte_array(secret_key) {
         Err(_) => 0,
         Ok(s) => {
@@ -476,7 +651,12 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1sign_1set_1secret_1key(env
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1sign_1set_1public_1key(env: JNIEnv, _: JObject, handle: jlong, public_key: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1sign_1set_1public_1key(
+    env: JNIEnv,
+    _: JObject,
+    handle: jlong,
+    public_key: jbyteArray,
+) -> jint {
     match env.convert_byte_array(public_key) {
         Err(_) => 0,
         Ok(s) => {
@@ -493,7 +673,12 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1sign_1set_1public_1key(env
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1sign_1set_1commitment(env: JNIEnv, _: JObject, handle: jlong, commitment: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1sign_1set_1commitment(
+    env: JNIEnv,
+    _: JObject,
+    handle: jlong,
+    commitment: jbyteArray,
+) -> jint {
     match env.convert_byte_array(commitment) {
         Err(_) => 0,
         Ok(s) => {
@@ -510,33 +695,60 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1sign_1set_1commitment(env:
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1sign_1add_1message_1bytes(env: JNIEnv, _: JObject, handle: jlong, index: jint, message: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1sign_1add_1message_1bytes(
+    env: JNIEnv,
+    _: JObject,
+    handle: jlong,
+    index: jint,
+    message: jbyteArray,
+) -> jint {
     match env.convert_byte_array(message) {
         Err(_) => 0,
         Ok(s) => {
             let mut error = ExternError::success();
             let byte_array = ByteArray::from(s);
-            bbs_blind_sign_context_add_message_bytes(handle as u64, index as u32, byte_array, &mut error)
+            bbs_blind_sign_context_add_message_bytes(
+                handle as u64,
+                index as u32,
+                byte_array,
+                &mut error,
+            )
         }
     }
 }
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1sign_1add_1prehashed(env: JNIEnv, _: JObject, handle: jlong, index: jint, hash: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1sign_1add_1prehashed(
+    env: JNIEnv,
+    _: JObject,
+    handle: jlong,
+    index: jint,
+    hash: jbyteArray,
+) -> jint {
     match env.convert_byte_array(hash) {
         Err(_) => 0,
         Ok(s) => {
             let mut error = ExternError::success();
             let byte_array = ByteArray::from(s);
-            bbs_blind_sign_context_add_message_prehashed(handle as u64, index as u32, byte_array, &mut error)
+            bbs_blind_sign_context_add_message_prehashed(
+                handle as u64,
+                index as u32,
+                byte_array,
+                &mut error,
+            )
         }
     }
 }
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1sign_1finish(env: JNIEnv, _: JObject, handle: jlong, signature: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1sign_1finish(
+    env: JNIEnv,
+    _: JObject,
+    handle: jlong,
+    signature: jbyteArray,
+) -> jint {
     let mut err = ExternError::success();
     let mut s = ByteBuffer::from_vec(vec![]);
     let res = bbs_blind_sign_context_finish(handle as u64, &mut s, &mut err);
@@ -550,11 +762,13 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1sign_1finish(env: JNIEnv, 
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1unblind_1signature(env: JNIEnv,
-                                                                  _: JObject,
-                                                                  blind_signature: jbyteArray,
-                                                                  blinding_factor: jbyteArray,
-                                                                  unblind_signature: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1unblind_1signature(
+    env: JNIEnv,
+    _: JObject,
+    blind_signature: jbyteArray,
+    blinding_factor: jbyteArray,
+    unblind_signature: jbyteArray,
+) -> jint {
     let mut err = ExternError::success();
     let bs;
     match env.convert_byte_array(blind_signature) {
@@ -568,25 +782,42 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1unblind_1signature(env: JNIEnv,
     };
 
     let mut signature = ByteBuffer::default();
-    let res = bbs_unblind_signature(ByteArray::from(bs), ByteArray::from(bf), &mut signature, &mut err);
-    if res == 0 {
+    let res = bbs_unblind_signature(
+        ByteArray::from(bs),
+        ByteArray::from(bf),
+        &mut signature,
+        &mut err,
+    );
+    if res != 0 {
         return res;
     }
-    let signature: Vec<jbyte> = signature.into_vec().iter().map(|b| *b as jbyte).collect();
+    let signature: Vec<jbyte> = signature
+        .destroy_into_vec()
+        .iter()
+        .map(|b| *b as jbyte)
+        .collect();
     copy_to_jni!(env, unblind_signature, signature.as_slice());
     1
 }
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1init(_: JNIEnv, _: JObject) -> jlong {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1init(
+    _: JNIEnv,
+    _: JObject,
+) -> jlong {
     let mut error = ExternError::success();
     bbs_create_proof_context_init(&mut error) as jlong
 }
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1set_1public_1key(env: JNIEnv, _: JObject, handle: jlong, public_key: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1set_1public_1key(
+    env: JNIEnv,
+    _: JObject,
+    handle: jlong,
+    public_key: jbyteArray,
+) -> jint {
     match env.convert_byte_array(public_key) {
         Err(_) => 0,
         Ok(s) => {
@@ -603,7 +834,12 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1set_1publ
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1set_1signature(env: JNIEnv, _: JObject, handle: jlong, signature: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1set_1signature(
+    env: JNIEnv,
+    _: JObject,
+    handle: jlong,
+    signature: jbyteArray,
+) -> jint {
     match env.convert_byte_array(signature) {
         Err(_) => 0,
         Ok(s) => {
@@ -620,7 +856,12 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1set_1sign
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1set_1nonce_1bytes(env: JNIEnv, _: JObject, handle: jlong, nonce: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1set_1nonce_1bytes(
+    env: JNIEnv,
+    _: JObject,
+    handle: jlong,
+    nonce: jbyteArray,
+) -> jint {
     match env.convert_byte_array(nonce) {
         Err(_) => 0,
         Ok(s) => {
@@ -637,7 +878,14 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1set_1nonc
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1add_1proof_1message_1bytes(env: JNIEnv, _: JObject, handle: jlong, message: jbyteArray, xtype: jint, blinding_factor: jbyteArray) -> jint {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1add_1proof_1message_1bytes(
+    env: JNIEnv,
+    _: JObject,
+    handle: jlong,
+    message: jbyteArray,
+    xtype: jint,
+    blinding_factor: jbyteArray,
+) -> jint {
     match env.convert_byte_array(message) {
         Err(_) => 0,
         Ok(s) => {
@@ -655,17 +903,27 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1add_1proo
                         }
                     };
                     ProofMessageType::HiddenExternalBlinding
-                },
-                _ => return 0
+                }
+                _ => return 2,
             };
-            bbs_create_proof_context_add_proof_message_bytes(handle as u64, byte_array, proof_msg_type, bf_byte_array, &mut error)
+            bbs_create_proof_context_add_proof_message_bytes(
+                handle as u64,
+                byte_array,
+                proof_msg_type,
+                bf_byte_array,
+                &mut error,
+            )
         }
     }
 }
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1finish(env: JNIEnv, _: JObject, handle: jlong) -> jbyteArray {
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1finish(
+    env: JNIEnv,
+    _: JObject,
+    handle: jlong,
+) -> jbyteArray {
     let bad_res = env.new_byte_array(0).unwrap();
     let mut error = ExternError::success();
     let mut p = ByteBuffer::from_vec(vec![]);
@@ -681,6 +939,129 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1finish(en
             out
         }
     }
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1init(
+    _: JNIEnv,
+    _: jObject,
+) -> jlong {
+    let mut error = ExternError::success();
+    bbs_verify_proof_context_init(&mut error) as jlong
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1add_1message_1bytes(
+    env: JNIEnv,
+    _: jObject,
+    handle: jlong,
+    index: jint,
+    message: jbyteArray,
+) -> jint {
+    match env.convert_byte_array(message) {
+        Err(_) => 1,
+        Ok(s) => {
+            let mut error = ExternError::success();
+            let byte_array = ByteArray::from(s);
+            bbs_verify_proof_context_add_message_bytes(
+                handle as u64,
+                index as u32,
+                byte_array,
+                &mut error,
+            )
+        }
+    }
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1add_1message_1prehashed(
+    env: JNIEnv,
+    _: jObject,
+    handle: jlong,
+    index: jint,
+    message: jbyteArray,
+) -> jint {
+    match env.convert_byte_array(message) {
+        Err(_) => 1,
+        Ok(s) => {
+            let mut error = ExternError::success();
+            let byte_array = ByteArray::from(s);
+            bbs_verify_proof_context_add_message_prehashed(
+                handle as u64,
+                index as u32,
+                byte_array,
+                &mut error,
+            )
+        }
+    }
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1set_1proof(
+    env: JNIEnv,
+    _: jObject,
+    handle: jlong,
+    proof: jbyteArray,
+) -> jint {
+    match env.convert_byte_array(proof) {
+        Err(_) => 1,
+        Ok(s) => {
+            let mut error = ExternError::success();
+            let byte_array = ByteArray::from(s);
+            bbs_verify_proof_context_set_proof(handle as u64, byte_array, &mut error)
+        }
+    }
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1set_1public_1key(
+    env: JNIEnv,
+    _: jObject,
+    handle: jlong,
+    public_key: jbyteArray,
+) -> jint {
+    match env.convert_byte_array(public_key) {
+        Err(_) => 1,
+        Ok(s) => {
+            let mut error = ExternError::success();
+            let byte_array = ByteArray::from(s);
+            bbs_verify_proof_context_set_public_key(handle as u64, byte_array, &mut error)
+        }
+    }
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1set_1nonce_1bytes(
+    env: JNIEnv,
+    _: jObject,
+    handle: jlong,
+    nonce: jbyteArray,
+) -> jint {
+    match env.convert_byte_array(nonce) {
+        Err(_) => 1,
+        Ok(s) => {
+            let mut error = ExternError::success();
+            let byte_array = ByteArray::from(s);
+            bbs_verify_proof_context_set_nonce_bytes(handle as u64, byte_array, &mut error)
+        }
+    }
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1finish(
+    env: JNIEnv,
+    _: jObject,
+    handle: jlong,
+) -> jint {
+    let mut error = ExternError::success();
+    bbs_verify_proof_context_finish(handle as u64, &mut error)
 }
 
 fn get_secret_key(env: &JNIEnv, secret_key: jbyteArray) -> Result<SecretKey, jint> {

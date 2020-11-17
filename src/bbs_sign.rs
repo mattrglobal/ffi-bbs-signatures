@@ -152,10 +152,9 @@ pub extern "C" fn bbs_verify_context_finish(handle: u64, err: &mut ExternError) 
         match (ctx.signature.as_ref(), ctx.public_key.as_ref()) {
             (Some(ref sig), Some(ref pk)) => match sig.verify(ctx.messages.as_slice(), pk) {
                 Ok(b) => Ok(if b { 1 } else { 0 }),
-                Err(e) => Err(BbsFfiError(format!("{:?}", e)))
+                Err(e) => Err(BbsFfiError(format!("{:?}", e))),
             },
             (_, _) => Err(BbsFfiError::new("")),
         }
     })
 }
-
