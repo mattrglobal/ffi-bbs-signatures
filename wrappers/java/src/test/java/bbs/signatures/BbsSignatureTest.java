@@ -14,33 +14,39 @@ public class BbsSignatureTest {
 
     public KeyPair keyPair;
 
-    @Test public void canGetCorrectBls12381G1PublicKeySize() {
+    @Test
+    public void canGetCorrectBls12381G1PublicKeySize() {
         int size = Bbs.getBls12381G1PublicKeySize();
         assertEquals(size, 48);
     }
 
-    @Test public void canGetCorrectBls12381G2PublicKeySize() {
+    @Test
+    public void canGetCorrectBls12381G2PublicKeySize() {
         int size = Bbs.getBls12381G2PublicKeySize();
         assertEquals(size, 96);
     }
 
-    @Test public void canGetSecretKeySize() {
+    @Test
+    public void canGetSecretKeySize() {
         int size = Bbs.getSecretKeySize();
         assertEquals(size, 32);
     }
 
-    @Test public void canGetSignatureSize() {
+    @Test
+    public void canGetSignatureSize() {
         int size = Bbs.getSignatureSize();
         assertEquals(size, 112);
     }
 
-    @Test public void canGetBlindSignatureSize() {
+    @Test
+    public void canGetBlindSignatureSize() {
         int size = Bbs.getBlindSignatureSize();
         assertEquals(size, 112);
     }
 
-    @Test public void canGenerateBls12381G1Key() {
-        byte[] seed = "H297BpoOgkfpXcxr1fJyQRiNx1+ZekeQ+OU/AYV/lVxaPXXhFBIbxeIU8kIAAX68cwQ=".getBytes();
+    @Test
+    public void canGenerateBls12381G1Key() {
+        byte[] seed = new byte[0];
         KeyPair keyPair = null;
 
         try {
@@ -66,8 +72,9 @@ public class BbsSignatureTest {
         }
     }
 
-    @Test public void canGenerateBls12381G2Key() {
-        byte[] seed = "H297BpoOgkfpXcxr1fJyQRiNx1+ZekeQ+OU/AYV/lVxaPXXhFBIbxeIU8kIAAX68cwQ=".getBytes();
+    @Test
+    public void canGenerateBls12381G2Key() {
+        byte[] seed = new byte[0];
         KeyPair keyPair = null;
 
         try {
@@ -93,8 +100,9 @@ public class BbsSignatureTest {
         }
     }
 
-    @Test public void canGenerateBlindedBls12381G1Key() {
-        byte[] seed = "H297BpoOgkfpXcxr1fJyQRiNx1+ZekeQ+OU/AYV/lVxaPXXhFBIbxeIU8kIAAX68cwQ=".getBytes();
+    @Test
+    public void canGenerateBlindedBls12381G1Key() {
+        byte[] seed = new byte[0];
         BlindedKeyPair keyPair = null;
 
         try {
@@ -120,8 +128,9 @@ public class BbsSignatureTest {
         }
     }
 
-    @Test public void canGenerateBlindedBls12381G2Key() {
-        byte[] seed = "H297BpoOgkfpXcxr1fJyQRiNx1+ZekeQ+OU/AYV/lVxaPXXhFBIbxeIU8kIAAX68cwQ=".getBytes();
+    @Test
+    public void canGenerateBlindedBls12381G2Key() {
+        byte[] seed = new byte[0];
         BlindedKeyPair keyPair = null;
 
         try {
@@ -148,7 +157,7 @@ public class BbsSignatureTest {
     }
 
     @Test public void canSignMessage() {
-        byte[] seed = "H297BpoOgkfpXcxr1fJyQRiNx1+ZekeQ+OU/AYV/lVxaPXXhFBIbxeIU8kIAAX68cwQ=".getBytes();
+        byte[] seed = new byte[0];
         KeyPair keyPair = null;
 
         try {
@@ -159,442 +168,446 @@ public class BbsSignatureTest {
 
         assertNotNull(keyPair);
 
-        //byte[] public_key = new byte[Bbs.getBls12381G2PublicKeySize()];
-        //byte[] secret_key = new byte[Bbs.getSecretKeySize()];
         byte[] bbsKey = Bbs.blsPublicToBbsPublicKey(keyPair.publicKey, 1);
-        byte[] secret_key = keyPair.secretKey;
+        byte[] secretKey = keyPair.secretKey;
 
         byte[] signature = new byte[Bbs.getSignatureSize()];
-        byte[][] messages = { "message1".getBytes() };
+        byte[][] messages = {"message1".getBytes()};
 
         try {
-            signature = Bbs.sign(secret_key, bbsKey, messages);
+            signature = Bbs.sign(secretKey, bbsKey, messages);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
 
-        System.out.println("Signature: " + signature);
         assertNotNull(signature);
     }
-//
-//    @Test
-//    public void shouldThrowExceptionMessageWhenFailToInitSigningContext() {
-//        try {
-//            // long handle = Bbs.bbs_sign_init(); // Add public methods ?
-//            fail("Expected an exception to be thrown");
-//        } catch (Exception exception) {
-//            assertEquals("Unable to create signing context", exception.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void shouldThrowExceptionMessageWhenSecretKeyIsInvalid() {
-//        try {
-//            byte[] public_key = new byte[96];
-//            byte[] secret_key = new byte[32];
-//            byte[][] messages = new byte[1][1];
-//            byte[] signature = new byte[96];
-//
-//            signature = Bbs.sign(secret_key, public_key, messages);
-//            fail("Expected an exception to be thrown");
-//        } catch (Exception exception) {
-//            assertEquals("Unable to set secret key", exception.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void shouldThrowExceptionMessageWhenPublicKeyIsInvalid() {
-//        try {
-//            byte[] public_key = new byte[96];
-//            byte[] secret_key = new byte[32];
-//            byte[][] messages = new byte[1][1];
-//            byte[] signature = new byte[96];
-//
-//            signature = Bbs.sign(secret_key, public_key, messages);
-//            fail("Expected an exception to be thrown");
-//        } catch (Exception exception) {
-//            assertEquals("Unable to set public key", exception.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void shouldThrowExceptionMessageWhenSignAddNewMessage() {
-//        try {
-//            byte[] public_key = new byte[96];
-//            byte[] secret_key = new byte[32];
-//            byte[][] messages = new byte[1][1];
-//            byte[] signature = new byte[96];
-//
-//            signature = Bbs.sign(secret_key, public_key, messages);
-//            fail("Expected an exception to be thrown");
-//        } catch (Exception exception) {
-//            assertEquals("Unable to add message", exception.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void shouldThrowExceptionMessageWhenSignatureIsInvalid() {
-//        try {
-//            byte[] public_key = new byte[96];
-//            byte[] secret_key = new byte[32];
-//            byte[][] messages = new byte[1][1];
-//            byte[] signature = new byte[96];
-//
-//            signature = Bbs.sign(secret_key, public_key, messages);
-//            fail("Expected an exception to be thrown");
-//        } catch (Exception exception) {
-//            assertEquals("Unable to create signature", exception.getMessage());
-//        }
-//    }
-//
-//     // TODO What keys to use to sign and verify ?
-//     @Test public void canVerifyMessage() {
-//         byte[] seed = "H297BpoOgkfpXcxr1fJyQRiNx1+ZekeQ+OU/AYV/lVxaPXXhFBIbxeIU8kIAAX68cwQ=".getBytes();
-//         KeyPair keyPair = null;
-//
-//         try {
-//             keyPair = Bbs.generateBls12381G1Key(seed);
-//         } catch (Exception exception) {
-//             exception.printStackTrace();
-//         }
-//
-//         assertNotNull(keyPair);
-//
-//         byte[] public_key = keyPair.publicKey;
-//         byte[] secret_key = keyPair.secretKey;
-//         byte[] signature = new byte[Bbs.getSignatureSize()];
-//         byte[][] messages = { "message1".getBytes() };
-//
-//         try {
-//             signature = Bbs.sign(secret_key, public_key, messages);
-//         } catch (Exception exception) {
-//             exception.printStackTrace();
-//         }
-//
-//         assertNotNull(signature);
-//
-//         boolean isVerified = false;
-//         try {
-//             isVerified = Bbs.verify(public_key, signature, messages);
-//         } catch (Exception exception) {
-//             exception.printStackTrace();
-//         }
-//
-//         assertTrue(isVerified);
-//     }
 
-//
-//    @Test
-//    public void shouldThrowExceptionMessageWhenFailToInitSignatureContext() {
-//        try {
-//            //long handle = Bbs.bbs_verify_init();
-//            fail("Expected an exception to be thrown");
-//        } catch (Exception exception) {
-//            assertEquals("Unable to create verify signature context", exception.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void shouldThrowExceptionMessageWhenVerificationPublicKeyIsInvalid() {
-//        byte[] public_key = new byte[96];
-//        byte[] secret_key = new byte[32];
-//        byte[][] messages = new byte[1][1];
-//        byte[] signature = new byte[96];
-//        boolean isVerified = false;
-//
-//        try {
-//            isVerified = Bbs.verify(public_key, signature, messages);
-//        } catch (Exception exception) {
-//            assertEquals("Unable to set public key", exception.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void shouldThrowExceptionMessageWhenVerificationSignatureIsInvalid() {
-//        byte[] public_key = new byte[96];
-//        byte[] secret_key = new byte[32];
-//        byte[][] messages = new byte[1][1];
-//        byte[] signature = new byte[96];
-//        boolean isVerified = false;
-//
-//        try {
-//            isVerified = Bbs.verify(public_key, signature, messages);
-//        } catch (Exception exception) {
-//            assertEquals("Unable to set signature", exception.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void shouldThrowExceptionMessageWhenSignAddVerificationMessage() {
-//        try {
-//            byte[] public_key = new byte[96];
-//            byte[] secret_key = new byte[32];
-//            byte[][] messages = new byte[1][1];
-//            byte[] signature = new byte[96];
-//            boolean isVerified = false;
-//
-//            isVerified = Bbs.verify(public_key, signature, messages);
-//            fail("Expected an exception to be thrown");
-//        } catch (Exception exception) {
-//            assertEquals("Unable to add message", exception.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void shouldThrowExceptionMessageWhenUnableToVerifySignature() {
-//        try {
-//            byte[] public_key = new byte[96];
-//            byte[] secret_key = new byte[32];
-//            byte[][] messages = new byte[1][1];
-//            byte[] signature = new byte[96];
-//            boolean isVerified = false;
-//
-//            isVerified = Bbs.verify(public_key, signature, messages);
-//            fail("Expected an exception to be thrown");
-//        } catch (Exception exception) {
-//            assertEquals("Unable to verify signature", exception.getMessage());
-//        }
-//    }
-//
-    @Test public void canCreateBlindCommitment() {
-        byte[] public_key = new byte[96];
+    @Test public void canVerifyMessage() {
+        byte[] seed = new byte[0];
+        KeyPair keyPair = null;
+
+        try {
+            keyPair = Bbs.generateBls12381G2Key(seed);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertNotNull(keyPair);
+
+        byte[] bbsKey = Bbs.blsPublicToBbsPublicKey(keyPair.publicKey, 1);
+        byte[] secretKey = keyPair.secretKey;
+
+        byte[] signature = new byte[Bbs.getSignatureSize()];
+        byte[][] messages = {"message1".getBytes()};
+
+        try {
+            signature = Bbs.sign(secretKey, bbsKey, messages);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertNotNull(signature);
+
+        boolean isVerified = false;
+
+        try {
+            isVerified = Bbs.verify(bbsKey, signature, messages);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertTrue(isVerified);
+    }
+
+    @Test
+    public void shouldThrowExceptionMessageWhenVerificationPublicKeyIsInvalid() {
+        byte[] invalidPublicKey = new byte[96];
+        byte[][] messages = {"message1".getBytes()};
+        byte[] signature = new byte[112];
+
+        try {
+            Bbs.verify(invalidPublicKey, signature, messages);
+            fail("Expected an exception to be thrown");
+        } catch (Exception exception) {
+            assertEquals("Unable to set public key", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void shouldThrowExceptionMessageWhenVerificationSignatureIsInvalid() {
+        byte[] seed = new byte[0];
+        KeyPair keyPair = null;
+
+        try {
+            keyPair = Bbs.generateBls12381G2Key(seed);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertNotNull(keyPair);
+
+        byte[] bbsKey = Bbs.blsPublicToBbsPublicKey(keyPair.publicKey, 1);
+        byte[] invalidSignature = new byte[112];
+        byte[][] messages = {"message1".getBytes()};
+
+        try {
+            Bbs.verify(bbsKey, invalidSignature, messages);
+            fail("Expected an exception to be thrown");
+        } catch (Exception exception) {
+            assertEquals("Unable to set signature", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void shouldThrowExceptionMessageWhenSignAddVerificationMessage() {
+        byte[] seed = new byte[0];
+        KeyPair keyPair = null;
+
+        try {
+            keyPair = Bbs.generateBls12381G2Key(seed);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertNotNull(keyPair);
+
+        byte[] bbsKey = Bbs.blsPublicToBbsPublicKey(keyPair.publicKey, 1);
+        byte[] secretKey = keyPair.secretKey;
+        byte[] signature = new byte[112];
+        byte[][] messages = {"message1".getBytes()};
+
+        try {
+            signature = Bbs.sign(secretKey, bbsKey, messages);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertNotNull(signature);
+
+        try {
+            Bbs.verify(bbsKey, signature, messages);
+            //fail("Expected an exception to be thrown");
+        } catch (Exception exception) {
+            // TODO How to cause exception ? bbs_sign_context_add_message_bytes not found
+            assertEquals("Unable to add message", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void shouldThrowExceptionMessageWhenUnableToVerifySignature() {
+        byte[] seed = new byte[0];
+        KeyPair keyPair = null;
+
+        try {
+            keyPair = Bbs.generateBls12381G2Key(seed);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertNotNull(keyPair);
+
+        byte[] bbsKey = Bbs.blsPublicToBbsPublicKey(keyPair.publicKey, 1);
+        byte[] secretKey = keyPair.secretKey;
+        byte[] signature = new byte[112];
+        byte[][] messages = {"message1".getBytes()};
+
+        try {
+            signature = Bbs.sign(secretKey, bbsKey, messages);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertNotNull(signature);
+
+        try {
+            Bbs.verify(bbsKey, signature, messages);
+            //fail("Expected an exception to be thrown");
+        } catch (Exception exception) {
+            // TODO How to cause exception ? bbs_verify_set_signature verifies the signature
+            assertEquals("Unable to verify signature", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void canCreateBlindCommitment() {
+        byte[] seed = new byte[0];
+        KeyPair keyPair = null;
+
+        try {
+            keyPair = Bbs.generateBls12381G2Key(seed);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertNotNull(keyPair);
+
+        byte[] bbsKey = Bbs.blsPublicToBbsPublicKey(keyPair.publicKey, 1);
         byte[] nonce = new byte[32];
-        //byte[][] messages = { "message1".getBytes() };
-        Map<Integer, byte[]> messages = Collections.emptyMap();
+        Map<Integer, byte[]> messages = Map.of(0, "message1".getBytes());
+
         BlindCommitmentContext context = null;
 
         try {
-            context = Bbs.blindCommitment(public_key, messages, nonce);
+            context = Bbs.blindCommitment(bbsKey, messages, nonce);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
 
         assertNotNull(context);
     }
-//
-//    @Test
-//    public void shouldThrowExceptionMessageWhenFailToInitBlindCommitmentContext() {
-//        try {
-//            //long handle = Bbs.bbs_blind_commitment_init();
-//            fail("Expected an exception to be thrown");
-//        } catch (Exception exception) {
-//            assertEquals("Unable to create blind commitment context", exception.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void shouldThrowExceptionMessageWhenBlindCommitmentPublicKeyIsInvalid() {
-//        byte[] public_key = new byte[96];
-//        byte[] nonce = new byte[32];
-//        Map<Integer, byte[]> messages = Collections.emptyMap();
-//        BlindCommitmentContext context = null;
-//
-//        try {
-//            context = Bbs.blindCommitment(public_key, messages, nonce);
-//            fail("Expected an exception to be thrown");
-//        } catch (Exception exception) {
-//            assertEquals("Unable to set public key", exception.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void shouldThrowExceptionMessageWhenBlindCommitmentNonceIsInvalid() {
-//        byte[] public_key = new byte[96];
-//        byte[] nonce = new byte[32];
-//        Map<Integer, byte[]> messages = Collections.emptyMap();
-//        BlindCommitmentContext context = null;
-//
-//        try {
-//            context = Bbs.blindCommitment(public_key, messages, nonce);
-//            fail("Expected an exception to be thrown");
-//        } catch (Exception exception) {
-//            assertEquals("Unable to set nonce", exception.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void shouldThrowExceptionMessageWhenBlindCommitmentMessageIsInvalid() {
-//        byte[] public_key = new byte[96];
-//        byte[] nonce = new byte[32];
-//        Map<Integer, byte[]> messages = Collections.emptyMap();
-//        BlindCommitmentContext context = null;
-//
-//        try {
-//            context = Bbs.blindCommitment(public_key, messages, nonce);
-//            fail("Expected an exception to be thrown");
-//        } catch (Exception exception) {
-//            assertEquals("Unable to add message", exception.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void shouldThrowExceptionMessageWhenUnableToCreateBlindCommitment() {
-//        byte[] public_key = new byte[96];
-//        byte[] nonce = new byte[32];
-//        Map<Integer, byte[]> messages = Collections.emptyMap();
-//        BlindCommitmentContext context = null;
-//
-//        try {
-//            context = Bbs.blindCommitment(public_key, messages, nonce);
-//            fail("Expected an exception to be thrown");
-//        } catch (Exception exception) {
-//            assertEquals("Unable to create blind commitment", exception.getMessage());
-//        }
-//    }
-//
-    @Test public void canBlindSign() {
-        byte[] public_key = new byte[96];
-        byte[] secret_key = new byte[32];
-        byte[] commitment = new byte[48];
+
+    @Test
+    public void shouldThrowExceptionMessageWhenBlindCommitmentPublicKeyIsInvalid() {
+        byte[] invalidPublicKey = new byte[96];
+        byte[] nonce = new byte[32];
         Map<Integer, byte[]> messages = Collections.emptyMap();
-        byte[] blind_signature = new byte[112];
 
         try {
-            blind_signature = Bbs.blindSign(secret_key, public_key, commitment, messages);
+            Bbs.blindCommitment(invalidPublicKey, messages, nonce);
+            fail("Expected an exception to be thrown");
+        } catch (Exception exception) {
+            assertEquals("Unable to set public key", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void shouldThrowExceptionMessageWhenBlindCommitmentNonceIsInvalid() {
+        byte[] seed = new byte[0];
+        KeyPair keyPair = null;
+
+        try {
+            keyPair = Bbs.generateBls12381G2Key(seed);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
 
-        assertNotNull("The blind commitment is not null", blind_signature);
+        assertNotNull(keyPair);
+
+        byte[] bbsKey = Bbs.blsPublicToBbsPublicKey(keyPair.publicKey, 1);
+        byte[] invalidNonce = null;
+        Map<Integer, byte[]> messages = Collections.emptyMap();
+
+        try {
+            Bbs.blindCommitment(bbsKey, messages, invalidNonce);
+            fail("Expected an exception to be thrown");
+        } catch (Exception exception) {
+            assertEquals("Unable to set nonce", exception.getMessage());
+        }
     }
-//
-//    @Test
-//    public void shouldThrowExceptionMessageWhenFailToInitBlindSignContext() {
-//        try {
-//            //long handle = Bbs.bbs_blind_sign_init();
-//            fail("Expected an exception to be thrown");
-//        } catch (Exception exception) {
-//            assertEquals("Unable to create blind sign context", exception.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void shouldThrowExceptionMessageWhenBlindSignSecretKeyIsInvalid() {
-//        byte[] public_key = new byte[96];
-//        byte[] secret_key = new byte[32];
-//        byte[] commitment = new byte[48];
-//        Map<Integer, byte[]> messages = Collections.emptyMap();
-//        byte[] blind_signature = new byte[112];
-//
-//        try {
-//            blind_signature = Bbs.blindSign(secret_key, public_key, commitment, messages);
-//        } catch (Exception exception) {
-//            assertEquals("Unable to set secret key", exception.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void shouldThrowExceptionMessageWhenBlindSignPublicKeyIsInvalid() {
-//        byte[] public_key = new byte[96];
-//        byte[] secret_key = new byte[32];
-//        byte[] commitment = new byte[48];
-//        Map<Integer, byte[]> messages = Collections.emptyMap();
-//        byte[] blind_signature = new byte[112];
-//
-//        try {
-//            blind_signature = Bbs.blindSign(secret_key, public_key, commitment, messages);
-//        } catch (Exception exception) {
-//            assertEquals("Unable to set public key", exception.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void shouldThrowExceptionMessageWhenBlindSignCommitmentIsInvalid() {
-//        byte[] public_key = new byte[96];
-//        byte[] secret_key = new byte[32];
-//        byte[] commitment = new byte[48];
-//        Map<Integer, byte[]> messages = Collections.emptyMap();
-//        byte[] blind_signature = new byte[112];
-//
-//        try {
-//            blind_signature = Bbs.blindSign(secret_key, public_key, commitment, messages);
-//        } catch (Exception exception) {
-//            assertEquals("Unable to set commitment", exception.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void shouldThrowExceptionMessageWhenBlindSignMessageIsInvalid() {
-//        byte[] public_key = new byte[96];
-//        byte[] secret_key = new byte[32];
-//        byte[] commitment = new byte[48];
-//        Map<Integer, byte[]> messages = Collections.emptyMap();
-//        byte[] blind_signature = new byte[112];
-//
-//        try {
-//            blind_signature = Bbs.blindSign(secret_key, public_key, commitment, messages);
-//        } catch (Exception exception) {
-//            assertEquals("Unable to add message", exception.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void shouldThrowExceptionMessageWhenBlindSignatureIsInvalid() {
-//        byte[] public_key = new byte[96];
-//        byte[] secret_key = new byte[32];
-//        byte[] commitment = new byte[48];
-//        Map<Integer, byte[]> messages = Collections.emptyMap();
-//        byte[] blind_signature = new byte[112];
-//
-//        try {
-//            blind_signature = Bbs.blindSign(secret_key, public_key, commitment, messages);
-//        } catch (Exception exception) {
-//            assertEquals("Unable to create blind signature", exception.getMessage());
-//        }
-//    }
-//
-    @Test public void canUnblindSignature() {
-        byte[] blind_signature = new byte[112];
-        byte[] blinding_factor = new byte[32];
+
+    @Test
+    public void shouldThrowExceptionMessageWhenBlindCommitmentMessageIsInvalid() {
+        byte[] seed = new byte[0];
+        KeyPair keyPair = null;
+
+        try {
+            keyPair = Bbs.generateBls12381G2Key(seed);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertNotNull(keyPair);
+
+        byte[] bbsKey = Bbs.blsPublicToBbsPublicKey(keyPair.publicKey, 1);
+        byte[] nonce = new byte[32];
+        Map<Integer, byte[]> invalidMessages = Map.of(0, "".getBytes());
+
+        try {
+            Bbs.blindCommitment(bbsKey, invalidMessages, nonce);
+            fail("Expected an exception to be thrown");
+        } catch (Exception exception) {
+            assertEquals("Unable to add message", exception.getMessage());
+        }
+    }
+
+    @Test public void canBlindSign() {
+        byte[] seed = new byte[0];
+        KeyPair keyPair = null;
+
+        try {
+            keyPair = Bbs.generateBls12381G2Key(seed);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertNotNull(keyPair);
+
+        byte[] bbsKey = Bbs.blsPublicToBbsPublicKey(keyPair.publicKey, 1);
+        byte[] secretKey = new byte[32];
+        byte[] nonce = new byte[32];
+        Map<Integer, byte[]> messages = Map.of(0, "message1".getBytes());
+
+        BlindCommitmentContext blindCommitmentContext = null;
+
+        try {
+            blindCommitmentContext = Bbs.blindCommitment(bbsKey, messages, nonce);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertNotNull(blindCommitmentContext);
+
+        byte[] blindSignature = new byte[112];
+
+        try {
+            blindSignature = Bbs.blindSign(secretKey, bbsKey, blindCommitmentContext.commitment, messages);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertNotNull(blindSignature);
+    }
+
+    @Test
+    public void shouldThrowExceptionMessageWhenBlindSignSecretKeyIsInvalid() {
+        byte[] publicKey = new byte[96];
+        byte[] invalidSecretKey = null;
+        byte[] commitment = new byte[48];
+        Map<Integer, byte[]> messages = Collections.emptyMap();
+
+        try {
+            Bbs.blindSign(invalidSecretKey, publicKey, commitment, messages);
+            fail("Expected an exception to be thrown");
+        } catch (Exception exception) {
+            assertEquals("Unable to set secret key", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void shouldThrowExceptionMessageWhenBlindSignPublicKeyIsInvalid() {
+        byte[] publicKey = new byte[96];
+        byte[] secretKey = new byte[32];
+        byte[] commitment = new byte[48];
+        Map<Integer, byte[]> messages = Collections.emptyMap();
+
+        try {
+            Bbs.blindSign(secretKey, publicKey, commitment, messages);
+            fail("Expected an exception to be thrown");
+        } catch (Exception exception) {
+            assertEquals("Unable to set public key", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void shouldThrowExceptionMessageWhenBlindSignCommitmentIsInvalid() {
+        byte[] seed = new byte[0];
+        KeyPair keyPair = null;
+
+        try {
+            keyPair = Bbs.generateBls12381G2Key(seed);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertNotNull(keyPair);
+
+        byte[] bbsKey = Bbs.blsPublicToBbsPublicKey(keyPair.publicKey, 1);
+        byte[] secretKey = new byte[32];
+        byte[] invalidCommitment = new byte[48];
+        Map<Integer, byte[]> messages = Collections.emptyMap();
+
+        try {
+            Bbs.blindSign(secretKey, bbsKey, invalidCommitment, messages);
+            fail("Expected an exception to be thrown");
+        } catch (Exception exception) {
+            assertEquals("Unable to set commitment", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void shouldThrowExceptionMessageWhenBlindSignMessageIsInvalid() {
+        byte[] seed = new byte[0];
+        KeyPair keyPair = null;
+
+        try {
+            keyPair = Bbs.generateBls12381G2Key(seed);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertNotNull(keyPair);
+
+        byte[] bbsKey = Bbs.blsPublicToBbsPublicKey(keyPair.publicKey, 1);
+        byte[] secretKey = new byte[32];
+        byte[] nonce = new byte[32];
+        Map<Integer, byte[]> messages = Map.of(0, "message1".getBytes());
+
+        BlindCommitmentContext blindCommitmentContext = null;
+
+        try {
+            blindCommitmentContext = Bbs.blindCommitment(bbsKey, messages, nonce);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertNotNull(blindCommitmentContext);
+
+        Map<Integer, byte[]> invalidMessages = Map.of(0, "".getBytes());
+
+        try {
+            Bbs.blindSign(secretKey, bbsKey, blindCommitmentContext.commitment, invalidMessages);
+            fail("Expected an exception to be thrown");
+        } catch (Exception exception) {
+            assertEquals("Unable to add message", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void canUnblindSignature() {
+        byte[] blindSignature = new byte[112];
+        byte[] blindingFactor = new byte[32];
         byte[] signature;
 
-        signature = Bbs.unblindSignature(blind_signature, blinding_factor);
+        signature = Bbs.unblindSignature(blindSignature, blindingFactor);
         assertNotNull(signature);
     }
-//
-//    @Test
-//    public void shouldReturnNullWhenCantUnblindSignature() {
-//        byte[] blind_signature = new byte[112];
-//        byte[] blinding_factor = new byte[32];
-//        byte[] signature;
-//
-//        signature = Bbs.unblindSignature(blind_signature, blinding_factor);
-//        assertNull("The signature is null", signature);
-//    }
-//
-    @Test public void canCreateProof() {
-        byte[] public_key = new byte[96];
+
+    @Test
+    public void shouldReturnNullWhenCantUnblindSignature() {
+        byte[] blindSignature = null;
+        byte[] blindingFactor = null;
+        byte[] signature;
+
+        signature = Bbs.unblindSignature(blindSignature, blindingFactor);
+        assertNull("The signature is null", signature);
+    }
+
+    @Test
+    public void canCreateProof() {
+        byte[] seed = new byte[0];
+        KeyPair keyPair = null;
+
+        try {
+            keyPair = Bbs.generateBls12381G2Key(seed);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertNotNull(keyPair);
+
+        byte[] bbsKey = Bbs.blsPublicToBbsPublicKey(keyPair.publicKey, 1);
         byte[] nonce = new byte[32];
-        byte[] signature = new byte[96];
+        byte[] signature = new byte[112];
 
         int type = 1;
-        byte[] blinding_factor = new byte[Bbs.getBlindingFactorSize()];
+        byte[] blindingFactor = new byte[Bbs.getBlindingFactorSize()];
         byte[] message = new byte[96];
-        ProofMessage[] proofMessage = new ProofMessage[] {
-            new ProofMessage(type, message, blinding_factor),
+        ProofMessage[] proofMessage = new ProofMessage[]{
+                new ProofMessage(type, message, blindingFactor),
         };
 
         byte[] proof = new byte[0];
 
         try {
-            proof = Bbs.createProof(public_key, nonce, signature, proofMessage);
+            proof = Bbs.createProof(bbsKey, nonce, signature, proofMessage);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
 
         assertNotNull(proof);
     }
-//
-//    @Test
-//    public void shouldThrowExceptionMessageWhenFailToInitProofContext() {
-//        try {
-//            //long handle = Bbs.bbs_create_proof_context_init();
-//            fail("Expected an exception to be thrown");
-//        } catch (Exception exception) {
-//            assertEquals("Unable to create proof context", exception.getMessage());
-//        }
-//    }
-//
+
 //    @Test
 //    public void shouldThrowExceptionMessageWhenProofPublicKeyIsInvalid() {
 //        byte[] public_key = new byte[96];

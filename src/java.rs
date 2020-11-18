@@ -578,7 +578,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1commitment_1finish(
     let res =
         bbs_blind_commitment_context_finish(handle as u64, &mut c, &mut p, &mut r, &mut error);
     let bad_res = env.new_byte_array(0).unwrap();
-    if res == 0 {
+    if res != 0 {
         return bad_res;
     }
     let cc: Vec<jbyte> = c.into_vec().iter().map(|b| *b as jbyte).collect();
@@ -654,13 +654,9 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1sign_1set_1commitment(
     match env.convert_byte_array(commitment) {
         Err(_) => 0,
         Ok(s) => {
-            if s.len() != FR_COMPRESSED_SIZE {
-                0
-            } else {
-                let mut error = ExternError::success();
-                let byte_array = ByteArray::from(s);
-                bbs_blind_sign_context_set_commitment(handle as u64, byte_array, &mut error)
-            }
+            let mut error = ExternError::success();
+            let byte_array = ByteArray::from(s);
+            bbs_blind_sign_context_set_commitment(handle as u64, byte_array, &mut error)
         }
     }
 }
@@ -811,13 +807,9 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1set_1sign
     match env.convert_byte_array(signature) {
         Err(_) => 0,
         Ok(s) => {
-            if s.len() < SIGNATURE_COMPRESSED_SIZE {
-                0
-            } else {
-                let mut error = ExternError::success();
-                let byte_array = ByteArray::from(s);
-                bbs_create_proof_context_set_signature(handle as u64, byte_array, &mut error)
-            }
+            let mut error = ExternError::success();
+            let byte_array = ByteArray::from(s);
+            bbs_create_proof_context_set_signature(handle as u64, byte_array, &mut error)
         }
     }
 }

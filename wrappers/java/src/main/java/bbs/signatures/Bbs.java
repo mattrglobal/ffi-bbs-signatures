@@ -15,111 +15,93 @@ public class Bbs {
         System.loadLibrary("bbs");
     }
 
-    public static void main(String[] args) {
-        byte[] seed = new byte[32];
-        byte[] blinding_factor = new byte[32];
-        byte[] public_key = new byte[96];
-        byte[] secret_key = new byte[32];
+    private static native int bls_public_key_g1_size();
 
-        KeyPair keyPair = new KeyPair(public_key, secret_key);
+    private static native int bls_public_key_g2_size();
 
-        try {
-            keyPair = generateBls12381G1Key(seed);
-        } catch (Exception exception) {
-            System.out.println("exception:" + exception.getMessage());
-            exception.printStackTrace();
-        }
+    private static native int blinding_factor_size();
 
-        System.out.println("keyPair:" + keyPair.publicKey + " private key: " + keyPair.secretKey);
-    }
+    private static native int bls_secret_key_size();
 
-    private static native int bls_public_key_g1_size(); // [V]
+    private static native int bls_generate_g1_key(byte[] seed, byte[] public_key, byte[] secret_key);
 
-    private static native int bls_public_key_g2_size(); // [V]
+    private static native int bls_generate_g2_key(byte[] seed, byte[] public_key, byte[] secret_key);
 
-    private static native int blinding_factor_size(); // [V]
+    private static native int bls_generate_blinded_g1_key(byte[] seed, byte[] public_key, byte[] secret_key, byte[] blinding_factor);
 
-    private static native int bls_secret_key_size(); // [V]
+    private static native int bls_generate_blinded_g2_key(byte[] seed, byte[] public_key, byte[] secret_key, byte[] blinding_factor);
 
-    private static native int bls_generate_g1_key(byte[] seed, byte[] public_key, byte[] secret_key); // [V]
+    private static native byte[] bls_secret_key_to_bbs_key(byte[] secret_key, int message_count);
 
-    private static native int bls_generate_g2_key(byte[] seed, byte[] public_key, byte[] secret_key); // [V]
+    private static native byte[] bls_public_key_to_bbs_key(byte[] short_public_key, int message_count);
 
-    private static native int bls_generate_blinded_g1_key(byte[] seed, byte[] public_key, byte[] secret_key, byte[] blinding_factor); // [V]
+    private static native int bbs_signature_size();
 
-    private static native int bls_generate_blinded_g2_key(byte[] seed, byte[] public_key, byte[] secret_key, byte[] blinding_factor); // [V]
+    private static native long bbs_sign_init();
 
-    private static native byte[] bls_secret_key_to_bbs_key(byte[] secret_key, int message_count); // ?
+    private static native int bbs_sign_set_secret_key(long handle, byte[] secret_key);
 
-    private static native byte[] bls_public_key_to_bbs_key(byte[] short_public_key, int message_count); // ?
+    private static native int bbs_sign_set_public_key(long handle, byte[] public_key);
 
-    private static native int bbs_signature_size(); // [V]
-
-    private static native long bbs_sign_init(); // [Opt]
-
-    private static native int bbs_sign_set_secret_key(long handle, byte[] secret_key); // [Opt]
-
-    private static native int bbs_sign_set_public_key(long handle, byte[] public_key); // [Opt]
-
-    private static native int bbs_sign_add_message_bytes(long handle, byte[] message); // [Opt]
+    private static native int bbs_sign_add_message_bytes(long handle, byte[] message);
 
     private static native int bbs_sign_add_message_prehashed(long handle, byte[] hash); // ?
 
-    private static native int bbs_sign_finish(long handle, byte[] signature); // [V]
+    private static native int bbs_sign_finish(long handle, byte[] signature);
 
-    private static native long bbs_verify_init(); // [Opt]
+    private static native long bbs_verify_init();
 
-    private static native int bbs_verify_add_message_bytes(long handle, byte[] message); // [Opt]
+    private static native int bbs_verify_add_message_bytes(long handle, byte[] message);
 
     private static native int bbs_verify_add_message_prehashed(long handle, byte[] hash); // ?
 
-    private static native int bbs_verify_set_public_key(long handle, byte[] public_key); // [Opt]
+    private static native int bbs_verify_set_public_key(long handle, byte[] public_key);
 
-    private static native int bbs_verify_set_signature(long handle, byte[] signature); // [Opt]
+    private static native int bbs_verify_set_signature(long handle, byte[] signature);
 
-    private static native int bbs_verify_finish(long handle); // [V]
+    private static native int bbs_verify_finish(long handle);
 
-    private static native int bbs_blind_signature_size(); // [V]
+    private static native int bbs_blind_signature_size();
 
-    private static native long bbs_blind_commitment_init(); // [Opt]
+    private static native long bbs_blind_commitment_init();
 
-    private static native int bbs_blind_commitment_add_message_bytes(long handle, int index, byte[] message); // [Opt]
+    private static native int bbs_blind_commitment_add_message_bytes(long handle, int index, byte[] message);
 
     private static native int bbs_blind_commitment_add_prehashed(long handle, int index, byte[] hash); // ?
 
-    private static native int bbs_blind_commitment_set_public_key(long handle, byte[] public_key); // [Opt]
+    private static native int bbs_blind_commitment_set_public_key(long handle, byte[] public_key);
 
-    private static native int bbs_blind_commitment_set_nonce_bytes(long handle, byte[] nonce); // [Opt]
+    private static native int bbs_blind_commitment_set_nonce_bytes(long handle, byte[] nonce);
 
-    private static native byte[] bbs_blind_commitment_finish(long handle, byte[] commitment, byte[] blinding_factor); // [V]
+    private static native byte[] bbs_blind_commitment_finish(long handle, byte[] commitment, byte[] blinding_factor);
 
-    private static native long bbs_blind_sign_init(); // [Opt]
+    private static native long bbs_blind_sign_init();
 
-    private static native int bbs_blind_sign_set_secret_key(long handle, byte[] secret_key); // [Opt]
+    private static native int bbs_blind_sign_set_secret_key(long handle, byte[] secret_key);
 
-    private static native int bbs_blind_sign_set_public_key(long handle, byte[] public_key); // [Opt]
+    private static native int bbs_blind_sign_set_public_key(long handle, byte[] public_key);
 
-    private static native int bbs_blind_sign_set_commitment(long handle, byte[] commitment); // [Opt]
+    private static native int bbs_blind_sign_set_commitment(long handle, byte[] commitment);
 
-    private static native int bbs_blind_sign_add_message_bytes(long handle, int index, byte[] message); // [Opt]
+    private static native int bbs_blind_sign_add_message_bytes(long handle, int index, byte[] message);
 
-    private static native int bbs_blind_sign_add_prehashed(long handle, int index, byte[] hash); // ?
+    private static native int bbs_blind_sign_add_prehashed(long handle, int index, byte[] hash);
 
-    private static native int bbs_blind_sign_finish(long handle, byte[] blind_signature); // [V]
+    private static native int bbs_blind_sign_finish(long handle, byte[] blind_signature);
 
-    private static native int bbs_unblind_signature(byte[] blind_signature, byte[] blinding_factor, byte[] unblind_signature); // [V]
+    private static native int bbs_unblind_signature(byte[] blind_signature, byte[] blinding_factor, byte[] unblind_signature);
 
-    private static native long bbs_create_proof_context_init(); // [Opt]
+    private static native long bbs_create_proof_context_init();
 
-    private static native int bbs_create_proof_context_set_public_key(long handle, byte[] public_key); // [Opt]
+    private static native int bbs_create_proof_context_set_public_key(long handle, byte[] public_key);
 
-    private static native int bbs_create_proof_context_set_signature(long handle, byte[] signature); // [Opt]
+    private static native int bbs_create_proof_context_set_signature(long handle, byte[] signature);
 
-    private static native int bbs_create_proof_context_set_nonce_bytes(long handle, byte[] message); // [Opt]
+    private static native int bbs_create_proof_context_set_nonce_bytes(long handle, byte[] message);
 
-    private static native int bbs_create_proof_context_add_proof_message_bytes(long handle, byte[] message, int xtype, byte[] blinding_factor); // [Opt]
+    private static native int bbs_create_proof_context_add_proof_message_bytes(long handle, byte[] message, int xtype, byte[] blinding_factor);
 
-    private static native byte[] bbs_create_proof_context_finish(long handle); // [V]
+    private static native byte[] bbs_create_proof_context_finish(long handle);
 
     private static native long bbs_verify_proof_context_init();
 
@@ -202,6 +184,10 @@ public class Bbs {
         return bls_public_key_to_bbs_key(blsPublicKey, messages);
     }
 
+    public static byte[] blsSecretToBbsSecretKey(byte[] blsSecretKey, int messages) {
+        return bls_secret_key_to_bbs_key(blsSecretKey, messages);
+    }
+
     public static byte[] sign(byte[] secret_key, byte[] public_key, byte[][] messages) throws Exception {
         long handle = bbs_sign_init();
         if (0 == handle) {
@@ -242,6 +228,7 @@ public class Bbs {
             }
         }
         int res = bbs_verify_finish(handle);
+
         switch (res) {
             case 0:
                 return true;
