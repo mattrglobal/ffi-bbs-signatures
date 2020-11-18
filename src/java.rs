@@ -215,15 +215,11 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bls_1secret_1key_1to_1bbs_1key(
         return bad_res;
     }
 
-    // TODO
-    match env.new_byte_array(10 as jint) {
+    let pk_bytes = pk.to_bytes_compressed_form();
+    match env.new_byte_array(pk_bytes.len() as jint) {
         Err(_) => bad_res,
         Ok(out) => {
-            let pp: Vec<jbyte> = pk
-                .to_bytes_compressed_form()
-                .iter()
-                .map(|b| *b as jbyte)
-                .collect();
+            let pp: Vec<jbyte> = pk_bytes.iter().map(|b| *b as jbyte).collect();
             copy_to_jni!(env, out, pp.as_slice(), bad_res);
             out
         }
@@ -262,15 +258,11 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bls_1public_1key_1to_1bbs_1key(
         return bad_res;
     }
 
-    // TODO
-    match env.new_byte_array(10 as jint) {
+    let pk_bytes = pk.to_bytes_compressed_form();
+    match env.new_byte_array(pk_bytes.len() as jint) {
         Err(_) => bad_res,
         Ok(out) => {
-            let pp: Vec<jbyte> = pk
-                .to_bytes_compressed_form()
-                .iter()
-                .map(|b| *b as jbyte)
-                .collect();
+            let pp: Vec<jbyte> = pk_bytes.iter().map(|b| *b as jbyte).collect();
             copy_to_jni!(env, out, pp.as_slice(), bad_res);
             out
         }
@@ -317,13 +309,9 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1sign_1set_1public_1key(
     match env.convert_byte_array(public_key) {
         Err(_) => 0,
         Ok(s) => {
-            if s.len() < G2_COMPRESSED_SIZE {
-                0
-            } else {
-                let mut error = ExternError::success();
-                let byte_array = ByteArray::from(s);
-                bbs_sign_context_set_public_key(handle as u64, byte_array, &mut error)
-            }
+            let mut error = ExternError::success();
+            let byte_array = ByteArray::from(s);
+            bbs_sign_context_set_public_key(handle as u64, byte_array, &mut error)
         }
     }
 }
@@ -437,13 +425,9 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1set_1public_1key(
     match env.convert_byte_array(public_key) {
         Err(_) => 0,
         Ok(s) => {
-            if s.len() < G2_COMPRESSED_SIZE {
-                0
-            } else {
-                let mut error = ExternError::success();
-                let byte_array = ByteArray::from(s);
-                bbs_verify_context_set_public_key(handle as u64, byte_array, &mut error)
-            }
+            let mut error = ExternError::success();
+            let byte_array = ByteArray::from(s);
+            bbs_verify_context_set_public_key(handle as u64, byte_array, &mut error)
         }
     }
 }
@@ -550,13 +534,9 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1commitment_1set_1public_1k
     match env.convert_byte_array(public_key) {
         Err(_) => 0,
         Ok(s) => {
-            if s.len() < G2_COMPRESSED_SIZE {
-                0
-            } else {
-                let mut error = ExternError::success();
-                let byte_array = ByteArray::from(s);
-                bbs_blind_commitment_context_set_public_key(handle as u64, byte_array, &mut error)
-            }
+            let mut error = ExternError::success();
+            let byte_array = ByteArray::from(s);
+            bbs_blind_commitment_context_set_public_key(handle as u64, byte_array, &mut error)
         }
     }
 }
@@ -572,13 +552,9 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1commitment_1set_1nonce_1by
     match env.convert_byte_array(nonce) {
         Err(_) => 0,
         Ok(s) => {
-            if s.len() < G2_COMPRESSED_SIZE {
-                0
-            } else {
-                let mut error = ExternError::success();
-                let byte_array = ByteArray::from(s);
-                bbs_blind_commitment_context_set_nonce_bytes(handle as u64, byte_array, &mut error)
-            }
+            let mut error = ExternError::success();
+            let byte_array = ByteArray::from(s);
+            bbs_blind_commitment_context_set_nonce_bytes(handle as u64, byte_array, &mut error)
         }
     }
 }
@@ -660,13 +636,9 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1sign_1set_1public_1key(
     match env.convert_byte_array(public_key) {
         Err(_) => 0,
         Ok(s) => {
-            if s.len() < G2_COMPRESSED_SIZE {
-                0
-            } else {
-                let mut error = ExternError::success();
-                let byte_array = ByteArray::from(s);
-                bbs_blind_sign_context_set_public_key(handle as u64, byte_array, &mut error)
-            }
+            let mut error = ExternError::success();
+            let byte_array = ByteArray::from(s);
+            bbs_blind_sign_context_set_public_key(handle as u64, byte_array, &mut error)
         }
     }
 }
@@ -821,13 +793,9 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1set_1publ
     match env.convert_byte_array(public_key) {
         Err(_) => 0,
         Ok(s) => {
-            if s.len() < G2_COMPRESSED_SIZE {
-                0
-            } else {
-                let mut error = ExternError::success();
-                let byte_array = ByteArray::from(s);
-                bbs_create_proof_context_set_public_key(handle as u64, byte_array, &mut error)
-            }
+            let mut error = ExternError::success();
+            let byte_array = ByteArray::from(s);
+            bbs_create_proof_context_set_public_key(handle as u64, byte_array, &mut error)
         }
     }
 }
@@ -865,13 +833,9 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1set_1nonc
     match env.convert_byte_array(nonce) {
         Err(_) => 0,
         Ok(s) => {
-            if s.len() < G2_COMPRESSED_SIZE {
-                0
-            } else {
-                let mut error = ExternError::success();
-                let byte_array = ByteArray::from(s);
-                bbs_create_proof_context_set_nonce_bytes(handle as u64, byte_array, &mut error)
-            }
+            let mut error = ExternError::success();
+            let byte_array = ByteArray::from(s);
+            bbs_create_proof_context_set_nonce_bytes(handle as u64, byte_array, &mut error)
         }
     }
 }
@@ -945,7 +909,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1finish(
 #[no_mangle]
 pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1init(
     _: JNIEnv,
-    _: jObject,
+    _: JObject,
 ) -> jlong {
     let mut error = ExternError::success();
     bbs_verify_proof_context_init(&mut error) as jlong
@@ -955,7 +919,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1init(
 #[no_mangle]
 pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1add_1message_1bytes(
     env: JNIEnv,
-    _: jObject,
+    _: JObject,
     handle: jlong,
     index: jint,
     message: jbyteArray,
@@ -979,7 +943,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1add_1mess
 #[no_mangle]
 pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1add_1message_1prehashed(
     env: JNIEnv,
-    _: jObject,
+    _: JObject,
     handle: jlong,
     index: jint,
     message: jbyteArray,
@@ -1003,7 +967,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1add_1mess
 #[no_mangle]
 pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1set_1proof(
     env: JNIEnv,
-    _: jObject,
+    _: JObject,
     handle: jlong,
     proof: jbyteArray,
 ) -> jint {
@@ -1021,7 +985,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1set_1proo
 #[no_mangle]
 pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1set_1public_1key(
     env: JNIEnv,
-    _: jObject,
+    _: JObject,
     handle: jlong,
     public_key: jbyteArray,
 ) -> jint {
@@ -1039,7 +1003,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1set_1publ
 #[no_mangle]
 pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1set_1nonce_1bytes(
     env: JNIEnv,
-    _: jObject,
+    _: JObject,
     handle: jlong,
     nonce: jbyteArray,
 ) -> jint {
@@ -1056,8 +1020,8 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1set_1nonc
 #[allow(non_snake_case)]
 #[no_mangle]
 pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1finish(
-    env: JNIEnv,
-    _: jObject,
+    _: JNIEnv,
+    _: JObject,
     handle: jlong,
 ) -> jint {
     let mut error = ExternError::success();

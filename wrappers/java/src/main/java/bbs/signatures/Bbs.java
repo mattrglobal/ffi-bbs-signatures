@@ -198,6 +198,10 @@ public class Bbs {
         return new BlindedKeyPair(public_key, secret_key, blinding_factor);
     }
 
+    public static byte[] blsPublicToBbsPublicKey(byte[] blsPublicKey, int messages) {
+        return bls_public_key_to_bbs_key(blsPublicKey, messages);
+    }
+
     public static byte[] sign(byte[] secret_key, byte[] public_key, byte[][] messages) throws Exception {
         long handle = bbs_sign_init();
         if (0 == handle) {
@@ -214,7 +218,7 @@ public class Bbs {
                 throw new Exception("Unable to add message");
             }
         }
-        byte[] signature = new byte[96];
+        byte[] signature = new byte[bbs_blind_signature_size()];
         if (0 != bbs_sign_finish(handle, signature)) {
             throw new Exception("Unable to create signature");
         }

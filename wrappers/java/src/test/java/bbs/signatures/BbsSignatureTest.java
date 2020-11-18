@@ -152,7 +152,7 @@ public class BbsSignatureTest {
         KeyPair keyPair = null;
 
         try {
-            keyPair = Bbs.generateBls12381G1Key(seed);
+            keyPair = Bbs.generateBls12381G2Key(seed);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -161,14 +161,14 @@ public class BbsSignatureTest {
 
         //byte[] public_key = new byte[Bbs.getBls12381G2PublicKeySize()];
         //byte[] secret_key = new byte[Bbs.getSecretKeySize()];
-        byte[] public_key = keyPair.publicKey;
+        byte[] bbsKey = Bbs.blsPublicToBbsPublicKey(keyPair.publicKey, 1);
         byte[] secret_key = keyPair.secretKey;
 
         byte[] signature = new byte[Bbs.getSignatureSize()];
         byte[][] messages = { "message1".getBytes() };
 
         try {
-            signature = Bbs.sign(secret_key, public_key, messages);
+            signature = Bbs.sign(secret_key, bbsKey, messages);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
