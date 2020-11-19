@@ -574,30 +574,21 @@ public class BbsSignatureTest {
     }
 
     @Test
-    public void canCreateProof() {
-        byte[] seed = new byte[0];
-        KeyPair keyPair = null;
-
-        try {
-            keyPair = Bbs.generateBls12381G2Key(seed);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-
-        assertNotNull(keyPair);
-
-        byte[] bbsKey = Bbs.blsPublicToBbsPublicKey(keyPair.publicKey, 1);
-        byte[] nonce = new byte[32];
-        byte[] signature = new byte[112];
+    public void testBlsCreateProofRevealingSingleMessageFromSingleMessageSignature() {
+        byte[] nonce = java.util.Base64.getDecoder().decode("MDEyMzQ1Njc4OQ==");
+        byte[] message = java.util.Base64.getDecoder().decode("dXpBb1FGcUxnUmVpZHc9PQ==");
+        byte[] publicKey = java.util.Base64.getDecoder().decode("qJgttTOthlZHltz+c0PE07hx3worb/cy7QY5iwRegQ9BfwvGahdqCO9Q9xuOnF5nD/Tq6t8zm9z26EAFCiaEJnL5b50D1cHDgNxBUPEEae+4bUb3JRsHaxBdZWDOo3pb");
+        byte[] signature = java.util.Base64.getDecoder().decode("r00WeXEj+07DUZb3JY6fbbKhHtQcxtLZsJUVU6liFZQKCLQYu77EXFZx4Vaa5VBtKpPK6tDGovHGgrgyizOm70VUZgzzBb0emvRIGSWhAKkcLL1z1HYwApnUE6XFFb96LUF4XM//QhEM774dX4ciqQ==");
 
         int type = 1;
-        byte[] blindingFactor = new byte[Bbs.getBlindingFactorSize()];
-        byte[] message = new byte[96];
+        byte[] blindingFactor = new byte[0];
         ProofMessage[] proofMessage = new ProofMessage[]{
                 new ProofMessage(type, message, blindingFactor),
         };
 
         byte[] proof = new byte[0];
+
+        byte[] bbsKey = Bbs.blsPublicToBbsPublicKey(publicKey, 1);
 
         try {
             proof = Bbs.createProof(bbsKey, nonce, signature, proofMessage);

@@ -45,8 +45,7 @@ use crate::{
 use bbs::keys::{
     DeterministicPublicKey, KeyGenOption, SecretKey, DETERMINISTIC_PUBLIC_KEY_COMPRESSED_SIZE,
 };
-use bbs::signature::SIGNATURE_COMPRESSED_SIZE;
-use bbs::{ToVariableLengthBytes, FR_COMPRESSED_SIZE, G1_COMPRESSED_SIZE, G2_COMPRESSED_SIZE};
+use bbs::{ToVariableLengthBytes, FR_COMPRESSED_SIZE, G1_COMPRESSED_SIZE};
 
 #[allow(non_snake_case)]
 #[no_mangle]

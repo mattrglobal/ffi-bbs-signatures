@@ -184,7 +184,7 @@ public class Bbs {
         return bls_public_key_to_bbs_key(blsPublicKey, messages);
     }
 
-    public static byte[] blsSecretToBbsSecretKey(byte[] blsSecretKey, int messages) {
+    public static byte[] blsSecretToBbsPublicKey(byte[] blsSecretKey, int messages) {
         return bls_secret_key_to_bbs_key(blsSecretKey, messages);
     }
 
