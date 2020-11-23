@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.HashMap;
 
 import static org.junit.Assert.*;
 
@@ -573,8 +574,7 @@ public class BbsSignatureTest {
         assertNull("The signature is null", signature);
     }
 
-    @Test
-    public void testBlsCreateProofRevealingSingleMessageFromSingleMessageSignature() {
+    @Test public void testBlsCreateProofRevealingSingleMessageFromSingleMessageSignature() {
         byte[] nonce = java.util.Base64.getDecoder().decode("MDEyMzQ1Njc4OQ==");
         byte[] message = java.util.Base64.getDecoder().decode("dXpBb1FGcUxnUmVpZHc9PQ==");
         byte[] publicKey = java.util.Base64.getDecoder().decode("qJgttTOthlZHltz+c0PE07hx3worb/cy7QY5iwRegQ9BfwvGahdqCO9Q9xuOnF5nD/Tq6t8zm9z26EAFCiaEJnL5b50D1cHDgNxBUPEEae+4bUb3JRsHaxBdZWDOo3pb");
@@ -587,7 +587,6 @@ public class BbsSignatureTest {
         };
 
         byte[] proof = new byte[0];
-
         byte[] bbsKey = Bbs.blsPublicToBbsPublicKey(publicKey, 1);
 
         try {
@@ -599,118 +598,146 @@ public class BbsSignatureTest {
         assertNotNull(proof);
     }
 
-//    @Test
-//    public void shouldThrowExceptionMessageWhenProofPublicKeyIsInvalid() {
-//        byte[] public_key = new byte[96];
-//        byte[] nonce = new byte[32];
-//        byte[] signature = new byte[96];
-//
-//        int type = 1;
-//        byte[] blinding_factor = new byte[Bbs.getBlindingFactorSize()];
-//        byte[] message = new byte[96];
-//        ProofMessage[] proofMessage = new ProofMessage[] {
-//                new ProofMessage(type, message, blinding_factor),
-//        };
-//
-//        byte[] proof = new byte[0];
-//
-//        try {
-//            proof = Bbs.createProof(public_key, nonce, signature, proofMessage);
-//            fail("Expected an exception to be thrown");
-//        } catch (Exception exception) {
-//            assertEquals("Unable to set public key", exception.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void shouldThrowExceptionMessageWhenProofNonceIsInvalid() {
-//        byte[] public_key = new byte[96];
-//        byte[] nonce = new byte[32];
-//        byte[] signature = new byte[96];
-//
-//        int type = 1;
-//        byte[] blinding_factor = new byte[Bbs.getBlindingFactorSize()];
-//        byte[] message = new byte[96];
-//        ProofMessage[] proofMessage = new ProofMessage[] {
-//                new ProofMessage(type, message, blinding_factor),
-//        };
-//
-//        byte[] proof = new byte[0];
-//
-//        try {
-//            proof = Bbs.createProof(public_key, nonce, signature, proofMessage);
-//            fail("Expected an exception to be thrown");
-//        } catch (Exception exception) {
-//            assertEquals("Unable to set nonce", exception.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void shouldThrowExceptionMessageWhenProofSignatureIsInvalid() {
-//        byte[] public_key = new byte[96];
-//        byte[] nonce = new byte[32];
-//        byte[] signature = new byte[96];
-//
-//        int type = 1;
-//        byte[] blinding_factor = new byte[Bbs.getBlindingFactorSize()];
-//        byte[] message = new byte[96];
-//        ProofMessage[] proofMessage = new ProofMessage[] {
-//                new ProofMessage(type, message, blinding_factor),
-//        };
-//
-//        byte[] proof = new byte[0];
-//
-//        try {
-//            proof = Bbs.createProof(public_key, nonce, signature, proofMessage);
-//            fail("Expected an exception to be thrown");
-//        } catch (Exception exception) {
-//            assertEquals("Unable to set signature", exception.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void shouldThrowExceptionMessageWhenProofMessageIsInvalid() {
-//        byte[] public_key = new byte[96];
-//        byte[] nonce = new byte[32];
-//        byte[] signature = new byte[96];
-//
-//        int type = 1;
-//        byte[] blinding_factor = new byte[Bbs.getBlindingFactorSize()];
-//        byte[] message = new byte[96];
-//        ProofMessage[] proofMessage = new ProofMessage[] {
-//                new ProofMessage(type, message, blinding_factor),
-//        };
-//
-//        byte[] proof = new byte[0];
-//
-//        try {
-//            proof = Bbs.createProof(public_key, nonce, signature, proofMessage);
-//            fail("Expected an exception to be thrown");
-//        } catch (Exception exception) {
-//            assertEquals("Unable to add proof message", exception.getMessage());
-//        }
-//    }
-//
-//    @Test
-//    public void shouldThrowExceptionMessageWhenUnableToCreateProof() {
-//        byte[] public_key = new byte[96];
-//        byte[] nonce = new byte[32];
-//        byte[] signature = new byte[96];
-//
-//        int type = 1;
-//        byte[] blinding_factor = new byte[Bbs.getBlindingFactorSize()];
-//        byte[] message = new byte[96];
-//        ProofMessage[] proofMessage = new ProofMessage[] {
-//                new ProofMessage(type, message, blinding_factor),
-//        };
-//
-//        byte[] proof = new byte[0];
-//
-//        try {
-//            proof = Bbs.createProof(public_key, nonce, signature, proofMessage);
-//            fail("Expected an exception to be thrown");
-//        } catch (Exception exception) {
-//            assertEquals("Unable to create proof", exception.getMessage());
-//        }
-//    }
+    @Test
+    public void shouldThrowExceptionMessageWhenProofPublicKeyIsInvalid() {
+        byte[] nonce = java.util.Base64.getDecoder().decode("MDEyMzQ1Njc4OQ==");
+        byte[] message = java.util.Base64.getDecoder().decode("dXpBb1FGcUxnUmVpZHc9PQ==");
+        byte[] signature = java.util.Base64.getDecoder().decode("r00WeXEj+07DUZb3JY6fbbKhHtQcxtLZsJUVU6liFZQKCLQYu77EXFZx4Vaa5VBtKpPK6tDGovHGgrgyizOm70VUZgzzBb0emvRIGSWhAKkcLL1z1HYwApnUE6XFFb96LUF4XM//QhEM774dX4ciqQ==");
+        byte[] invalidPublicKey = new byte[0];
+
+        int type = 1;
+        byte[] blindingFactor = new byte[0];
+        ProofMessage[] proofMessage = new ProofMessage[]{
+                new ProofMessage(type, message, blindingFactor),
+        };
+
+        byte[] bbsKey = Bbs.blsPublicToBbsPublicKey(invalidPublicKey, 1);
+
+        try {
+            Bbs.createProof(bbsKey, nonce, signature, proofMessage);
+            fail("Expected an exception to be thrown");
+        } catch (Exception exception) {
+            assertEquals("Unable to set public key", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void shouldThrowExceptionMessageWhenProofNonceIsInvalid() {
+        byte[] invalidNonce = null;
+        byte[] message = java.util.Base64.getDecoder().decode("dXpBb1FGcUxnUmVpZHc9PQ==");
+        byte[] publicKey = java.util.Base64.getDecoder().decode("qJgttTOthlZHltz+c0PE07hx3worb/cy7QY5iwRegQ9BfwvGahdqCO9Q9xuOnF5nD/Tq6t8zm9z26EAFCiaEJnL5b50D1cHDgNxBUPEEae+4bUb3JRsHaxBdZWDOo3pb");
+        byte[] signature = java.util.Base64.getDecoder().decode("r00WeXEj+07DUZb3JY6fbbKhHtQcxtLZsJUVU6liFZQKCLQYu77EXFZx4Vaa5VBtKpPK6tDGovHGgrgyizOm70VUZgzzBb0emvRIGSWhAKkcLL1z1HYwApnUE6XFFb96LUF4XM//QhEM774dX4ciqQ==");
+
+
+        int type = 1;
+        byte[] blindingFactor = new byte[0];
+        ProofMessage[] proofMessage = new ProofMessage[]{
+                new ProofMessage(type, message, blindingFactor),
+        };
+
+        byte[] bbsKey = Bbs.blsPublicToBbsPublicKey(publicKey, 1);
+
+        try {
+            Bbs.createProof(bbsKey, invalidNonce, signature, proofMessage);
+            fail("Expected an exception to be thrown");
+        } catch (Exception exception) {
+            assertEquals("Unable to set nonce", exception.getMessage());
+        }
+    }
+
+
+    @Test
+    public void shouldThrowExceptionMessageWhenProofSignatureIsInvalid() {
+        byte[] nonce = java.util.Base64.getDecoder().decode("MDEyMzQ1Njc4OQ==");
+        byte[] message = java.util.Base64.getDecoder().decode("dXpBb1FGcUxnUmVpZHc9PQ==");
+        byte[] publicKey = java.util.Base64.getDecoder().decode("qJgttTOthlZHltz+c0PE07hx3worb/cy7QY5iwRegQ9BfwvGahdqCO9Q9xuOnF5nD/Tq6t8zm9z26EAFCiaEJnL5b50D1cHDgNxBUPEEae+4bUb3JRsHaxBdZWDOo3pb");
+        byte[] invalidSignature = new byte[0];
+
+        int type = 1;
+        byte[] blindingFactor = new byte[0];
+        ProofMessage[] proofMessage = new ProofMessage[]{
+                new ProofMessage(type, message, blindingFactor),
+        };
+
+        byte[] bbsKey = Bbs.blsPublicToBbsPublicKey(publicKey, 1);
+
+        try {
+            Bbs.createProof(bbsKey, nonce, invalidSignature, proofMessage);
+            fail("Expected an exception to be thrown");
+        } catch (Exception exception) {
+            assertEquals("Unable to set signature", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void shouldThrowExceptionMessageWhenProofMessageIsInvalid() {
+        byte[] nonce = java.util.Base64.getDecoder().decode("MDEyMzQ1Njc4OQ==");
+        byte[] message = java.util.Base64.getDecoder().decode("dXpBb1FGcUxnUmVpZHc9PQ==");
+        byte[] publicKey = java.util.Base64.getDecoder().decode("qJgttTOthlZHltz+c0PE07hx3worb/cy7QY5iwRegQ9BfwvGahdqCO9Q9xuOnF5nD/Tq6t8zm9z26EAFCiaEJnL5b50D1cHDgNxBUPEEae+4bUb3JRsHaxBdZWDOo3pb");
+        byte[] signature = java.util.Base64.getDecoder().decode("r00WeXEj+07DUZb3JY6fbbKhHtQcxtLZsJUVU6liFZQKCLQYu77EXFZx4Vaa5VBtKpPK6tDGovHGgrgyizOm70VUZgzzBb0emvRIGSWhAKkcLL1z1HYwApnUE6XFFb96LUF4XM//QhEM774dX4ciqQ==");
+
+        int type = 5;
+        byte[] blindingFactor = new byte[0];
+        ProofMessage[] proofMessage = new ProofMessage[]{
+                new ProofMessage(type, message, blindingFactor),
+        };
+
+        byte[] bbsKey = Bbs.blsPublicToBbsPublicKey(publicKey, 1);
+
+        try {
+            Bbs.createProof(bbsKey, nonce, signature, proofMessage);
+            fail("Expected an exception to be thrown");
+        } catch (Exception exception) {
+            assertEquals("Unable to add proof message", exception.getMessage());
+        }
+    }
+
+    @Test public void testBlsVerifyProofRevealingSingleMessageFromSingleMessageSignature() {
+        byte[] nonce = java.util.Base64.getDecoder().decode("MDEyMzQ1Njc4OQ==");
+        byte[] message = java.util.Base64.getDecoder().decode("dXpBb1FGcUxnUmVpZHc9PQ==");
+        byte[] publicKey = java.util.Base64.getDecoder().decode("qJgttTOthlZHltz+c0PE07hx3worb/cy7QY5iwRegQ9BfwvGahdqCO9Q9xuOnF5nD/Tq6t8zm9z26EAFCiaEJnL5b50D1cHDgNxBUPEEae+4bUb3JRsHaxBdZWDOo3pb");
+        byte[] signature = java.util.Base64.getDecoder().decode("r00WeXEj+07DUZb3JY6fbbKhHtQcxtLZsJUVU6liFZQKCLQYu77EXFZx4Vaa5VBtKpPK6tDGovHGgrgyizOm70VUZgzzBb0emvRIGSWhAKkcLL1z1HYwApnUE6XFFb96LUF4XM//QhEM774dX4ciqQ==");
+
+        int type = 1;
+        byte[] blindingFactor = new byte[0];
+        ProofMessage[] proofMessage = new ProofMessage[]{
+                new ProofMessage(type, message, blindingFactor),
+        };
+
+        byte[] proof = new byte[0];
+        byte[] bbsPublicKey = Bbs.blsPublicToBbsPublicKey(publicKey, 1);
+
+        try {
+            proof = Bbs.createProof(bbsPublicKey, nonce, signature, proofMessage);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertNotNull(proof);
+        System.out.println("PublicKey length: " + publicKey.length);
+        System.out.println("BBS PublicKey length: " + bbsPublicKey.length);
+        System.out.println("Signature length: " + signature.length);
+        System.out.println("Proof: " + proof.toString() + " length: " + proof.length);
+
+        Map<Integer, byte[]> messages = Map.of(0, "dXpBb1FGcUxnUmVpZHc9PQ==".getBytes());
+//        Map<Integer, byte[]> messages = new HashMap<Integer, byte[]>() {{
+//            put(0, "dXpBb1FGcUxnUmVpZHc9PQ==".getBytes());
+//        }};
+
+        // * node-bbs verifyProof
+//        Map<Integer, byte[]> messages = Map.of(0, "KNK0ITRAF+NrGg==".getBytes());
+//        byte[] bbsPublicKey = java.util.Base64.getDecoder().decode("qJgttTOthlZHltz+c0PE07hx3worb/cy7QY5iwRegQ9BfwvGahdqCO9Q9xuOnF5nD/Tq6t8zm9z26EAFCiaEJnL5b50D1cHDgNxBUPEEae+4bUb3JRsHaxBdZWDOo3pboZyjM38YgjaUBcjftZi5gb58Qz13XeRJpiuUHH06I7/1Eb8oVtIW5SGMNfKaqKhBAAAAAYPPztgxfWWw01/0SSug1oLfVuI4XUqhgyZ3rS6eTkOLjnyR3ObXb0XCD2Mfcxiv6w==");
+//        byte[] proof = java.util.Base64.getDecoder().decode("AAEBoyrn7FHZEDAfMBckBd9x4N1m5kpnjh/Oryw5XYkpqr7iqtSxYIqS7pmKAA/DjDt7lFkfu7oAYdKJlSD6WVGokHwtOW/EDkJXjrjQ4NVktiu0vfy0dEhy+CBhhcnwBQyfseuIeIuTZ1+2cAVaiOlzdc/K/yEKjSAQPqIOkmj9OaLLkfmljd5abf7dYMap0UugAAAAdKdyg+I6PbYt6HpcGCEX9KhVD0axbsNjch87YqUy3daNKsV5IQB3e3rKK5yR2sPpjgAAAAJvj/vM9cIsN/hZQEVpMwGVGAp39yWx0zsguRORUz2gXg8/IuO8e6l4L1ZZ7viCOgP9hYK9ZCeoMknyF4OhsuwpqF2pddX8+5FEuN2IDZTX+NFYmPnp/60HGLU4lmN2xS1XIWU5UzFAi6N6VQLyOQbKAAAAAlXEI+c6GIRznGyDVAj3UaukO+z2I3V/HsS9XQFrjwgPDphFi+XQwULUNGUzGins9XMU+m44a+SqiRu6tahdZFk=");
+//        byte[] nonce = java.util.Base64.getDecoder().decode("v3bb/Mz+JajUdiM2URfZYcPuqxw=");
+
+        boolean isVerified = false;
+
+        try {
+            isVerified = Bbs.verifyProof(bbsPublicKey, proof, nonce, messages);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertTrue(isVerified);
+    }
 }
