@@ -24,6 +24,7 @@ java = ["jni"]
 
 [dependencies]
 arrayref = "0.3"
+base64 = "0.13"
 bbs = "0.4"
 bls_sigs_ref = "0.3"
 ff-zeroize = "0.6"

@@ -101,7 +101,7 @@ public class Bbs {
 
     private static native int bbs_create_proof_context_add_proof_message_bytes(long handle, byte[] message, int xtype, byte[] blinding_factor);
 
-    private static native byte[] bbs_create_proof_context_finish(long handle);
+    private static native String bbs_create_proof_context_finish(long handle);
 
     private static native long bbs_verify_proof_context_init();
 
@@ -116,6 +116,8 @@ public class Bbs {
     private static native int bbs_verify_proof_context_set_nonce_bytes(long handle, byte[] nonce);
 
     private static native int bbs_verify_proof_context_finish(long handle);
+
+    private static native String get_last_error();
 
     public static int getBls12381G1PublicKeySize() {
         return bls_public_key_g1_size();
@@ -306,18 +308,19 @@ public class Bbs {
             throw new Exception("Unable to set nonce");
         }
         if (0 != bbs_create_proof_context_set_signature(handle, signature)) {
-            throw new Exception("Unable to set signature");
+            throw new Exception("Unable to set signature: " + get_last_error());
         }
         for (int i = 0; i < messages.length; i++) {
             if (0 != bbs_create_proof_context_add_proof_message_bytes(handle, messages[i].message, messages[i].type, messages[i].blinding_factor)) {
                 throw new Exception("Unable to add proof message");
             }
         }
-        byte[] proof = bbs_create_proof_context_finish(handle);
-        if (proof == null || proof.length == 0) {
+        String proof = bbs_create_proof_context_finish(handle);
+        if (proof == null || proof.length() == 0) {
             throw new Exception("Unable to create proof");
         }
-        return proof;
+        System.out.println(proof);
+        return java.util.Base64.getDecoder().decode(proof);
     }
 
     public static boolean verifyProof(byte[] public_key, byte[] proof, byte[] nonce, Map<Integer, byte[]> messages) throws Exception {
@@ -329,7 +332,7 @@ public class Bbs {
             throw new Exception("Unable to set public key");
         }
         if (0 != bbs_verify_proof_context_set_proof(handle, proof)) {
-            throw new Exception("Unable to set signature");
+            throw new Exception("Unable to set proof: " + get_last_error());
         }
         if (0 != bbs_verify_proof_context_set_nonce_bytes(handle, nonce)) {
             throw new Exception("Unable to set nonce");

@@ -37,6 +37,7 @@ impl TryFrom<&[u8]> for PoKOfSignatureProofWrapper {
         let message_count = u16::from_be_bytes(*array_ref![value, 0, 2]) as usize;
         let bitvector_length = (message_count / 8) + 1;
         let offset = bitvector_length + 2;
+        std::fs::write("/tmp/verify_proof.log", base64::encode( &value[offset..])).unwrap();
         let proof = PoKOfSignatureProof::try_from(&value[offset..])?;
         Ok(Self {
             bit_vector: value[..offset].to_vec(),
@@ -55,8 +56,11 @@ impl TryFrom<Vec<u8>> for PoKOfSignatureProofWrapper {
 
 impl PoKOfSignatureProofWrapper {
     pub fn unpack(&self) -> (BTreeSet<usize>, PoKOfSignatureProof) {
+        let message_count = u16::from_be_bytes(*array_ref![self.bit_vector, 0, 2]) as usize;
+        let bitvector_length = (message_count / 8) + 1;
+        let offset = bitvector_length + 2;
         (
-            bitvector_to_revealed(&self.bit_vector[2..]),
+            bitvector_to_revealed(&self.bit_vector[2..offset]),
             self.proof.clone(),
         )
     }

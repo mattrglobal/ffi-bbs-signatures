@@ -717,9 +717,9 @@ public class BbsSignatureTest {
         System.out.println("PublicKey length: " + publicKey.length);
         System.out.println("BBS PublicKey length: " + bbsPublicKey.length);
         System.out.println("Signature length: " + signature.length);
-        System.out.println("Proof: " + proof.toString() + " length: " + proof.length);
+        System.out.println("Proof: " + java.util.Base64.getEncoder().encodeToString(proof) + " length: " + proof.length);
 
-        Map<Integer, byte[]> messages = Map.of(0, "dXpBb1FGcUxnUmVpZHc9PQ==".getBytes());
+        Map<Integer, byte[]> messages = Map.of(0, message);
 //        Map<Integer, byte[]> messages = new HashMap<Integer, byte[]>() {{
 //            put(0, "dXpBb1FGcUxnUmVpZHc9PQ==".getBytes());
 //        }};

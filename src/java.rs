@@ -5,7 +5,7 @@ use jni::JNIEnv;
 // These objects are what you should use as arguments to your native function.
 // They carry extra lifetime information to prevent them escaping this context
 // and getting used after being GC'd.
-use jni::objects::JObject;
+use jni::objects::{JObject, JString};
 
 // This is just a pointer. We'll be returning it from our function.
 // We can't return one of the objects with lifetime information because the
@@ -46,6 +46,31 @@ use bbs::keys::{
     DeterministicPublicKey, KeyGenOption, SecretKey, DETERMINISTIC_PUBLIC_KEY_COMPRESSED_SIZE,
 };
 use bbs::{ToVariableLengthBytes, FR_COMPRESSED_SIZE, G1_COMPRESSED_SIZE};
+
+use std::cell::RefCell;
+
+thread_local! {
+    static LAST_ERROR: RefCell<Option<String>> = RefCell::new(None);
+}
+
+fn update_last_error(m: &str) {
+    LAST_ERROR.with(|prev| {
+        *prev.borrow_mut() = Some(m.to_string());
+    })
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_bbs_signatures_Bbs_get_1last_1error<'a>(env: JNIEnv<'a>, _: JObject) -> JString<'a> {
+    let mut res = env.new_string("").unwrap();
+    LAST_ERROR.with(|prev| {
+        match &*prev.borrow() {
+            Some(s) => res = env.new_string(s).unwrap(),
+            None => ()
+        };
+    });
+    res
+}
 
 #[allow(non_snake_case)]
 #[no_mangle]
@@ -808,7 +833,11 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1set_1sign
         Ok(s) => {
             let mut error = ExternError::success();
             let byte_array = ByteArray::from(s);
-            bbs_create_proof_context_set_signature(handle as u64, byte_array, &mut error)
+            let res = bbs_create_proof_context_set_signature(handle as u64, byte_array, &mut error);
+            if res != 0 {
+                update_last_error(error.get_message().as_str());
+            }
+            res
         }
     }
 }
@@ -874,26 +903,35 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1add_1proo
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1finish(
-    env: JNIEnv,
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1finish<'a>(
+    env: JNIEnv<'a>,
     _: JObject,
     handle: jlong,
-) -> jbyteArray {
-    let bad_res = env.new_byte_array(0).unwrap();
+) -> JString<'a> {
+    // let bad_res = env.new_byte_array(0).unwrap();
+    let bad_res = env.new_string("").unwrap();
     let mut error = ExternError::success();
     let mut p = ByteBuffer::from_vec(vec![]);
     let res = bbs_create_proof_context_finish(handle as u64, &mut p, &mut error);
     if res == 0 {
         return bad_res;
     }
-    let pp: Vec<jbyte> = p.into_vec().iter().map(|b| *b as jbyte).collect();
-    match env.new_byte_array(pp.len() as jint) {
-        Err(_) => env.new_byte_array(0).unwrap(),
-        Ok(out) => {
-            copy_to_jni!(env, out, pp.as_slice(), bad_res);
-            out
-        }
+    let res = p.destroy_into_vec();
+    let str = base64::encode(&res);
+    std::fs::write("/tmp/create_proof_finish.log", &str).unwrap();
+    match env.new_string(str) {
+        Ok(s) => s,
+        Err(_) => bad_res
     }
+    // std::fs::write("/tmp/create_proof_finish.log", base64::encode(&res)).unwrap();
+    // let pp: Vec<jbyte> = res.iter().map(|b| *b as jbyte).collect();
+    // match env.new_byte_array(pp.len() as jint) {
+    //     Err(_) => env.new_byte_array(0).unwrap(),
+    //     Ok(out) => {
+    //         copy_to_jni!(env, out, pp.as_slice(), bad_res);
+    //         out
+    //     }
+    // }
 }
 
 #[allow(non_snake_case)]
@@ -966,8 +1004,13 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1set_1proo
         Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
+            std::fs::write("/tmp/java_verify.log", base64::encode(&s)).unwrap();
             let byte_array = ByteArray::from(s);
-            bbs_verify_proof_context_set_proof(handle as u64, byte_array, &mut error)
+            let res = bbs_verify_proof_context_set_proof(handle as u64, byte_array, &mut error);
+            if res != 0 {
+                update_last_error(error.get_message().as_str());
+            }
+            res
         }
     }
 }
