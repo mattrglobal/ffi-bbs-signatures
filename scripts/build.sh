@@ -24,11 +24,6 @@ then
   ANDROID_NDK_HOME=$3
 fi
 
-if [ ! -d "$ANDROID_NDK_HOME" ]
-then
-  ANDROID_NDK_HOME=$NDK_HOME
-fi
-
 echo "Building for PLATFORM: $1"
 echo "To OUTPUT_LOCATION: $2"
 
