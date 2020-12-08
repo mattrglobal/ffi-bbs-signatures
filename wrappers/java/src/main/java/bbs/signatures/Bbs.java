@@ -101,7 +101,9 @@ public class Bbs {
 
     private static native int bbs_create_proof_context_add_proof_message_bytes(long handle, byte[] message, int xtype, byte[] blinding_factor);
 
-    private static native String bbs_create_proof_context_finish(long handle);
+    private static native int bbs_create_proof_context_finish(long handle, byte[] proof);
+
+    private static native int bbs_create_proof_size(long handle);
 
     private static native long bbs_verify_proof_context_init();
 
@@ -315,12 +317,11 @@ public class Bbs {
                 throw new Exception("Unable to add proof message");
             }
         }
-        String proof = bbs_create_proof_context_finish(handle);
-        if (proof == null || proof.length() == 0) {
+        byte[] proof = new byte[bbs_create_proof_size(handle)];
+        if (0 != bbs_create_proof_context_finish(handle, proof)) {
             throw new Exception("Unable to create proof");
         }
-        System.out.println(proof);
-        return java.util.Base64.getDecoder().decode(proof);
+        return proof;
     }
 
     public static boolean verifyProof(byte[] public_key, byte[] proof, byte[] nonce, Map<Integer, byte[]> messages) throws Exception {

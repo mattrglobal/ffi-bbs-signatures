@@ -37,7 +37,6 @@ impl TryFrom<&[u8]> for PoKOfSignatureProofWrapper {
         let message_count = u16::from_be_bytes(*array_ref![value, 0, 2]) as usize;
         let bitvector_length = (message_count / 8) + 1;
         let offset = bitvector_length + 2;
-        std::fs::write("/tmp/verify_proof.log", base64::encode( &value[offset..])).unwrap();
         let proof = PoKOfSignatureProof::try_from(&value[offset..])?;
         Ok(Self {
             bit_vector: value[..offset].to_vec(),
@@ -193,7 +192,10 @@ pub extern "C" fn bbs_verify_proof_context_finish(handle: u64, err: &mut ExternE
             Err(e) => *err = ExternError::new_error(ErrorCode::new(1), format!("{:?}", e)),
             Ok(_) => {}
         };
-        res
+        match res {
+            200 => 1,
+            _ => 0
+        }
     } else {
         err.get_code().code()
     }

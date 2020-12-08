@@ -17,6 +17,32 @@ struct CreateProofContext {
     nonce: Option<ProofNonce>,
 }
 
+struct USize(usize);
+
+unsafe impl IntoFfi for USize {
+    type Value = usize;
+
+    fn ffi_default() -> Self::Value {
+        0
+    }
+
+    fn into_ffi_value(self) -> Self::Value {
+        self.0
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn bbs_create_proof_context_size(handle: u64) -> i32 {
+    const OVERHEAD: usize = 5 * G1_COMPRESSED_SIZE + 3 * 4 + 4 * FR_COMPRESSED_SIZE + 2;
+    let mut err = ExternError::success();
+    let res = CREATE_PROOF_CONTEXT.call_with_output(&mut err, handle, |ctx| -> USize {
+        USize(32 * ctx.messages.iter().filter(|m| {
+           matches!(m, ProofMessage::Hidden(..))
+        }).count() + ((ctx.messages.len() / 8) + 1))
+    });
+    (OVERHEAD + res) as i32
+}
+
 #[no_mangle]
 pub extern "C" fn bbs_create_proof_context_init(err: &mut ExternError) -> u64 {
     CREATE_PROOF_CONTEXT.insert_with_output(err, || CreateProofContext {

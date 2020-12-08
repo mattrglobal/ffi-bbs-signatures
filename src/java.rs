@@ -28,6 +28,7 @@ use crate::bbs_create_proof::{
     bbs_create_proof_context_add_proof_message_bytes, bbs_create_proof_context_finish,
     bbs_create_proof_context_init, bbs_create_proof_context_set_nonce_bytes,
     bbs_create_proof_context_set_public_key, bbs_create_proof_context_set_signature,
+    bbs_create_proof_context_size,
 };
 use crate::bbs_sign::*;
 use crate::bbs_verify_proof::{
@@ -903,35 +904,28 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1add_1proo
 
 #[allow(non_snake_case)]
 #[no_mangle]
-pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1finish<'a>(
-    env: JNIEnv<'a>,
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1size(_: JNIEnv, _: JObject, handle: jlong) -> jint {
+    return bbs_create_proof_context_size(handle as u64)
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1finish(
+    env: JNIEnv,
     _: JObject,
     handle: jlong,
-) -> JString<'a> {
-    // let bad_res = env.new_byte_array(0).unwrap();
-    let bad_res = env.new_string("").unwrap();
+    proof: jbyteArray,
+) -> jint {
     let mut error = ExternError::success();
     let mut p = ByteBuffer::from_vec(vec![]);
     let res = bbs_create_proof_context_finish(handle as u64, &mut p, &mut error);
-    if res == 0 {
-        return bad_res;
+    if res != 0 {
+        return res;
     }
     let res = p.destroy_into_vec();
-    let str = base64::encode(&res);
-    std::fs::write("/tmp/create_proof_finish.log", &str).unwrap();
-    match env.new_string(str) {
-        Ok(s) => s,
-        Err(_) => bad_res
-    }
-    // std::fs::write("/tmp/create_proof_finish.log", base64::encode(&res)).unwrap();
-    // let pp: Vec<jbyte> = res.iter().map(|b| *b as jbyte).collect();
-    // match env.new_byte_array(pp.len() as jint) {
-    //     Err(_) => env.new_byte_array(0).unwrap(),
-    //     Ok(out) => {
-    //         copy_to_jni!(env, out, pp.as_slice(), bad_res);
-    //         out
-    //     }
-    // }
+    let pp: Vec<jbyte> = res.iter().map(|b| *b as jbyte).collect();
+    copy_to_jni!(env, proof, pp.as_slice());
+    0
 }
 
 #[allow(non_snake_case)]
@@ -1004,8 +998,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1set_1proo
         Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
-            std::fs::write("/tmp/java_verify.log", base64::encode(&s)).unwrap();
-            let byte_array = ByteArray::from(s);
+            let byte_array = ByteArray::from_slice(s.as_slice());
             let res = bbs_verify_proof_context_set_proof(handle as u64, byte_array, &mut error);
             if res != 0 {
                 update_last_error(error.get_message().as_str());

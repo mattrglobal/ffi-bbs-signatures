@@ -354,9 +354,17 @@ JNIEXPORT jint JNICALL Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1add_
 /*
  * Class:     bbs_signatures_Bbs
  * Method:    bbs_create_proof_context_finish
- * Signature: (J)[B
+ * Signature: (J[B)I
  */
-JNIEXPORT jbyteArray JNICALL Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1finish
+JNIEXPORT jint JNICALL Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1finish
+  (JNIEnv *, jclass, jlong, jbyteArray);
+
+/*
+ * Class:     bbs_signatures_Bbs
+ * Method:    bbs_create_proof_size
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_bbs_signatures_Bbs_bbs_1create_1proof_1size
   (JNIEnv *, jclass, jlong);
 
 /*
@@ -414,6 +422,14 @@ JNIEXPORT jint JNICALL Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1set_
  */
 JNIEXPORT jint JNICALL Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1finish
   (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     bbs_signatures_Bbs
+ * Method:    get_last_error
+ * Signature: ()Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_bbs_signatures_Bbs_get_1last_1error
+  (JNIEnv *, jclass);
 
 #ifdef __cplusplus
 }
