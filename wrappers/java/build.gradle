@@ -9,10 +9,17 @@
 plugins {
     // Apply the java-library plugin to add support for Java Library
     id 'java-library'
-    id "application"
+    id 'maven-publish'
+    id 'application'
+    id 'signing'
 }
 
+group 'com.github.mattrglobal'
+version '1.0-SNAPSHOT'
+
 apply plugin : "java" 
+apply plugin: "maven-publish"
+apply plugin: 'signing'
 
 ext {
    javaMainClass = "bbs.signatures.Bbs"
@@ -116,4 +123,38 @@ task runMain(type: JavaExec) {
     description = "Run the main class with JavaExecTask"
     classpath = sourceSets.main.runtimeClasspath
     main = javaMainClass
+}
+
+task sourceJar(type: Jar) {
+  from sourceSets.main.allJava
+  archiveClassifier = "sources"
+}
+
+signing {
+    if (project.hasProperty('signing.keyId') && project.hasProperty('signing.password') && project.hasProperty('signing.secretKeyRingFile')) {
+        sign configurations.archives
+        sign publishing.publications
+    }
+}
+
+publishing {
+    repositories {
+        //mavenLocal()
+        maven {
+            name = "Maven"
+            url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
+            credentials {
+                username = project.properties['maven.username']
+                password = project.properties['maven.password']
+            }
+        }
+    }
+    publications {
+        register("jar", MavenPublication) {
+            from(components["java"])
+            pom {
+                url.set("git@github.com:mattrglobal/ffi-bbs-signatures.git")
+            }
+        }
+    }
 }

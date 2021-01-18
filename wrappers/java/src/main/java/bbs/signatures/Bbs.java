@@ -312,8 +312,8 @@ public class Bbs {
         if (0 != bbs_create_proof_context_set_signature(handle, signature)) {
             throw new Exception("Unable to set signature: " + get_last_error());
         }
-        for (int i = 0; i < messages.length; i++) {
-            if (0 != bbs_create_proof_context_add_proof_message_bytes(handle, messages[i].message, messages[i].type, messages[i].blinding_factor)) {
+        for (ProofMessage message : messages) {
+            if (0 != bbs_create_proof_context_add_proof_message_bytes(handle, message.message, message.type, message.blinding_factor)) {
                 throw new Exception("Unable to add proof message");
             }
         }
@@ -333,7 +333,7 @@ public class Bbs {
             throw new Exception("Unable to set public key");
         }
         if (0 != bbs_verify_proof_context_set_proof(handle, proof)) {
-            throw new Exception("Unable to set proof: " + get_last_error());
+            throw new Exception("Unable to set proof");
         }
         if (0 != bbs_verify_proof_context_set_nonce_bytes(handle, nonce)) {
             throw new Exception("Unable to set nonce");
