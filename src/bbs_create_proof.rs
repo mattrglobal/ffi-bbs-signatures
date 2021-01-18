@@ -4,17 +4,17 @@ use ffi_support::*;
 use std::{collections::BTreeSet, convert::TryFrom};
 
 lazy_static! {
-    static ref CREATE_PROOF_CONTEXT: ConcurrentHandleMap<CreateProofContext> =
+    pub static ref CREATE_PROOF_CONTEXT: ConcurrentHandleMap<CreateProofContext> =
         ConcurrentHandleMap::new();
 }
 
 define_handle_map_deleter!(CREATE_PROOF_CONTEXT, free_create_proof);
 
-struct CreateProofContext {
-    signature: Option<Signature>,
-    public_key: Option<PublicKey>,
-    messages: Vec<ProofMessage>,
-    nonce: Option<ProofNonce>,
+pub struct CreateProofContext {
+    pub signature: Option<Signature>,
+    pub public_key: Option<PublicKey>,
+    pub messages: Vec<ProofMessage>,
+    pub nonce: Option<ProofNonce>,
 }
 
 struct USize(usize);

@@ -130,7 +130,11 @@ public class BbsSignatureTest {
     public void canSignMessage() {
         KeyPair keyPair = getBls12381G2KeyPair();
 
-        byte[][] messages = {"message1".getBytes() };
+        byte[][] messages = {
+            "message1".getBytes(),
+            "message2".getBytes(),
+            "message3".getBytes(),
+         };
         byte[] bbsKey = Bbs.blsPublicToBbsPublicKey(keyPair.publicKey, messages.length);
         byte[] secretKey = keyPair.secretKey;
 
@@ -670,5 +674,47 @@ public class BbsSignatureTest {
         } catch (Exception exception) {
             assertEquals("Unable to add message", exception.getMessage());
         }
+    }
+
+    @Test
+    public void testBlsVerifyProofRevealingSingleMessageFromMultipleMessageSignature() {
+        byte[] nonce = java.util.Base64.getDecoder().decode("4mmd5EVmGd0POg+/4M2l0A==");
+        byte[][] messages = new byte[][]{
+            java.util.Base64.getDecoder().decode("oHMsObG6rdeVlAa5bWIwRA=="),
+            java.util.Base64.getDecoder().decode("DdJ54KFvrIJEiDTx8oV62g=="),
+            java.util.Base64.getDecoder().decode("k13FuVng4HlzyLU1zHACoA=="),
+        };
+        byte[] publicKey = java.util.Base64.getDecoder().decode("pnHwdXyl9R2erFrtJd1r5OAXioXFigeBrb94ir7Vzs8S38hW/N1y+BddYIunhXREApDDC75Z24ulyUZHo5wc09ZQE+hjdIUxsJCJZq9BTMOiMljq+V8Op9v7CVWmSzop");
+        byte[] signature = java.util.Base64.getDecoder().decode("gwoVS/AOXDQJJwBhXfioEIo9dW//ppDJx/2TwaO6f6ATp3c8TH6I1NL8URh7X2bPJaeEKE0fMBS/uZeiQwbr92rTjw8BfNoxNDHrBZEnEmJbWC9fLyKfl3pcBNbvT2ESEKioGgHnwPiWuQ6WfBV7pg==");
+
+        ProofMessage[] proofMessage = new ProofMessage[]{
+                new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_REVEALED, messages[0], new byte[0]),
+                new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_HIDDEN_PROOF_SPECIFIC_BLINDING, messages[1], new byte[0]),
+                new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_HIDDEN_PROOF_SPECIFIC_BLINDING, messages[2], new byte[0]),
+        };
+
+        byte[] proof = new byte[0];
+        byte[] bbsPublicKey = Bbs.blsPublicToBbsPublicKey(publicKey, 3);
+
+        try {
+            proof = Bbs.createProof(bbsPublicKey, nonce, signature, proofMessage);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertNotNull(proof);
+        Map<Integer, byte[]> revealed = new HashMap<Integer, byte[]>() {{
+            put(0, messages[0]);
+        }};
+
+        boolean isVerified = false;
+
+        try {
+            isVerified = Bbs.verifyProof(bbsPublicKey, proof, nonce, revealed);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertTrue(isVerified);
     }
 }

@@ -11,21 +11,21 @@ use std::{
 };
 
 lazy_static! {
-    static ref VERIFY_PROOF_CONTEXT: ConcurrentHandleMap<VerifyProofContext> =
+    pub static ref VERIFY_PROOF_CONTEXT: ConcurrentHandleMap<VerifyProofContext> =
         ConcurrentHandleMap::new();
 }
 
 define_handle_map_deleter!(VERIFY_PROOF_CONTEXT, free_verify_proof);
 
-struct VerifyProofContext {
-    messages: BTreeMap<usize, SignatureMessage>,
-    nonce: Option<ProofNonce>,
-    proof: Option<PoKOfSignatureProofWrapper>,
-    public_key: Option<PublicKey>,
+pub struct VerifyProofContext {
+    pub messages: BTreeMap<usize, SignatureMessage>,
+    pub nonce: Option<ProofNonce>,
+    pub proof: Option<PoKOfSignatureProofWrapper>,
+    pub public_key: Option<PublicKey>,
 }
 
 #[derive(Debug)]
-struct PoKOfSignatureProofWrapper {
+pub struct PoKOfSignatureProofWrapper {
     bit_vector: Vec<u8>,
     proof: PoKOfSignatureProof,
 }

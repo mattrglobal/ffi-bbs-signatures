@@ -25,17 +25,18 @@ use crate::bbs_blind_sign::{
     bbs_blind_sign_context_set_secret_key, bbs_blinding_factor_size, bbs_unblind_signature,
 };
 use crate::bbs_create_proof::{
+    CREATE_PROOF_CONTEXT,
     bbs_create_proof_context_add_proof_message_bytes, bbs_create_proof_context_finish,
     bbs_create_proof_context_init, bbs_create_proof_context_set_nonce_bytes,
-    bbs_create_proof_context_set_public_key, bbs_create_proof_context_set_signature,
+    bbs_create_proof_context_set_signature,
     bbs_create_proof_context_size,
 };
 use crate::bbs_sign::*;
 use crate::bbs_verify_proof::{
+    VERIFY_PROOF_CONTEXT,
     bbs_verify_proof_context_add_message_bytes, bbs_verify_proof_context_add_message_prehashed,
     bbs_verify_proof_context_finish, bbs_verify_proof_context_init,
     bbs_verify_proof_context_set_nonce_bytes, bbs_verify_proof_context_set_proof,
-    bbs_verify_proof_context_set_public_key,
 };
 use crate::bls::{bls_public_key_g1_size, bls_public_key_g2_size, bls_secret_key_size};
 use crate::*;
@@ -43,9 +44,7 @@ use crate::{
     bls_generate_blinded_g1_key, bls_generate_blinded_g2_key, bls_generate_g1_key,
     bls_generate_g2_key,
 };
-use bbs::keys::{
-    DeterministicPublicKey, KeyGenOption, SecretKey, DETERMINISTIC_PUBLIC_KEY_COMPRESSED_SIZE,
-};
+use bbs::keys::{DeterministicPublicKey, KeyGenOption, SecretKey, DETERMINISTIC_PUBLIC_KEY_COMPRESSED_SIZE, PublicKey};
 use bbs::{ToVariableLengthBytes, FR_COMPRESSED_SIZE, G1_COMPRESSED_SIZE};
 
 use std::cell::RefCell;
@@ -334,9 +333,14 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1sign_1set_1public_1key(
     match env.convert_byte_array(public_key) {
         Err(_) => 0,
         Ok(s) => {
-            let mut error = ExternError::success();
-            let byte_array = ByteArray::from(s);
-            bbs_sign_context_set_public_key(handle as u64, byte_array, &mut error)
+            let mut err = ExternError::success();
+            SIGN_CONTEXT.call_with_result_mut(&mut err, handle as u64, |ctx| -> Result<(), BbsFfiError> {
+                use std::convert::TryFrom;
+                let v = PublicKey::try_from(s)?;
+                ctx.public_key = Some(v);
+                Ok(())
+            });
+            err.get_code().code()
         }
     }
 }
@@ -815,8 +819,15 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1set_1publ
         Err(_) => 0,
         Ok(s) => {
             let mut error = ExternError::success();
-            let byte_array = ByteArray::from(s);
-            bbs_create_proof_context_set_public_key(handle as u64, byte_array, &mut error)
+            // let byte_array = ByteArray::from(s.clone());
+            // bbs_create_proof_context_set_public_key(handle as u64, byte_array, &mut error)
+            CREATE_PROOF_CONTEXT.call_with_result_mut(&mut error, handle as u64, |ctx| -> Result<(), BbsFfiError> {
+                use std::convert::TryFrom;
+                let v = PublicKey::try_from(s)?;
+                ctx.public_key = Some(v);
+                Ok(())
+            });
+            error.get_code().code()
         }
     }
 }
@@ -1020,8 +1031,15 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1set_1publ
         Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
-            let byte_array = ByteArray::from(s);
-            bbs_verify_proof_context_set_public_key(handle as u64, byte_array, &mut error)
+            // let byte_array = ByteArray::from(s);
+            // bbs_verify_proof_context_set_public_key(handle as u64, byte_array, &mut error)
+            VERIFY_PROOF_CONTEXT.call_with_result_mut(&mut error, handle as u64, |ctx| -> Result<(), BbsFfiError> {
+                use std::convert::TryFrom;
+                let v = PublicKey::try_from(s)?;
+                ctx.public_key = Some(v);
+                Ok(())
+            });
+            error.get_code().code()
         }
     }
 }
