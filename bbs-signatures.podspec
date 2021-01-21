@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
   s.pod_target_xcconfig = {
     'VALID_ARCHS' => 'arm64 x86_64',
     "HEADER_SEARCH_PATHS" => "$(CONFIGURATION_BUILD_DIR)",
-    "ENABLE_BITCODE" => "NO"
+    "ENABLE_BITCODE" => "YES"
   }
 
   s.user_target_xcconfig = { 'VALID_ARCHS' => 'arm64 x86_64' }
