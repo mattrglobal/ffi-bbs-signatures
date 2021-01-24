@@ -15,7 +15,7 @@ plugins {
 }
 
 group 'com.github.mattrglobal'
-version '1.0-SNAPSHOT'
+version '1.1-SNAPSHOT'
 
 apply plugin : "java" 
 apply plugin: "maven-publish"
@@ -128,6 +128,13 @@ task runMain(type: JavaExec) {
 task sourceJar(type: Jar) {
   from sourceSets.main.allJava
   archiveClassifier = "sources"
+}
+
+jar {
+    //from configurations.compile.collect { zipTree it }
+    into('bbs/jniLibs') {
+        from "src/main/jniLibs"
+    }
 }
 
 signing {
