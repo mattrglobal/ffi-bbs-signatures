@@ -1085,3 +1085,18 @@ fn get_secret_key(env: &JNIEnv, secret_key: jbyteArray) -> Result<SecretKey, jin
         }
     }
 }
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub extern "C" fn Java_bbs_signatures_Bbs_getTotalMessagesCountForProof(env: JNIEnv, _: JObject, proof: jbyteArray) -> jint {
+    match env.convert_byte_array(proof) {
+        Err(_) => -1,
+        Ok(s) => {
+            if s.len() < 2 {
+                -1
+            } else {
+                u16::from_be_bytes(*array_ref![s, 0, 2]) as jint
+            }
+        }
+    }
+}

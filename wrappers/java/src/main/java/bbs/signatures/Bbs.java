@@ -121,6 +121,8 @@ public class Bbs {
 
     private static native String get_last_error();
 
+    public native static int getTotalMessagesCountForProof(byte[] proof);
+
     public static int getBls12381G1PublicKeySize() {
         return bls_public_key_g1_size();
     }

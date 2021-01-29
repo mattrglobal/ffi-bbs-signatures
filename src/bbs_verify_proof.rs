@@ -201,7 +201,7 @@ pub extern "C" fn bbs_verify_proof_context_finish(handle: u64, err: &mut ExternE
     }
 }
 /// Convert big-endian vector to u32
-fn bitvector_to_revealed(data: &[u8]) -> BTreeSet<usize> {
+pub(crate) fn bitvector_to_revealed(data: &[u8]) -> BTreeSet<usize> {
     let mut revealed_messages = BTreeSet::new();
     let mut scalar = 0;
 

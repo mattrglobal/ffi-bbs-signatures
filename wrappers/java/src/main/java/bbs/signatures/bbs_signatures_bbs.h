@@ -431,6 +431,14 @@ JNIEXPORT jint JNICALL Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1fini
 JNIEXPORT jstring JNICALL Java_bbs_signatures_Bbs_get_1last_1error
   (JNIEnv *, jclass);
 
+/*
+ * Class:     bbs_signatures_Bbs
+ * Method:    getTotalMessagesCountForProof
+ * Signature: ([B)I
+ */
+JNIEXPORT jint JNICALL Java_bbs_signatures_Bbs_getTotalMessagesCountForProof
+        (JNIEnv *, jclass, jbyteArray);
+
 #ifdef __cplusplus
 }
 #endif
