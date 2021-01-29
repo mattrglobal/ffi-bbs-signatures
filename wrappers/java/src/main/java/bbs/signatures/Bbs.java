@@ -119,9 +119,9 @@ public class Bbs {
 
     private static native int bbs_verify_proof_context_finish(long handle);
 
-    private static native String get_last_error();
+    private static native int bbs_get_total_messages_count_for_proof(byte[] proof);
 
-    public native static int getTotalMessagesCountForProof(byte[] proof);
+    private static native String get_last_error();
 
     public static int getBls12381G1PublicKeySize() {
         return bls_public_key_g1_size();
@@ -145,6 +145,14 @@ public class Bbs {
 
     public static int getBlindSignatureSize() {
         return bbs_blind_signature_size();
+    }
+
+    public static int getTotalMessagesCountForProof(byte[] proof) throws Exception {
+        int messages_count = bbs_get_total_messages_count_for_proof(proof);
+        if (messages_count == -1) {
+            throw new Exception("Unable to get messages count");
+        }
+        return messages_count;
     }
 
     public static KeyPair generateBls12381G1Key(byte[] seed) throws Exception {

@@ -802,4 +802,54 @@ public class BbsSignatureTest {
 
         assertTrue(isVerified);
     }
+
+    @Test
+    public void testGetTotalMessagesCountForProof() {
+        KeyPair keyPair = getBls12381G2KeyPair();
+
+        byte[] nonce = Base64.getDecoder().decode("NoWZhtX+u1wWLtUfPMmku1FtU2I=");
+        byte[][] messages = {
+            "+FxEv3VLcNZ8sA==".getBytes(),
+            "eI2RcRExnbP8hw==".getBytes(),
+            "wll4zckqWAb0Kg==".getBytes(),
+        };
+
+        byte[] publicKey = Bbs.blsPublicToBbsPublicKey(keyPair.publicKey, messages.length);
+        byte[] secretKey = keyPair.secretKey;
+        byte[] signature = new byte[Bbs.getSignatureSize()];
+
+        try {
+            signature = Bbs.sign(secretKey, publicKey, messages);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertNotNull(signature);
+
+        ProofMessage[] proofMessage = {
+            new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_REVEALED, messages[0], new byte[0]),
+            new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_HIDDEN_PROOF_SPECIFIC_BLINDING, messages[1], new byte[0]),
+            new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_HIDDEN_PROOF_SPECIFIC_BLINDING, messages[2], new byte[0]),
+        };
+
+        byte[] proof = new byte[0];
+
+        try {
+            proof = Bbs.createProof(publicKey, nonce, signature, proofMessage);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertNotNull(proof);
+
+        int total_messages = 0;
+
+        try {
+            total_messages = Bbs.getTotalMessagesCountForProof(proof);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertEquals(3, total_messages);
+    }
 }

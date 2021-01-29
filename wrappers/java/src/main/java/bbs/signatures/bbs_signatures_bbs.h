@@ -425,19 +425,19 @@ JNIEXPORT jint JNICALL Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1fini
 
 /*
  * Class:     bbs_signatures_Bbs
+ * Method:    bbs_get_total_messages_count_for_proof
+ * Signature: ([B)I
+ */
+JNIEXPORT jint JNICALL Java_bbs_signatures_Bbs_bbs_1get_1total_1messages_1count_1for_1proof
+  (JNIEnv *, jclass, jbyteArray);
+
+/*
+ * Class:     bbs_signatures_Bbs
  * Method:    get_last_error
  * Signature: ()Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_bbs_signatures_Bbs_get_1last_1error
   (JNIEnv *, jclass);
-
-/*
- * Class:     bbs_signatures_Bbs
- * Method:    getTotalMessagesCountForProof
- * Signature: ([B)I
- */
-JNIEXPORT jint JNICALL Java_bbs_signatures_Bbs_getTotalMessagesCountForProof
-        (JNIEnv *, jclass, jbyteArray);
 
 #ifdef __cplusplus
 }
