@@ -47,7 +47,7 @@
     bbs_signature_byte_buffer_t *secretKey = (bbs_signature_byte_buffer_t*) malloc(sizeof(bbs_signature_byte_buffer_t));
     bbs_signature_error_t *err = (bbs_signature_error_t*) malloc(sizeof(bbs_signature_error_t));
 
-    uint64_t handle = bls_generate_key(seedBuffer, publicKey, secretKey, err);
+    uint64_t handle = bls_generate_g2_key(seedBuffer, publicKey, secretKey, err);
     
     if (handle > 0) {
         *errorPtr = [BbsSignatureError errorFromBbsSignatureError:err];

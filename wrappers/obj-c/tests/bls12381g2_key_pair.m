@@ -10,8 +10,7 @@
 @implementation Bls12381G2KeyPairTests
 
 - (void)testGetPublicKeySize {
-    //TODO need to rename this to G2
-    XCTAssertEqual(bls_public_key_size(), 96);
+    XCTAssertEqual(bls_public_key_g2_size(), 96);
 }
 
 - (void)testGetSecretKeySize {
@@ -20,8 +19,8 @@
 
 - (void)testGenerateKeyPairWithSeed {
     NSError *error = nil;
-    NSData *expectedPublicKey = [[NSData alloc] initWithBase64EncodedString:@"qJgttTOthlZHltz+c0PE07hx3worb/cy7QY5iwRegQ9BfwvGahdqCO9Q9xuOnF5nD/Tq6t8zm9z26EAFCiaEJnL5b50D1cHDgNxBUPEEae+4bUb3JRsHaxBdZWDOo3pb" options:0];
-    NSData *expectedSecretKey = [[NSData alloc] initWithBase64EncodedString:@"YoASulEi3WV7yfJ+yWctJRCbHfr7WjK7JjcMrRqbL6E=" options:0];
+    NSData *expectedPublicKey = [[NSData alloc] initWithBase64EncodedString:@"pQro1uqpvUPM31sr+jHffz7+KJIpA3kFen4SoKATURRgo7pk582aaqIxSinWsgHDB9j9dwxYRbC3q2ZmICR2OVMX3FHW9LZV2QAauTYFn7gEra1BSeKhdKDpzBxPjI36" options:0];
+    NSData *expectedSecretKey = [[NSData alloc] initWithBase64EncodedString:@"Cm550dHeqo5I/dVC/bXD9s5Cx8vnyhV/gm7KO5UuviE=" options:0];
     NSData *seed = [[NSData alloc] initWithBase64EncodedString:@"H297BpoOgkfpXcxr1fJyQRiNx1+ZekeQ+OU/AYV/lVxaPXXhFBIbxeIU8kIAAX68cwQ=" options:0];
     
     Bls12381G2KeyPair *keyPair = [[Bls12381G2KeyPair alloc] initWithSeed:seed

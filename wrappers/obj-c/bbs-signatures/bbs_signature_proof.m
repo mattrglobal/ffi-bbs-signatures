@@ -279,4 +279,12 @@
                             withError:errorPtr];
 }
 
+- (int)getMessagesCountFromProof:(NSData* _Nonnull)proof {
+    bbs_signature_byte_buffer_t proofBuffer;
+    proofBuffer.len = proof.length;
+    proofBuffer.data = (uint8_t *)proof.bytes;
+    
+    return bbs_get_total_messages_count_for_proof(proofBuffer);
+}
+
 @end

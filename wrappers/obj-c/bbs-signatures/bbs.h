@@ -282,7 +282,7 @@ int32_t bbs_verify_proof_context_add_message_prehashed(uint64_t handle,
 
 uint64_t bbs_verify_proof_context_init(bbs_signature_error_t *_Nullable err);
 
-int32_t bls_generate_key(bbs_signature_byte_buffer_t seed,
+int32_t bls_generate_g2_key(bbs_signature_byte_buffer_t seed,
                          bbs_signature_byte_buffer_t *_Nullable public_key,
                          bbs_signature_byte_buffer_t *_Nullable secret_key,
                          bbs_signature_error_t *_Nullable err);
@@ -291,7 +291,7 @@ int32_t bls_get_public_key(bbs_signature_byte_buffer_t secret_key ,
                            bbs_signature_byte_buffer_t *_Nullable public_key,
                            bbs_signature_error_t *_Nullable err);
 
-int32_t bls_public_key_size(void);
+int32_t bls_public_key_g2_size(void);
 
 int32_t bls_public_key_to_bbs_key(bbs_signature_byte_buffer_t d_public_key,
                                   uint32_t message_count,
@@ -304,6 +304,9 @@ int32_t bls_secret_key_to_bbs_key(bbs_signature_byte_buffer_t secret_key,
                                   uint32_t message_count,
                                   bbs_signature_byte_buffer_t *_Nullable public_key,
                                   bbs_signature_error_t *_Nullable err);
+
+int32_t bbs_get_total_messages_count_for_proof(bbs_signature_byte_buffer_t proof);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif

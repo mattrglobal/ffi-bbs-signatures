@@ -841,7 +841,7 @@ public class BbsSignatureTest {
         }
 
         assertNotNull(proof);
-
+        
         int total_messages = 0;
 
         try {

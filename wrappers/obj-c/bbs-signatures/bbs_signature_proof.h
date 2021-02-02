@@ -53,6 +53,8 @@
                  nonce:(NSData* _Nonnull)nonce
              withError:(NSError *_Nullable*_Nullable)errorPtr;
 
+- (int)getMessagesCountFromProof:(NSData* _Nonnull)proof;
+
 @end
 
 #endif /* bbs_signature_proof_h */

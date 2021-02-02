@@ -126,7 +126,7 @@
     BbsSignature *signature = [[BbsSignature alloc] sign:bbsKeyPair
                                                 messages:messages
                                                withError:&error];
-    
+        
     bool isVerified = [signature verify:bbsKeyPair
                                messages:messages
                               withError:&error];

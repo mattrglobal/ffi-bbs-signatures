@@ -146,7 +146,7 @@
         return false;
     }
     
-    if (bbs_verify_context_finish(verifySignatureHandle, err) != 1) {
+    if (bbs_verify_context_finish(verifySignatureHandle, err) != 0) {
         *errorPtr = [BbsSignatureError errorFromBbsSignatureError:err];
         return false;
     }

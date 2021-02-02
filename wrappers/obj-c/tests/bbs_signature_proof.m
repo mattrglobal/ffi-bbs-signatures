@@ -219,4 +219,12 @@
     
     XCTAssertEqual(proof.value.length, 415);
 }
+
+- (void)testVerifyProofMessagesCount {
+    NSData *proofTest = [[NSData alloc] initWithBase64EncodedString:@"AAMBglo7snhzgTYsmyqx2eKN4Ezk7lY6kBjgjAo5KJxg/e9gdpL0khiF6IkIX68CrtJFuKmmQQeH+8J0+WBRbsQx/tEFEN0UryB/sAt0k57WWWrMFvT3SjJsiYOA0/k7PXe8sZsSaz6Ga6o8SJr+lFHv7YzHSMrUBYQEHx+KHebGocvpaqrbUq8O2mV2mM6astgQAAAAdI5L3EocinkRpiD75Ad9aAL/gY0RJsywMrOZpn24vhOB6Mqyn+VRNryfplHOrV9TMwAAAAI1rT3jM6FwUYUG8EsUkjMSTr9rGuheDQ1jTD/TllI9jDLJz3dRSAbRWS/c9MZASSuL37ygtt5lYqrrtQNRdNoHhJnuR5boM0r5wIXypdyTr9WmxGX8DuEpAH8I7HsJqi6FXDVRizCT/sFehDpZLWw6AAAABFyBkQeazRYsRIxD21bumLqykO8u7ilmTAlp0tUvdKGRSFq6YImSMNWoMrbksihesK62+VEdeXBB4QvGA9ZHcQhg1Y60yVDw+XsaZzITZBdOho6KrOMrn4XfAJUWKepiphIgVbyImei/wXTuq8sPkhfi1aUu3EH91yqTtP0COcMN" options:0];
+    
+    int messagesCount = [[BbsSignatureProof alloc] getMessagesCountFromProof:proofTest];
+    XCTAssertEqual(messagesCount, 3);
+}
+
 @end

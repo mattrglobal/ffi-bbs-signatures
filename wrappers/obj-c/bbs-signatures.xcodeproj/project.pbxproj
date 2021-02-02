@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0E83E59825C8980F00A3725A /* bbs.h in Headers */ = {isa = PBXBuildFile; fileRef = 0E83E59725C8980F00A3725A /* bbs.h */; };
 		9309BC3524FDF470004B1B6E /* bls12381g2_key_pair.m in Sources */ = {isa = PBXBuildFile; fileRef = 9309BC3424FDF470004B1B6E /* bls12381g2_key_pair.m */; };
 		9309BC3624FDF470004B1B6E /* bls12381g2_key_pair.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9309BC3324FDF470004B1B6E /* bls12381g2_key_pair.h */; };
 		9309BC4424FDFE45004B1B6E /* bls12381g2_key_pair.m in Sources */ = {isa = PBXBuildFile; fileRef = 9309BC4324FDFE45004B1B6E /* bls12381g2_key_pair.m */; };
 		9309BC4624FDFE45004B1B6E /* libbbs-signatures.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9309BC3024FDF470004B1B6E /* libbbs-signatures.a */; };
 		935A71AE24FF05F10083FC6D /* bbs_key_pair.m in Sources */ = {isa = PBXBuildFile; fileRef = 935A71AD24FF05F10083FC6D /* bbs_key_pair.m */; };
-		9387DA0524FF380E00C402F2 /* bbs.h in Headers */ = {isa = PBXBuildFile; fileRef = 9387DA0424FF380E00C402F2 /* bbs.h */; };
 		9387DA0824FF382800C402F2 /* libbbs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9387DA0724FF382800C402F2 /* libbbs.a */; };
 		9387DA0B24FF9EEE00C402F2 /* bbs_signature.m in Sources */ = {isa = PBXBuildFile; fileRef = 9387DA0A24FF9EEE00C402F2 /* bbs_signature.m */; };
 		9387DA0D250047EB00C402F2 /* bbs_key_pair.m in Sources */ = {isa = PBXBuildFile; fileRef = 9387DA0C250047EB00C402F2 /* bbs_key_pair.m */; };
@@ -46,6 +46,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0E83E59725C8980F00A3725A /* bbs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bbs.h; sourceTree = "<group>"; };
 		9309BC3024FDF470004B1B6E /* libbbs-signatures.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libbbs-signatures.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9309BC3324FDF470004B1B6E /* bls12381g2_key_pair.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bls12381g2_key_pair.h; sourceTree = "<group>"; };
 		9309BC3424FDF470004B1B6E /* bls12381g2_key_pair.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = bls12381g2_key_pair.m; sourceTree = "<group>"; };
@@ -54,7 +55,6 @@
 		9309BC4524FDFE45004B1B6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		935A71AC24FF054D0083FC6D /* bbs_key_pair.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bbs_key_pair.h; sourceTree = "<group>"; };
 		935A71AD24FF05F10083FC6D /* bbs_key_pair.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = bbs_key_pair.m; sourceTree = "<group>"; };
-		9387DA0424FF380E00C402F2 /* bbs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = bbs.h; path = libraries/bbs.h; sourceTree = "<group>"; };
 		9387DA0724FF382800C402F2 /* libbbs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbbs.a; path = libraries/libbbs.a; sourceTree = "<group>"; };
 		9387DA0924FF9ED300C402F2 /* bbs_signature.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bbs_signature.h; sourceTree = "<group>"; };
 		9387DA0A24FF9EEE00C402F2 /* bbs_signature.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = bbs_signature.m; sourceTree = "<group>"; };
@@ -90,7 +90,6 @@
 		9309BC2724FDF470004B1B6E = {
 			isa = PBXGroup;
 			children = (
-				9387DA0424FF380E00C402F2 /* bbs.h */,
 				9309BC3224FDF470004B1B6E /* bbs-signatures */,
 				9309BC4224FDFE45004B1B6E /* Tests */,
 				9309BC3124FDF470004B1B6E /* Products */,
@@ -110,6 +109,7 @@
 		9309BC3224FDF470004B1B6E /* bbs-signatures */ = {
 			isa = PBXGroup;
 			children = (
+				0E83E59725C8980F00A3725A /* bbs.h */,
 				9309BC3324FDF470004B1B6E /* bls12381g2_key_pair.h */,
 				9309BC3424FDF470004B1B6E /* bls12381g2_key_pair.m */,
 				935A71AC24FF054D0083FC6D /* bbs_key_pair.h */,
@@ -151,7 +151,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9387DA0524FF380E00C402F2 /* bbs.h in Headers */,
+				0E83E59825C8980F00A3725A /* bbs.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -335,7 +335,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "arm64 arm64e";
+				VALID_ARCHS = "arm64 arm64e x86_64";
 			};
 			name = Debug;
 		};
@@ -389,13 +389,14 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = "arm64 arm64e";
+				VALID_ARCHS = "arm64 arm64e x86_64";
 			};
 			name = Release;
 		};
 		9309BC3A24FDF470004B1B6E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -421,6 +422,7 @@
 		9309BC3B24FDF470004B1B6E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				LD_RUNPATH_SEARCH_PATHS = (
