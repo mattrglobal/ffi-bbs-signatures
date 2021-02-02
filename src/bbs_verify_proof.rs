@@ -199,8 +199,8 @@ pub extern "C" fn bbs_verify_proof_context_finish(handle: u64, err: &mut ExternE
             Ok(_) => {}
         };
         match res {
-            200 => 1,
-            _ => 0
+            200 => 0,
+            e => e
         }
     } else {
         err.get_code().code()

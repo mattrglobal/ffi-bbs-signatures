@@ -355,13 +355,9 @@ public class Bbs {
         }
         int res = bbs_verify_proof_context_finish(handle);
 
-        switch (res) {
-            case 1:
-                return true;
-            case 0:
-                return false;
-            default:
-                throw new Exception("Unable to verify proof");
+        if (res > 0) {
+            return false;
         }
+        return true;
     }
 }
