@@ -108,6 +108,12 @@ impl<'a> Deserialize<'a> for PoKOfSignatureProofWrapper {
 }
 
 #[no_mangle]
+pub extern "C" fn bbs_get_total_messages_count_for_proof(proof: ByteArray) -> i32 {
+    let proof = proof.to_vec();
+    u16::from_be_bytes(*array_ref![proof, 0, 2]) as i32
+}
+
+#[no_mangle]
 pub extern "C" fn bbs_verify_proof_context_init(err: &mut ExternError) -> u64 {
     VERIFY_PROOF_CONTEXT.insert_with_output(err, || VerifyProofContext {
         messages: BTreeMap::new(),
