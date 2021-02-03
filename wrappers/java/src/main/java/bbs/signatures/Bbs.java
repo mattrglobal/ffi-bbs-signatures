@@ -355,9 +355,6 @@ public class Bbs {
         }
         int res = bbs_verify_proof_context_finish(handle);
 
-        if (res > 0) {
-            return false;
-        }
-        return true;
+        return res <= 0;
     }
 }

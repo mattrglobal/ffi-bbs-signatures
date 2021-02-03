@@ -729,8 +729,8 @@ public class BbsSignatureTest {
 
         ProofMessage[] proofMessage = {
             new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_REVEALED, messages[0], new byte[0]),
-            new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_REVEALED, messages[1], new byte[0]),
-            new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_HIDDEN_PROOF_SPECIFIC_BLINDING, messages[2], new byte[0]),
+            new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_HIDDEN_PROOF_SPECIFIC_BLINDING, messages[1], new byte[0]),
+            new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_REVEALED, messages[2], new byte[0]),
         };
 
         byte[] proof = new byte[0];
@@ -745,7 +745,7 @@ public class BbsSignatureTest {
         assertNotNull(proof);
         Map<Integer, byte[]> revealed = new HashMap<Integer, byte[]>() {{
             put(0, messages[0]);
-            put(1, messages[1]);
+            put(2, messages[2]);
         }};
 
         boolean isVerified = false;

@@ -59,7 +59,7 @@
 
 /** @brief Initializes a key pair */
 - (bool)verifyProof:(BbsKeyPair* _Nonnull)keyPair
-           messages:(NSArray* _Nonnull)messages
+           messages:(NSDictionary* _Nonnull)messages
               nonce:(NSData* _Nonnull)nonce
           withError:(NSError *_Nullable*_Nullable)errorPtr {
     
@@ -71,7 +71,7 @@
 
 /** @brief Initializes a key pair */
 - (bool)blsVerifyProof:(Bls12381G2KeyPair* _Nonnull)keyPair
-              messages:(NSArray* _Nonnull)messages
+              messages:(NSDictionary* _Nonnull)messages
                  nonce:(NSData* _Nonnull)nonce
              withError:(NSError *_Nullable*_Nullable)errorPtr {
     
@@ -136,7 +136,7 @@
     bbs_signature_byte_buffer_t signatureBuffer;
     signatureBuffer.len = signature.value.length;
     signatureBuffer.data = (uint8_t *)signature.value.bytes;
-
+    
     if (bbs_create_proof_context_set_signature(createProofHandle, signatureBuffer, err) > 0) {
         *errorPtr = [BbsSignatureError errorFromBbsSignatureError:err];
         return;
@@ -145,7 +145,7 @@
     bbs_signature_byte_buffer_t publicKeyBuffer;
     publicKeyBuffer.len = keyPair.publicKey.length;
     publicKeyBuffer.data = (uint8_t *)keyPair.publicKey.bytes;
-
+    
     if (bbs_create_proof_context_set_public_key(createProofHandle, publicKeyBuffer, err) > 0) {
         *errorPtr = [BbsSignatureError errorFromBbsSignatureError:err];
         return;
@@ -154,7 +154,7 @@
     bbs_signature_byte_buffer_t nonceBuffer;
     nonceBuffer.len = nonce.length;
     nonceBuffer.data = (uint8_t *)nonce.bytes;
-
+    
     if (bbs_create_proof_context_set_nonce_bytes(createProofHandle, nonceBuffer, err) > 0) {
         *errorPtr = [BbsSignatureError errorFromBbsSignatureError:err];
         return;
@@ -200,7 +200,7 @@
 
 /** @brief Initializes a key pair */
 - (bool)verifySignatureProof:(BbsKeyPair* _Nonnull)keyPair
-                    messages:(NSArray* _Nonnull)messages
+                    messages:(NSDictionary* _Nonnull)messages
                        nonce:(NSData* _Nonnull)nonce
                    withError:(NSError *_Nullable*_Nullable)errorPtr {
     
@@ -213,12 +213,14 @@
         return false;
     }
     
-    for (NSData *message in messages) {
+    for(NSNumber *messageIndex in messages) {
+        NSData *message = [messages objectForKey:messageIndex];
+        
         bbs_signature_byte_buffer_t messageBuffer;
         messageBuffer.len = message.length;
         messageBuffer.data = (uint8_t *)message.bytes;
         
-        if (bbs_verify_proof_context_add_message_bytes(verifyProofHandle, messageBuffer, err) > 0) {
+        if (bbs_verify_proof_context_add_message_bytes(verifyProofHandle, messageIndex.intValue, messageBuffer, err) > 0) {
             *errorPtr = [BbsSignatureError errorFromBbsSignatureError:err];
             return false;
         }
@@ -227,7 +229,7 @@
     bbs_signature_byte_buffer_t publicKeyBuffer;
     publicKeyBuffer.len = keyPair.publicKey.length;
     publicKeyBuffer.data = (uint8_t *)keyPair.publicKey.bytes;
-
+    
     if (bbs_verify_proof_context_set_public_key(verifyProofHandle, publicKeyBuffer, err) > 0) {
         *errorPtr = [BbsSignatureError errorFromBbsSignatureError:err];
         return false;
@@ -236,8 +238,8 @@
     bbs_signature_byte_buffer_t nonceBuffer;
     nonceBuffer.len = nonce.length;
     nonceBuffer.data = (uint8_t *)nonce.bytes;
-
-    if (bbs_create_proof_context_set_nonce_bytes(verifyProofHandle, nonceBuffer, err) > 0) {
+    
+    if (bbs_verify_proof_context_set_nonce_bytes(verifyProofHandle, nonceBuffer, err) > 0) {
         *errorPtr = [BbsSignatureError errorFromBbsSignatureError:err];
         return false;
     }
@@ -245,28 +247,30 @@
     bbs_signature_byte_buffer_t proofBuffer;
     proofBuffer.len = self.value.length;
     proofBuffer.data = (uint8_t *)self.value.bytes;
-
+    
     if (bbs_verify_proof_context_set_proof(verifyProofHandle, proofBuffer, err) > 0) {
         *errorPtr = [BbsSignatureError errorFromBbsSignatureError:err];
         return false;
     }
     
-    if (bbs_verify_proof_context_finish(verifyProofHandle, err) != 1) {
+    if (bbs_verify_proof_context_finish(verifyProofHandle, err) != 0) {
         *errorPtr = [BbsSignatureError errorFromBbsSignatureError:err];
         return false;
     }
-    
+
     return true;
 }
 
 /** @brief Initializes a key pair */
 - (bool)verifySignatureProofFromBls12381G2:(Bls12381G2KeyPair* _Nonnull)keyPair
-                                  messages:(NSArray* _Nonnull)messages
+                                  messages:(NSDictionary* _Nonnull)messages
                                      nonce:(NSData* _Nonnull)nonce
                                  withError:(NSError *_Nullable*_Nullable)errorPtr {
     
+    int messageCount = [[BbsSignatureProof alloc] getMessagesCountFromProof:self.value];
+    
     BbsKeyPair * bbsKeyPair = [[BbsKeyPair alloc] initWithBls12381G2KeyPair:keyPair
-                                                               messageCount:messages.count
+                                                               messageCount:messageCount
                                                                   withError:errorPtr];
     
     if (*errorPtr != nil) {

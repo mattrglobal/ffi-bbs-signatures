@@ -41,7 +41,7 @@
 * @Verifies the BBS signature proof
 */
 - (bool)verifyProof:(BbsKeyPair* _Nonnull)keyPair
-           messages:(NSArray* _Nonnull)messages
+           messages:(NSDictionary* _Nonnull)messages
               nonce:(NSData* _Nonnull)nonce
           withError:(NSError *_Nullable*_Nullable)errorPtr;
 
@@ -49,7 +49,7 @@
 * @Verifies the BBS signature proof from a BLS12-381 G2 key pair
 */
 - (bool)blsVerifyProof:(Bls12381G2KeyPair* _Nonnull)keyPair
-              messages:(NSArray* _Nonnull)messages
+              messages:(NSDictionary* _Nonnull)messages
                  nonce:(NSData* _Nonnull)nonce
              withError:(NSError *_Nullable*_Nullable)errorPtr;
 

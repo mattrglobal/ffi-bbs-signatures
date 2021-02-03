@@ -38,12 +38,12 @@
 
 - (void)testCreateProofRevealingAllMessagesFromMultiMessageSignature {
     NSArray *revealed = [NSArray arrayWithObjects:[[NSNumber alloc] initWithInt:0],
-                                                  [[NSNumber alloc] initWithInt:1],
-                                                  [[NSNumber alloc] initWithInt:2], nil];
+                         [[NSNumber alloc] initWithInt:1],
+                         [[NSNumber alloc] initWithInt:2], nil];
     NSData *nonce = [[NSData alloc] initWithBase64EncodedString:@"MDEyMzQ1Njc4OQ==" options:0];
     NSArray *messages = [NSArray arrayWithObjects:[[NSData alloc] initWithBase64EncodedString:@"SjQyQXhoY2lPVmtFOXc9PQ==" options:0],
-                                                  [[NSData alloc] initWithBase64EncodedString:@"UE5NbkFSV0lIUCtzMmc9PQ==" options:0],
-                                                  [[NSData alloc] initWithBase64EncodedString:@"dGk5V1loaEVlajg1anc9PQ==" options:0], nil];
+                         [[NSData alloc] initWithBase64EncodedString:@"UE5NbkFSV0lIUCtzMmc9PQ==" options:0],
+                         [[NSData alloc] initWithBase64EncodedString:@"dGk5V1loaEVlajg1anc9PQ==" options:0], nil];
     NSData *publicKey = [[NSData alloc] initWithBase64EncodedString:@"qJgttTOthlZHltz+c0PE07hx3worb/cy7QY5iwRegQ9BfwvGahdqCO9Q9xuOnF5nD/Tq6t8zm9z26EAFCiaEJnL5b50D1cHDgNxBUPEEae+4bUb3JRsHaxBdZWDOo3pbiZ/pmArLDr3oSCqthKgSZw4VFzzJMFEuHP9AAnOnUJmqkOmvI1ctGLO6kCLFuwQVAAAAA4GrOHdyZEbTWRrTwIdz+KXWcEUHdIx41XSr/RK0TE5+qU7irAhQekOGFpGWQY4rYrDxoHToB4DblaJWUgkSZQLQ5sOfJg3qUJr9MpnDNJ8nNNitL65e6mqnpfsbbT3k94LBQI3/HijeRl29y5dGcLhOxldMtx2SvQg//kWOJ/Ug8e1aVo3V07XkR1Ltx76uzA==" options:0];
     NSData *signatureData = [[NSData alloc] initWithBase64EncodedString:@"qg3PfohWGvbOCZWxcWIZ779aOuNSafjCXLdDux01TTNGm/Uqhr/kZZ1wSmxKwbEWAhctrDCp2mGE0M0l6DlA5R38chMbtnyWMfQgbQpzMQZgPBPUvVWivJyYEysZnQWrAYzZzRPe36VFbFy5ynWx0w==" options:0];
     
@@ -70,8 +70,8 @@
     NSArray *revealed = [NSArray arrayWithObjects:[[NSNumber alloc] initWithInt:0], nil];
     NSData *nonce = [[NSData alloc] initWithBase64EncodedString:@"MDEyMzQ1Njc4OQ==" options:0];
     NSArray *messages = [NSArray arrayWithObjects:[[NSData alloc] initWithBase64EncodedString:@"SjQyQXhoY2lPVmtFOXc9PQ==" options:0],
-                                                  [[NSData alloc] initWithBase64EncodedString:@"UE5NbkFSV0lIUCtzMmc9PQ==" options:0],
-                                                  [[NSData alloc] initWithBase64EncodedString:@"dGk5V1loaEVlajg1anc9PQ==" options:0], nil];
+                         [[NSData alloc] initWithBase64EncodedString:@"UE5NbkFSV0lIUCtzMmc9PQ==" options:0],
+                         [[NSData alloc] initWithBase64EncodedString:@"dGk5V1loaEVlajg1anc9PQ==" options:0], nil];
     NSData *publicKey = [[NSData alloc] initWithBase64EncodedString:@"qJgttTOthlZHltz+c0PE07hx3worb/cy7QY5iwRegQ9BfwvGahdqCO9Q9xuOnF5nD/Tq6t8zm9z26EAFCiaEJnL5b50D1cHDgNxBUPEEae+4bUb3JRsHaxBdZWDOo3pbiZ/pmArLDr3oSCqthKgSZw4VFzzJMFEuHP9AAnOnUJmqkOmvI1ctGLO6kCLFuwQVAAAAA4GrOHdyZEbTWRrTwIdz+KXWcEUHdIx41XSr/RK0TE5+qU7irAhQekOGFpGWQY4rYrDxoHToB4DblaJWUgkSZQLQ5sOfJg3qUJr9MpnDNJ8nNNitL65e6mqnpfsbbT3k94LBQI3/HijeRl29y5dGcLhOxldMtx2SvQg//kWOJ/Ug8e1aVo3V07XkR1Ltx76uzA==" options:0];
     NSData *signatureData = [[NSData alloc] initWithBase64EncodedString:@"qg3PfohWGvbOCZWxcWIZ779aOuNSafjCXLdDux01TTNGm/Uqhr/kZZ1wSmxKwbEWAhctrDCp2mGE0M0l6DlA5R38chMbtnyWMfQgbQpzMQZgPBPUvVWivJyYEysZnQWrAYzZzRPe36VFbFy5ynWx0w==" options:0];
     
@@ -96,11 +96,11 @@
 
 - (void)testCreateProofRevealingMultipleMessagesFromMultiMessageSignature {
     NSArray *revealed = [NSArray arrayWithObjects:[[NSNumber alloc] initWithInt:0],
-                                                  [[NSNumber alloc] initWithInt:2], nil];
+                         [[NSNumber alloc] initWithInt:2], nil];
     NSData *nonce = [[NSData alloc] initWithBase64EncodedString:@"MDEyMzQ1Njc4OQ==" options:0];
     NSArray *messages = [NSArray arrayWithObjects:[[NSData alloc] initWithBase64EncodedString:@"SjQyQXhoY2lPVmtFOXc9PQ==" options:0],
-                                                  [[NSData alloc] initWithBase64EncodedString:@"UE5NbkFSV0lIUCtzMmc9PQ==" options:0],
-                                                  [[NSData alloc] initWithBase64EncodedString:@"dGk5V1loaEVlajg1anc9PQ==" options:0], nil];
+                         [[NSData alloc] initWithBase64EncodedString:@"UE5NbkFSV0lIUCtzMmc9PQ==" options:0],
+                         [[NSData alloc] initWithBase64EncodedString:@"dGk5V1loaEVlajg1anc9PQ==" options:0], nil];
     NSData *publicKey = [[NSData alloc] initWithBase64EncodedString:@"qJgttTOthlZHltz+c0PE07hx3worb/cy7QY5iwRegQ9BfwvGahdqCO9Q9xuOnF5nD/Tq6t8zm9z26EAFCiaEJnL5b50D1cHDgNxBUPEEae+4bUb3JRsHaxBdZWDOo3pbiZ/pmArLDr3oSCqthKgSZw4VFzzJMFEuHP9AAnOnUJmqkOmvI1ctGLO6kCLFuwQVAAAAA4GrOHdyZEbTWRrTwIdz+KXWcEUHdIx41XSr/RK0TE5+qU7irAhQekOGFpGWQY4rYrDxoHToB4DblaJWUgkSZQLQ5sOfJg3qUJr9MpnDNJ8nNNitL65e6mqnpfsbbT3k94LBQI3/HijeRl29y5dGcLhOxldMtx2SvQg//kWOJ/Ug8e1aVo3V07XkR1Ltx76uzA==" options:0];
     NSData *signatureData = [[NSData alloc] initWithBase64EncodedString:@"qg3PfohWGvbOCZWxcWIZ779aOuNSafjCXLdDux01TTNGm/Uqhr/kZZ1wSmxKwbEWAhctrDCp2mGE0M0l6DlA5R38chMbtnyWMfQgbQpzMQZgPBPUvVWivJyYEysZnQWrAYzZzRPe36VFbFy5ynWx0w==" options:0];
     
@@ -120,6 +120,99 @@
                                                              revealed:revealed
                                                             withError:&error];
     XCTAssertEqual(proof.value.length, 415);
+}
+
+- (void)testCreateProofRevealingMultipleMessagesFromMultiMessageSignatureAndVerify {
+    NSArray *revealed = [NSArray arrayWithObjects:[[NSNumber alloc] initWithInt:0],
+                         [[NSNumber alloc] initWithInt:2], nil];
+    NSData *nonce = [[NSData alloc] initWithBase64EncodedString:@"MDEyMzQ1Njc4OQ==" options:0];
+    NSArray *messages = [NSArray arrayWithObjects:[[NSData alloc] initWithBase64EncodedString:@"SjQyQXhoY2lPVmtFOXc9PQ==" options:0],
+                         [[NSData alloc] initWithBase64EncodedString:@"UE5NbkFSV0lIUCtzMmc9PQ==" options:0],
+                         [[NSData alloc] initWithBase64EncodedString:@"dGk5V1loaEVlajg1anc9PQ==" options:0], nil];
+    NSData *publicKey = [[NSData alloc] initWithBase64EncodedString:@"qJgttTOthlZHltz+c0PE07hx3worb/cy7QY5iwRegQ9BfwvGahdqCO9Q9xuOnF5nD/Tq6t8zm9z26EAFCiaEJnL5b50D1cHDgNxBUPEEae+4bUb3JRsHaxBdZWDOo3pbiZ/pmArLDr3oSCqthKgSZw4VFzzJMFEuHP9AAnOnUJmqkOmvI1ctGLO6kCLFuwQVAAAAA4GrOHdyZEbTWRrTwIdz+KXWcEUHdIx41XSr/RK0TE5+qU7irAhQekOGFpGWQY4rYrDxoHToB4DblaJWUgkSZQLQ5sOfJg3qUJr9MpnDNJ8nNNitL65e6mqnpfsbbT3k94LBQI3/HijeRl29y5dGcLhOxldMtx2SvQg//kWOJ/Ug8e1aVo3V07XkR1Ltx76uzA==" options:0];
+    NSData *signatureData = [[NSData alloc] initWithBase64EncodedString:@"qg3PfohWGvbOCZWxcWIZ779aOuNSafjCXLdDux01TTNGm/Uqhr/kZZ1wSmxKwbEWAhctrDCp2mGE0M0l6DlA5R38chMbtnyWMfQgbQpzMQZgPBPUvVWivJyYEysZnQWrAYzZzRPe36VFbFy5ynWx0w==" options:0];
+    
+    NSError *error = nil;
+    BbsKeyPair *keyPair = [[BbsKeyPair alloc] initWithData:publicKey
+                                              messageCount:messages.count];
+    
+    BbsSignature *signature = [[BbsSignature alloc] initWithBytes:signatureData
+                                                        withError:&error];
+    
+    XCTAssertEqual(signature.value.length, 112);
+    
+    BbsSignatureProof *proof = [[BbsSignatureProof alloc] createProof:signature
+                                                              keyPair:keyPair
+                                                                nonce:nonce
+                                                             messages:messages
+                                                             revealed:revealed
+                                                            withError:&error];
+    XCTAssertEqual(proof.value.length, 415);
+    
+    bool isVerified = false;
+    NSMutableDictionary *messagesDict = [[NSMutableDictionary alloc] init];
+    
+    messagesDict[@0] = [[NSData alloc] initWithBase64EncodedString:@"SjQyQXhoY2lPVmtFOXc9PQ==" options:0];
+    messagesDict[@2] = [[NSData alloc] initWithBase64EncodedString:@"dGk5V1loaEVlajg1anc9PQ==" options:0];
+
+    NSDictionary *revealedMessages = messagesDict;
+    
+    BbsSignatureProof *proofCheck = [[BbsSignatureProof alloc] initWithBytes:proof.value
+                                                                   withError:&error];
+    
+    isVerified = [proofCheck verifyProof:keyPair
+                                   messages:revealedMessages
+                                      nonce:nonce
+                                  withError:&error];
+    
+    XCTAssertTrue(isVerified);
+}
+
+- (void)testShouldFailVerificationWhenMessageIndicesAreWrong {
+    
+    NSArray *revealed = [NSArray arrayWithObjects:[[NSNumber alloc] initWithInt:0],
+                         [[NSNumber alloc] initWithInt:2], nil];
+    NSData *nonce = [[NSData alloc] initWithBase64EncodedString:@"MDEyMzQ1Njc4OQ==" options:0];
+    NSArray *messages = [NSArray arrayWithObjects:[[NSData alloc] initWithBase64EncodedString:@"SjQyQXhoY2lPVmtFOXc9PQ==" options:0],
+                         [[NSData alloc] initWithBase64EncodedString:@"UE5NbkFSV0lIUCtzMmc9PQ==" options:0],
+                         [[NSData alloc] initWithBase64EncodedString:@"dGk5V1loaEVlajg1anc9PQ==" options:0], nil];
+    NSData *publicKey = [[NSData alloc] initWithBase64EncodedString:@"qJgttTOthlZHltz+c0PE07hx3worb/cy7QY5iwRegQ9BfwvGahdqCO9Q9xuOnF5nD/Tq6t8zm9z26EAFCiaEJnL5b50D1cHDgNxBUPEEae+4bUb3JRsHaxBdZWDOo3pbiZ/pmArLDr3oSCqthKgSZw4VFzzJMFEuHP9AAnOnUJmqkOmvI1ctGLO6kCLFuwQVAAAAA4GrOHdyZEbTWRrTwIdz+KXWcEUHdIx41XSr/RK0TE5+qU7irAhQekOGFpGWQY4rYrDxoHToB4DblaJWUgkSZQLQ5sOfJg3qUJr9MpnDNJ8nNNitL65e6mqnpfsbbT3k94LBQI3/HijeRl29y5dGcLhOxldMtx2SvQg//kWOJ/Ug8e1aVo3V07XkR1Ltx76uzA==" options:0];
+    NSData *signatureData = [[NSData alloc] initWithBase64EncodedString:@"qg3PfohWGvbOCZWxcWIZ779aOuNSafjCXLdDux01TTNGm/Uqhr/kZZ1wSmxKwbEWAhctrDCp2mGE0M0l6DlA5R38chMbtnyWMfQgbQpzMQZgPBPUvVWivJyYEysZnQWrAYzZzRPe36VFbFy5ynWx0w==" options:0];
+    
+    NSError *error = nil;
+    BbsKeyPair *keyPair = [[BbsKeyPair alloc] initWithData:publicKey
+                                              messageCount:messages.count];
+    
+    BbsSignature *signature = [[BbsSignature alloc] initWithBytes:signatureData
+                                                        withError:&error];
+    
+    XCTAssertEqual(signature.value.length, 112);
+    
+    BbsSignatureProof *proof = [[BbsSignatureProof alloc] createProof:signature
+                                                              keyPair:keyPair
+                                                                nonce:nonce
+                                                             messages:messages
+                                                             revealed:revealed
+                                                            withError:&error];
+    XCTAssertEqual(proof.value.length, 415);
+    
+    bool isVerified = false;
+    NSMutableDictionary *messagesDict = [[NSMutableDictionary alloc] init];
+    
+    messagesDict[@0] = [[NSData alloc] initWithBase64EncodedString:@"SjQyQXhoY2lPVmtFOXc9PQ==" options:0];
+    messagesDict[@1] = [[NSData alloc] initWithBase64EncodedString:@"UE5NbkFSV0lIUCtzMmc9PQ==" options:0];
+
+    NSDictionary *revealedMessages = messagesDict;
+    
+    BbsSignatureProof *proofCheck = [[BbsSignatureProof alloc] initWithBytes:proof.value
+                                                                   withError:&error];
+    
+    isVerified = [proofCheck verifyProof:keyPair
+                                   messages:revealedMessages
+                                      nonce:nonce
+                                  withError:&error];
+    
+    XCTAssertFalse(isVerified);
 }
 
 - (void)testBlsCreateProofRevealingSingleMessageFromSingleMessageSignature {
@@ -148,12 +241,12 @@
 
 - (void)testBlsCreateProofRevealingAllMessagesFromMultiMessageSignature {
     NSArray *revealed = [NSArray arrayWithObjects:[[NSNumber alloc] initWithInt:0],
-                                                  [[NSNumber alloc] initWithInt:1],
-                                                  [[NSNumber alloc] initWithInt:2], nil];
+                         [[NSNumber alloc] initWithInt:1],
+                         [[NSNumber alloc] initWithInt:2], nil];
     NSData *nonce = [[NSData alloc] initWithBase64EncodedString:@"MDEyMzQ1Njc4OQ==" options:0];
     NSArray *messages = [NSArray arrayWithObjects:[[NSData alloc] initWithBase64EncodedString:@"QytuMXJQejEvdFZ6UGc9PQ==" options:0],
-                                                  [[NSData alloc] initWithBase64EncodedString:@"aDN4OGNieVNxQzRyTEE9PQ==" options:0],
-                                                  [[NSData alloc] initWithBase64EncodedString:@"TUdmNzRvZkdkUndOYnc9PQ==" options:0], nil];
+                         [[NSData alloc] initWithBase64EncodedString:@"aDN4OGNieVNxQzRyTEE9PQ==" options:0],
+                         [[NSData alloc] initWithBase64EncodedString:@"TUdmNzRvZkdkUndOYnc9PQ==" options:0], nil];
     NSData *publicKey = [[NSData alloc] initWithBase64EncodedString:@"qJgttTOthlZHltz+c0PE07hx3worb/cy7QY5iwRegQ9BfwvGahdqCO9Q9xuOnF5nD/Tq6t8zm9z26EAFCiaEJnL5b50D1cHDgNxBUPEEae+4bUb3JRsHaxBdZWDOo3pb" options:0];
     NSData *signatureData = [[NSData alloc] initWithBase64EncodedString:@"uISPYALbiNZwIgu1ndj9onUbkFA9trrhGFQJqJHFOSWCZYAIDUNTysXziar6+MdbPEiJS34OOlKAzxxnxIhFW0lBd4dbLOKf59LZPMRYc91tALAZeriyKcSVa7RzZl50UPjHfs31JrH6RgZ1V9/OVg==" options:0];
     
@@ -175,8 +268,8 @@
     NSArray *revealed = [NSArray arrayWithObjects:[[NSNumber alloc] initWithInt:0], nil];
     NSData *nonce = [[NSData alloc] initWithBase64EncodedString:@"MDEyMzQ1Njc4OQ==" options:0];
     NSArray *messages = [NSArray arrayWithObjects:[[NSData alloc] initWithBase64EncodedString:@"QytuMXJQejEvdFZ6UGc9PQ==" options:0],
-                                                  [[NSData alloc] initWithBase64EncodedString:@"aDN4OGNieVNxQzRyTEE9PQ==" options:0],
-                                                  [[NSData alloc] initWithBase64EncodedString:@"TUdmNzRvZkdkUndOYnc9PQ==" options:0], nil];
+                         [[NSData alloc] initWithBase64EncodedString:@"aDN4OGNieVNxQzRyTEE9PQ==" options:0],
+                         [[NSData alloc] initWithBase64EncodedString:@"TUdmNzRvZkdkUndOYnc9PQ==" options:0], nil];
     NSData *publicKey = [[NSData alloc] initWithBase64EncodedString:@"qJgttTOthlZHltz+c0PE07hx3worb/cy7QY5iwRegQ9BfwvGahdqCO9Q9xuOnF5nD/Tq6t8zm9z26EAFCiaEJnL5b50D1cHDgNxBUPEEae+4bUb3JRsHaxBdZWDOo3pb" options:0];
     NSData *signatureData = [[NSData alloc] initWithBase64EncodedString:@"uISPYALbiNZwIgu1ndj9onUbkFA9trrhGFQJqJHFOSWCZYAIDUNTysXziar6+MdbPEiJS34OOlKAzxxnxIhFW0lBd4dbLOKf59LZPMRYc91tALAZeriyKcSVa7RzZl50UPjHfs31JrH6RgZ1V9/OVg==" options:0];
     
@@ -197,11 +290,11 @@
 
 - (void)testBlsCreateProofRevealingMultipleMessagesFromMultiMessageSignature {
     NSArray *revealed = [NSArray arrayWithObjects:[[NSNumber alloc] initWithInt:0],
-                                                  [[NSNumber alloc] initWithInt:2], nil];
+                         [[NSNumber alloc] initWithInt:2], nil];
     NSData *nonce = [[NSData alloc] initWithBase64EncodedString:@"MDEyMzQ1Njc4OQ==" options:0];
     NSArray *messages = [NSArray arrayWithObjects:[[NSData alloc] initWithBase64EncodedString:@"QytuMXJQejEvdFZ6UGc9PQ==" options:0],
-                                                  [[NSData alloc] initWithBase64EncodedString:@"aDN4OGNieVNxQzRyTEE9PQ==" options:0],
-                                                  [[NSData alloc] initWithBase64EncodedString:@"TUdmNzRvZkdkUndOYnc9PQ==" options:0], nil];
+                         [[NSData alloc] initWithBase64EncodedString:@"aDN4OGNieVNxQzRyTEE9PQ==" options:0],
+                         [[NSData alloc] initWithBase64EncodedString:@"TUdmNzRvZkdkUndOYnc9PQ==" options:0], nil];
     NSData *publicKey = [[NSData alloc] initWithBase64EncodedString:@"qJgttTOthlZHltz+c0PE07hx3worb/cy7QY5iwRegQ9BfwvGahdqCO9Q9xuOnF5nD/Tq6t8zm9z26EAFCiaEJnL5b50D1cHDgNxBUPEEae+4bUb3JRsHaxBdZWDOo3pb" options:0];
     NSData *signatureData = [[NSData alloc] initWithBase64EncodedString:@"uISPYALbiNZwIgu1ndj9onUbkFA9trrhGFQJqJHFOSWCZYAIDUNTysXziar6+MdbPEiJS34OOlKAzxxnxIhFW0lBd4dbLOKf59LZPMRYc91tALAZeriyKcSVa7RzZl50UPjHfs31JrH6RgZ1V9/OVg==" options:0];
     
@@ -218,6 +311,92 @@
                                                                withError:&error];
     
     XCTAssertEqual(proof.value.length, 415);
+}
+
+- (void)testBlsCreateProofRevealingMultipleMessagesFromMultiMessageSignatureAndVerify {
+    NSArray *revealed = [NSArray arrayWithObjects:[[NSNumber alloc] initWithInt:0],
+                         [[NSNumber alloc] initWithInt:2], nil];
+    NSData *nonce = [[NSData alloc] initWithBase64EncodedString:@"MDEyMzQ1Njc4OQ==" options:0];
+    NSArray *messages = [NSArray arrayWithObjects:[[NSData alloc] initWithBase64EncodedString:@"QytuMXJQejEvdFZ6UGc9PQ==" options:0],
+                         [[NSData alloc] initWithBase64EncodedString:@"aDN4OGNieVNxQzRyTEE9PQ==" options:0],
+                         [[NSData alloc] initWithBase64EncodedString:@"TUdmNzRvZkdkUndOYnc9PQ==" options:0], nil];
+    NSData *publicKey = [[NSData alloc] initWithBase64EncodedString:@"qJgttTOthlZHltz+c0PE07hx3worb/cy7QY5iwRegQ9BfwvGahdqCO9Q9xuOnF5nD/Tq6t8zm9z26EAFCiaEJnL5b50D1cHDgNxBUPEEae+4bUb3JRsHaxBdZWDOo3pb" options:0];
+    NSData *signatureData = [[NSData alloc] initWithBase64EncodedString:@"uISPYALbiNZwIgu1ndj9onUbkFA9trrhGFQJqJHFOSWCZYAIDUNTysXziar6+MdbPEiJS34OOlKAzxxnxIhFW0lBd4dbLOKf59LZPMRYc91tALAZeriyKcSVa7RzZl50UPjHfs31JrH6RgZ1V9/OVg==" options:0];
+    
+    NSError *error = nil;
+    Bls12381G2KeyPair *keyPair = [[Bls12381G2KeyPair alloc] initWithPublicKey:publicKey];
+    BbsSignature *signature = [[BbsSignature alloc] initWithBytes:signatureData withError:&error];
+    XCTAssertEqual(signature.value.length, 112);
+    
+    BbsSignatureProof *proof = [[BbsSignatureProof alloc] blsCreateProof:signature
+                                                                 keyPair:keyPair
+                                                                   nonce:nonce
+                                                                messages:messages
+                                                                revealed:revealed
+                                                               withError:&error];
+    
+    XCTAssertEqual(proof.value.length, 415);
+    
+    bool isVerified = false;
+    NSMutableDictionary *messagesDict = [[NSMutableDictionary alloc] init];
+    
+    messagesDict[@0] = [[NSData alloc] initWithBase64EncodedString:@"QytuMXJQejEvdFZ6UGc9PQ==" options:0];
+    messagesDict[@2] = [[NSData alloc] initWithBase64EncodedString:@"TUdmNzRvZkdkUndOYnc9PQ==" options:0];
+
+    NSDictionary *revealedMessages = messagesDict;
+    
+    BbsSignatureProof *proofCheck = [[BbsSignatureProof alloc] initWithBytes:proof.value
+                                                                   withError:&error];
+    
+    isVerified = [proofCheck blsVerifyProof:keyPair
+                                   messages:revealedMessages
+                                      nonce:nonce
+                                  withError:&error];
+    
+    XCTAssertTrue(isVerified);
+}
+
+- (void)testShouldFailBlsVerificationWhenIndicesAreWrong {
+    NSArray *revealed = [NSArray arrayWithObjects:[[NSNumber alloc] initWithInt:0],
+                         [[NSNumber alloc] initWithInt:2], nil];
+    NSData *nonce = [[NSData alloc] initWithBase64EncodedString:@"MDEyMzQ1Njc4OQ==" options:0];
+    NSArray *messages = [NSArray arrayWithObjects:[[NSData alloc] initWithBase64EncodedString:@"QytuMXJQejEvdFZ6UGc9PQ==" options:0],
+                         [[NSData alloc] initWithBase64EncodedString:@"aDN4OGNieVNxQzRyTEE9PQ==" options:0],
+                         [[NSData alloc] initWithBase64EncodedString:@"TUdmNzRvZkdkUndOYnc9PQ==" options:0], nil];
+    NSData *publicKey = [[NSData alloc] initWithBase64EncodedString:@"qJgttTOthlZHltz+c0PE07hx3worb/cy7QY5iwRegQ9BfwvGahdqCO9Q9xuOnF5nD/Tq6t8zm9z26EAFCiaEJnL5b50D1cHDgNxBUPEEae+4bUb3JRsHaxBdZWDOo3pb" options:0];
+    NSData *signatureData = [[NSData alloc] initWithBase64EncodedString:@"uISPYALbiNZwIgu1ndj9onUbkFA9trrhGFQJqJHFOSWCZYAIDUNTysXziar6+MdbPEiJS34OOlKAzxxnxIhFW0lBd4dbLOKf59LZPMRYc91tALAZeriyKcSVa7RzZl50UPjHfs31JrH6RgZ1V9/OVg==" options:0];
+    
+    NSError *error = nil;
+    Bls12381G2KeyPair *keyPair = [[Bls12381G2KeyPair alloc] initWithPublicKey:publicKey];
+    BbsSignature *signature = [[BbsSignature alloc] initWithBytes:signatureData withError:&error];
+    XCTAssertEqual(signature.value.length, 112);
+    
+    BbsSignatureProof *proof = [[BbsSignatureProof alloc] blsCreateProof:signature
+                                                                 keyPair:keyPair
+                                                                   nonce:nonce
+                                                                messages:messages
+                                                                revealed:revealed
+                                                               withError:&error];
+    
+    XCTAssertEqual(proof.value.length, 415);
+    
+    bool isVerified = false;
+    NSMutableDictionary *messagesDict = [[NSMutableDictionary alloc] init];
+    
+    messagesDict[@0] = [[NSData alloc] initWithBase64EncodedString:@"QytuMXJQejEvdFZ6UGc9PQ==" options:0];
+    messagesDict[@1] = [[NSData alloc] initWithBase64EncodedString:@"aDN4OGNieVNxQzRyTEE9PQ==" options:0];
+
+    NSDictionary *revealedMessages = messagesDict;
+    
+    BbsSignatureProof *proofCheck = [[BbsSignatureProof alloc] initWithBytes:proof.value
+                                                                   withError:&error];
+    
+    isVerified = [proofCheck blsVerifyProof:keyPair
+                                   messages:revealedMessages
+                                      nonce:nonce
+                                  withError:&error];
+    
+    XCTAssertFalse(isVerified);
 }
 
 - (void)testVerifyProofMessagesCount {
