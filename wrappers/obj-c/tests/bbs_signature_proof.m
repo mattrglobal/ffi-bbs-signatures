@@ -150,20 +150,30 @@
     XCTAssertEqual(proof.value.length, 415);
     
     bool isVerified = false;
-    NSMutableDictionary *messagesDict = [[NSMutableDictionary alloc] init];
+    NSMutableArray *revealedMessages = [NSMutableArray new];
     
-    messagesDict[@0] = [[NSData alloc] initWithBase64EncodedString:@"SjQyQXhoY2lPVmtFOXc9PQ==" options:0];
-    messagesDict[@2] = [[NSData alloc] initWithBase64EncodedString:@"dGk5V1loaEVlajg1anc9PQ==" options:0];
-
-    NSDictionary *revealedMessages = messagesDict;
+    int i = 0;
+    for (NSData *message in messages) {
+        bbs_signature_byte_buffer_t messageBuffer;
+        messageBuffer.len = message.length;
+        messageBuffer.data = (uint8_t *)message.bytes;
+        
+        Boolean isRevealed = [revealed containsObject:[[NSNumber alloc] initWithInt:i]];
+        
+        if(isRevealed) {
+            [revealedMessages addObject:message];
+        }
+        
+        i++;
+    }
     
     BbsSignatureProof *proofCheck = [[BbsSignatureProof alloc] initWithBytes:proof.value
                                                                    withError:&error];
     
     isVerified = [proofCheck verifyProof:keyPair
-                                   messages:revealedMessages
-                                      nonce:nonce
-                                  withError:&error];
+                                messages:revealedMessages
+                                   nonce:nonce
+                               withError:&error];
     
     XCTAssertTrue(isVerified);
 }
@@ -197,20 +207,16 @@
     XCTAssertEqual(proof.value.length, 415);
     
     bool isVerified = false;
-    NSMutableDictionary *messagesDict = [[NSMutableDictionary alloc] init];
-    
-    messagesDict[@0] = [[NSData alloc] initWithBase64EncodedString:@"SjQyQXhoY2lPVmtFOXc9PQ==" options:0];
-    messagesDict[@1] = [[NSData alloc] initWithBase64EncodedString:@"UE5NbkFSV0lIUCtzMmc9PQ==" options:0];
-
-    NSDictionary *revealedMessages = messagesDict;
+    NSArray *revealedMessages = [NSArray arrayWithObjects:[[NSData alloc] initWithBase64EncodedString:@"SjQyQXhoY2lPVmtFOXc9PQ==" options:0],
+                                 [[NSData alloc] initWithBase64EncodedString:@"UE5NbkFSV0lIUCtzMmc9PQ==" options:0], nil];
     
     BbsSignatureProof *proofCheck = [[BbsSignatureProof alloc] initWithBytes:proof.value
                                                                    withError:&error];
     
     isVerified = [proofCheck verifyProof:keyPair
-                                   messages:revealedMessages
-                                      nonce:nonce
-                                  withError:&error];
+                                messages:revealedMessages
+                                   nonce:nonce
+                               withError:&error];
     
     XCTAssertFalse(isVerified);
 }
@@ -338,12 +344,22 @@
     XCTAssertEqual(proof.value.length, 415);
     
     bool isVerified = false;
-    NSMutableDictionary *messagesDict = [[NSMutableDictionary alloc] init];
+    NSMutableArray *revealedMessages = [NSMutableArray new];
     
-    messagesDict[@0] = [[NSData alloc] initWithBase64EncodedString:@"QytuMXJQejEvdFZ6UGc9PQ==" options:0];
-    messagesDict[@2] = [[NSData alloc] initWithBase64EncodedString:@"TUdmNzRvZkdkUndOYnc9PQ==" options:0];
-
-    NSDictionary *revealedMessages = messagesDict;
+    int i = 0;
+    for (NSData *message in messages) {
+        bbs_signature_byte_buffer_t messageBuffer;
+        messageBuffer.len = message.length;
+        messageBuffer.data = (uint8_t *)message.bytes;
+        
+        Boolean isRevealed = [revealed containsObject:[[NSNumber alloc] initWithInt:i]];
+        
+        if(isRevealed) {
+            [revealedMessages addObject:message];
+        }
+        
+        i++;
+    }
     
     BbsSignatureProof *proofCheck = [[BbsSignatureProof alloc] initWithBytes:proof.value
                                                                    withError:&error];
@@ -381,12 +397,8 @@
     XCTAssertEqual(proof.value.length, 415);
     
     bool isVerified = false;
-    NSMutableDictionary *messagesDict = [[NSMutableDictionary alloc] init];
-    
-    messagesDict[@0] = [[NSData alloc] initWithBase64EncodedString:@"QytuMXJQejEvdFZ6UGc9PQ==" options:0];
-    messagesDict[@1] = [[NSData alloc] initWithBase64EncodedString:@"aDN4OGNieVNxQzRyTEE9PQ==" options:0];
-
-    NSDictionary *revealedMessages = messagesDict;
+    NSArray *revealedMessages = [NSArray arrayWithObjects:[[NSData alloc] initWithBase64EncodedString:@"QytuMXJQejEvdFZ6UGc9PQ==" options:0],
+                                 [[NSData alloc] initWithBase64EncodedString:@"aDN4OGNieVNxQzRyTEE9PQ==" options:0], nil];
     
     BbsSignatureProof *proofCheck = [[BbsSignatureProof alloc] initWithBytes:proof.value
                                                                    withError:&error];

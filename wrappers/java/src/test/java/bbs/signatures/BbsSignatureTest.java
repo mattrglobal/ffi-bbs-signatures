@@ -564,10 +564,8 @@ public class BbsSignatureTest {
         byte[] publicKey = Base64.getDecoder().decode("qJgttTOthlZHltz+c0PE07hx3worb/cy7QY5iwRegQ9BfwvGahdqCO9Q9xuOnF5nD/Tq6t8zm9z26EAFCiaEJnL5b50D1cHDgNxBUPEEae+4bUb3JRsHaxBdZWDOo3pb");
         byte[] signature = Base64.getDecoder().decode("r00WeXEj+07DUZb3JY6fbbKhHtQcxtLZsJUVU6liFZQKCLQYu77EXFZx4Vaa5VBtKpPK6tDGovHGgrgyizOm70VUZgzzBb0emvRIGSWhAKkcLL1z1HYwApnUE6XFFb96LUF4XM//QhEM774dX4ciqQ==");
 
-        int type = ProofMessage.PROOF_MESSAGE_TYPE_REVEALED;
-        byte[] blindingFactor = new byte[0];
         ProofMessage[] proofMessage = new ProofMessage[]{
-                new ProofMessage(type, message, blindingFactor),
+            new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_REVEALED, message,  new byte[0]),
         };
 
         byte[] proof = new byte[0];
@@ -580,9 +578,10 @@ public class BbsSignatureTest {
         }
 
         assertNotNull(proof);
-        Map<Integer, byte[]> messages = new HashMap<Integer, byte[]>() {{
-            put(0, message);
-        }};
+
+        byte[][] messages = {
+            message
+        };
 
         boolean isVerified = false;
 
@@ -602,9 +601,9 @@ public class BbsSignatureTest {
         byte[] proof = Base64.getDecoder().decode("AAEBoaFg6VxcB6O4VIKYJO0+HzKeanbXM4uwmCHLNBm3lwdeBkfpqJ6WoVTy9J0vsvtIubBEnwEv9y1azjWWQx2kawyVzN2dvUNRK9IRLQC2ut9Iz8o3Roh4KNsG1Woe1NZKltxlXl2Be0AaoA0/8c0kyssv97BEFpKRH/hrp8UqQas3X/FyUeqQ6d7yJjMnGvIdAAAAdIvOcT/XUeKc0EeUnLVvrvpbnUAtRjWduhwPWFlDVT00Wo4LwMw/lxIDvF+TNecX3QAAAAIESbWq6giuMgFEi8bxkcrmWCoS3PsEpRkfinUw0Q8azAZhg1x/B56PbJGDGmb6jRNNaCB7DPrMNM2vUcEY07yHiY8Ro37TEL8B2M6Bh8oSYZriOXDKys+yHokCQ28YV/dj1J1vNJYScfBSZpyCKOn7AAAAAklvabUJvsh4FfKc0k/gO2VbUZwf4/4qGWnF49Ck/6SJJlzMtn5ZHzjPFNPhOsua8NtHVeni1cGrRHaLTfoEGio=");
         byte[] bbsPublicKey = "invalidPublicKey".getBytes();
 
-        Map<Integer, byte[]> messages = new HashMap<Integer, byte[]>() {{
-            put(0, message);
-        }};
+        byte[][] messages = {
+            message
+        };
 
         try {
             Bbs.verifyProof(bbsPublicKey, proof, nonce, messages);
@@ -622,9 +621,9 @@ public class BbsSignatureTest {
         byte[] bbsPublicKey = Bbs.blsPublicToBbsPublicKey(publicKey, 1);
         byte[] invalidProof = "".getBytes();
 
-        Map<Integer, byte[]> messages = new HashMap<Integer, byte[]>() {{
-            put(0, message);
-        }};
+        byte[][] messages = {
+            message
+        };
 
         try {
             Bbs.verifyProof(bbsPublicKey, invalidProof, nonce, messages);
@@ -642,9 +641,9 @@ public class BbsSignatureTest {
         byte[] bbsPublicKey = Bbs.blsPublicToBbsPublicKey(publicKey, 1);
         byte[] proof = Base64.getDecoder().decode("AAEBoaFg6VxcB6O4VIKYJO0+HzKeanbXM4uwmCHLNBm3lwdeBkfpqJ6WoVTy9J0vsvtIubBEnwEv9y1azjWWQx2kawyVzN2dvUNRK9IRLQC2ut9Iz8o3Roh4KNsG1Woe1NZKltxlXl2Be0AaoA0/8c0kyssv97BEFpKRH/hrp8UqQas3X/FyUeqQ6d7yJjMnGvIdAAAAdIvOcT/XUeKc0EeUnLVvrvpbnUAtRjWduhwPWFlDVT00Wo4LwMw/lxIDvF+TNecX3QAAAAIESbWq6giuMgFEi8bxkcrmWCoS3PsEpRkfinUw0Q8azAZhg1x/B56PbJGDGmb6jRNNaCB7DPrMNM2vUcEY07yHiY8Ro37TEL8B2M6Bh8oSYZriOXDKys+yHokCQ28YV/dj1J1vNJYScfBSZpyCKOn7AAAAAklvabUJvsh4FfKc0k/gO2VbUZwf4/4qGWnF49Ck/6SJJlzMtn5ZHzjPFNPhOsua8NtHVeni1cGrRHaLTfoEGio=");
 
-        Map<Integer, byte[]> messages = new HashMap<Integer, byte[]>() {{
-            put(0, message);
-        }};
+        byte[][] messages = {
+            message
+        };
 
         try {
             Bbs.verifyProof(bbsPublicKey, proof, invalidNonce, messages);
@@ -662,9 +661,9 @@ public class BbsSignatureTest {
         byte[] bbsPublicKey = Bbs.blsPublicToBbsPublicKey(publicKey, 1);
         byte[] proof = Base64.getDecoder().decode("AAEBoaFg6VxcB6O4VIKYJO0+HzKeanbXM4uwmCHLNBm3lwdeBkfpqJ6WoVTy9J0vsvtIubBEnwEv9y1azjWWQx2kawyVzN2dvUNRK9IRLQC2ut9Iz8o3Roh4KNsG1Woe1NZKltxlXl2Be0AaoA0/8c0kyssv97BEFpKRH/hrp8UqQas3X/FyUeqQ6d7yJjMnGvIdAAAAdIvOcT/XUeKc0EeUnLVvrvpbnUAtRjWduhwPWFlDVT00Wo4LwMw/lxIDvF+TNecX3QAAAAIESbWq6giuMgFEi8bxkcrmWCoS3PsEpRkfinUw0Q8azAZhg1x/B56PbJGDGmb6jRNNaCB7DPrMNM2vUcEY07yHiY8Ro37TEL8B2M6Bh8oSYZriOXDKys+yHokCQ28YV/dj1J1vNJYScfBSZpyCKOn7AAAAAklvabUJvsh4FfKc0k/gO2VbUZwf4/4qGWnF49Ck/6SJJlzMtn5ZHzjPFNPhOsua8NtHVeni1cGrRHaLTfoEGio=");
 
-        Map<Integer, byte[]> messages = new HashMap<Integer, byte[]>() {{
-            put(0, invalidMessage);
-        }};
+        byte[][] messages = {
+            invalidMessage
+        };
 
         try {
             Bbs.verifyProof(bbsPublicKey, proof, nonce, messages);
@@ -701,9 +700,10 @@ public class BbsSignatureTest {
         }
 
         assertNotNull(proof);
-        Map<Integer, byte[]> revealed = new HashMap<Integer, byte[]>() {{
-            put(0, messages[0]);
-        }};
+
+        byte[][] revealed = {
+            messages[0]
+        };
 
         boolean isVerified = false;
 
@@ -743,10 +743,11 @@ public class BbsSignatureTest {
         }
 
         assertNotNull(proof);
-        Map<Integer, byte[]> revealed = new HashMap<Integer, byte[]>() {{
-            put(0, messages[0]);
-            put(2, messages[2]);
-        }};
+
+        byte[][] revealed = {
+            messages[0],
+            messages[2]
+        };
 
         boolean isVerified = false;
 
@@ -786,11 +787,12 @@ public class BbsSignatureTest {
         }
 
         assertNotNull(proof);
-        Map<Integer, byte[]> revealed = new HashMap<Integer, byte[]>() {{
-            put(0, messages[0]);
-            put(1, messages[1]);
-            put(2, messages[2]);
-        }};
+
+        byte[][] revealed = {
+            messages[0],
+            messages[1],
+            messages[2]
+        };
 
         boolean isVerified = false;
 

@@ -59,7 +59,7 @@
 
 /** @brief Initializes a key pair */
 - (bool)verifyProof:(BbsKeyPair* _Nonnull)keyPair
-           messages:(NSDictionary* _Nonnull)messages
+           messages:(NSArray* _Nonnull)messages
               nonce:(NSData* _Nonnull)nonce
           withError:(NSError *_Nullable*_Nullable)errorPtr {
     
@@ -71,7 +71,7 @@
 
 /** @brief Initializes a key pair */
 - (bool)blsVerifyProof:(Bls12381G2KeyPair* _Nonnull)keyPair
-              messages:(NSDictionary* _Nonnull)messages
+              messages:(NSArray* _Nonnull)messages
                  nonce:(NSData* _Nonnull)nonce
              withError:(NSError *_Nullable*_Nullable)errorPtr {
     
@@ -200,7 +200,7 @@
 
 /** @brief Initializes a key pair */
 - (bool)verifySignatureProof:(BbsKeyPair* _Nonnull)keyPair
-                    messages:(NSDictionary* _Nonnull)messages
+                    messages:(NSArray* _Nonnull)messages
                        nonce:(NSData* _Nonnull)nonce
                    withError:(NSError *_Nullable*_Nullable)errorPtr {
     
@@ -213,14 +213,12 @@
         return false;
     }
     
-    for(NSNumber *messageIndex in messages) {
-        NSData *message = [messages objectForKey:messageIndex];
-        
+    for (NSData *message in messages) {
         bbs_signature_byte_buffer_t messageBuffer;
         messageBuffer.len = message.length;
         messageBuffer.data = (uint8_t *)message.bytes;
-        
-        if (bbs_verify_proof_context_add_message_bytes(verifyProofHandle, messageIndex.intValue, messageBuffer, err) > 0) {
+                
+        if (bbs_verify_proof_context_add_message_bytes(verifyProofHandle, messageBuffer, err) > 0) {
             *errorPtr = [BbsSignatureError errorFromBbsSignatureError:err];
             return false;
         }
@@ -257,13 +255,13 @@
         *errorPtr = [BbsSignatureError errorFromBbsSignatureError:err];
         return false;
     }
-
+    
     return true;
 }
 
 /** @brief Initializes a key pair */
 - (bool)verifySignatureProofFromBls12381G2:(Bls12381G2KeyPair* _Nonnull)keyPair
-                                  messages:(NSDictionary* _Nonnull)messages
+                                  messages:(NSArray* _Nonnull)messages
                                      nonce:(NSData* _Nonnull)nonce
                                  withError:(NSError *_Nullable*_Nullable)errorPtr {
     

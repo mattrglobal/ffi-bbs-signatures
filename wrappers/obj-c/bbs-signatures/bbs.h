@@ -273,7 +273,6 @@ int32_t bbs_verify_proof_context_add_message_string(uint64_t handle,
                                                     bbs_signature_error_t *_Nullable err);
 
 int32_t bbs_verify_proof_context_add_message_bytes(uint64_t handle,
-                                                   uint32_t index,
                                                    bbs_signature_byte_buffer_t message,
                                                    bbs_signature_error_t *_Nullable err);
 

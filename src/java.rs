@@ -955,7 +955,6 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1add_1mess
     env: JNIEnv,
     _: JObject,
     handle: jlong,
-    index: jint,
     message: jbyteArray,
 ) -> jint {
     match env.convert_byte_array(message) {
@@ -965,7 +964,6 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1add_1mess
             let byte_array = ByteArray::from(s);
             bbs_verify_proof_context_add_message_bytes(
                 handle as u64,
-                index as u32,
                 byte_array,
                 &mut error,
             )
@@ -979,7 +977,6 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1add_1mess
     env: JNIEnv,
     _: JObject,
     handle: jlong,
-    index: jint,
     message: jbyteArray,
 ) -> jint {
     match env.convert_byte_array(message) {
@@ -989,7 +986,6 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1add_1mess
             let byte_array = ByteArray::from(s);
             bbs_verify_proof_context_add_message_prehashed(
                 handle as u64,
-                index as u32,
                 byte_array,
                 &mut error,
             )
