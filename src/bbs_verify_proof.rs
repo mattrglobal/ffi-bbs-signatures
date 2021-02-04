@@ -6,7 +6,7 @@ use serde::{
     Deserialize, Deserializer, Serialize, Serializer,
 };
 use std::{
-    collections::{BTreeMap, BTreeSet},
+    collections::BTreeSet,
     convert::TryFrom,
 };
 
@@ -18,7 +18,7 @@ lazy_static! {
 define_handle_map_deleter!(VERIFY_PROOF_CONTEXT, free_verify_proof);
 
 pub struct VerifyProofContext {
-    pub messages: BTreeMap<usize, SignatureMessage>,
+    pub messages: Vec<SignatureMessage>,
     pub nonce: Option<ProofNonce>,
     pub proof: Option<PoKOfSignatureProofWrapper>,
     pub public_key: Option<PublicKey>,
@@ -116,7 +116,7 @@ pub extern "C" fn bbs_get_total_messages_count_for_proof(proof: ByteArray) -> i3
 #[no_mangle]
 pub extern "C" fn bbs_verify_proof_context_init(err: &mut ExternError) -> u64 {
     VERIFY_PROOF_CONTEXT.insert_with_output(err, || VerifyProofContext {
-        messages: BTreeMap::new(),
+        messages: Vec::new(),
         nonce: None,
         public_key: None,
         proof: None,
@@ -127,8 +127,7 @@ add_message_impl!(
     bbs_verify_proof_context_add_message_string,
     bbs_verify_proof_context_add_message_bytes,
     bbs_verify_proof_context_add_message_prehashed,
-    VERIFY_PROOF_CONTEXT,
-    u32
+    VERIFY_PROOF_CONTEXT
 );
 
 add_bytes_impl!(
@@ -177,18 +176,19 @@ pub extern "C" fn bbs_verify_proof_context_finish(handle: u64, err: &mut ExternE
             let proofwrapper = ctx.proof.as_ref().unwrap();
 
             let (revealed, proof) = proofwrapper.unpack();
-            let passed_revealed: BTreeSet<usize> = ctx.messages.iter().map(|(k, _)| *k).collect();
 
             // These should be equal
-            if revealed != passed_revealed {
-                Err(BbsFfiError::new("Indices are not equal"))?;
+            if revealed.len() != ctx.messages.len() {
+                Err(BbsFfiError::new("Indices and messages are not equal"))?;
             }
 
             let mut challenge_bytes = proof.get_bytes_for_challenge(revealed.clone(), public_key);
             challenge_bytes.extend_from_slice(&nonce.to_bytes_compressed_form()[..]);
 
+            let proof_msgs = revealed.iter().zip(ctx.messages.iter()).map(|(i, m)| (*i, *m)).collect();
+
             let challenge_verifier = ProofChallenge::hash(&challenge_bytes);
-            let res = proof.verify(public_key, &ctx.messages, &challenge_verifier)?;
+            let res = proof.verify(public_key, &proof_msgs, &challenge_verifier)?;
             Ok(SignatureProofStatus::from(res) as i32)
         },
     );

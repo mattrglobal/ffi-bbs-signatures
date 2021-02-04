@@ -381,7 +381,7 @@ JNIEXPORT jlong JNICALL Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1ini
  * Signature: (JI[B)I
  */
 JNIEXPORT jint JNICALL Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1add_1message_1bytes
-  (JNIEnv *, jclass, jlong, jint, jbyteArray);
+  (JNIEnv *, jclass, jlong, jbyteArray);
 
 /*
  * Class:     bbs_signatures_Bbs
@@ -389,7 +389,7 @@ JNIEXPORT jint JNICALL Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1add_
  * Signature: (JI[B)I
  */
 JNIEXPORT jint JNICALL Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1add_1message_1prehashed
-  (JNIEnv *, jclass, jlong, jint, jbyteArray);
+  (JNIEnv *, jclass, jlong, jbyteArray);
 
 /*
  * Class:     bbs_signatures_Bbs

@@ -107,9 +107,9 @@ public class Bbs {
 
     private static native long bbs_verify_proof_context_init();
 
-    private static native int bbs_verify_proof_context_add_message_bytes(long handle, int index, byte[] message);
+    private static native int bbs_verify_proof_context_add_message_bytes(long handle, byte[] message);
 
-    private static native int bbs_verify_proof_context_add_message_prehashed(long handle, int index, byte[] hash);
+    private static native int bbs_verify_proof_context_add_message_prehashed(long handle, byte[] hash);
 
     private static native int bbs_verify_proof_context_set_proof(long handle, byte[] proof);
 
@@ -334,7 +334,7 @@ public class Bbs {
         return proof;
     }
 
-    public static boolean verifyProof(byte[] public_key, byte[] proof, byte[] nonce, Map<Integer, byte[]> messages) throws Exception {
+    public static boolean verifyProof(byte[] public_key, byte[] proof, byte[] nonce, byte[][] messages) throws Exception {
         long handle = bbs_verify_proof_context_init();
         if (0 == handle) {
             throw new Exception("Unable to create verify signature context");
@@ -348,8 +348,8 @@ public class Bbs {
         if (0 != bbs_verify_proof_context_set_nonce_bytes(handle, nonce)) {
             throw new Exception("Unable to set nonce");
         }
-        for (Map.Entry<Integer, byte[]> entry : messages.entrySet()) {
-            if (0 != bbs_verify_proof_context_add_message_bytes(handle, entry.getKey(), entry.getValue())) {
+        for (byte[] msg : messages) {
+            if (0 != bbs_verify_proof_context_add_message_bytes(handle, msg)) {
                 throw new Exception("Unable to add message");
             }
         }
