@@ -378,7 +378,7 @@ JNIEXPORT jlong JNICALL Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1ini
 /*
  * Class:     bbs_signatures_Bbs
  * Method:    bbs_verify_proof_context_add_message_bytes
- * Signature: (JI[B)I
+ * Signature: (J[B)I
  */
 JNIEXPORT jint JNICALL Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1add_1message_1bytes
   (JNIEnv *, jclass, jlong, jbyteArray);
@@ -386,7 +386,7 @@ JNIEXPORT jint JNICALL Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1add_
 /*
  * Class:     bbs_signatures_Bbs
  * Method:    bbs_verify_proof_context_add_message_prehashed
- * Signature: (JI[B)I
+ * Signature: (J[B)I
  */
 JNIEXPORT jint JNICALL Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1add_1message_1prehashed
   (JNIEnv *, jclass, jlong, jbyteArray);

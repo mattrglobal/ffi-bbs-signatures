@@ -225,12 +225,65 @@ public class Bbs {
         return signature;
     }
 
+    public static byte[] blsSign(byte[] secret_key, byte[] public_key, byte[][] messages) throws Exception {
+        byte[] bbs_public_key = Bbs.blsPublicToBbsPublicKey(public_key, messages.length);
+        long handle = bbs_sign_init();
+        if (0 == handle) {
+            throw new Exception("Unable to create signing context");
+        }
+        if (0 != bbs_sign_set_secret_key(handle, secret_key)) {
+            throw new Exception("Unable to set secret key");
+        }
+        if (0 != bbs_sign_set_public_key(handle, bbs_public_key)) {
+            throw new Exception("Unable to set public key");
+        }
+        for (byte[] msg : messages) {
+            if (0 != bbs_sign_add_message_bytes(handle, msg)) {
+                throw new Exception("Unable to add message");
+            }
+        }
+        byte[] signature = new byte[bbs_blind_signature_size()];
+        if (0 != bbs_sign_finish(handle, signature)) {
+            throw new Exception("Unable to create signature");
+        }
+        return signature;
+    }
+
     public static boolean verify(byte[] public_key, byte[] signature, byte[][] messages) throws Exception {
         long handle = bbs_verify_init();
         if (0 == handle) {
             throw new Exception("Unable to create verify signature context");
         }
         if (0 != bbs_verify_set_public_key(handle, public_key)) {
+            throw new Exception("Unable to set public key");
+        }
+        if (0 != bbs_verify_set_signature(handle, signature)) {
+            throw new Exception("Unable to set signature");
+        }
+        for (byte[] msg : messages) {
+            if (0 != bbs_verify_add_message_bytes(handle, msg)) {
+                throw new Exception("Unable to add message");
+            }
+        }
+        int res = bbs_verify_finish(handle);
+
+        switch (res) {
+            case 0:
+                return true;
+            case 1:
+                return false;
+            default:
+                throw new Exception("Unable to verify signature");
+        }
+    }
+
+    public static boolean blsVerify(byte[] public_key, byte[] signature, byte[][] messages) throws Exception {
+        byte[] bbs_public_key = Bbs.blsPublicToBbsPublicKey(public_key, messages.length);
+        long handle = bbs_verify_init();
+        if (0 == handle) {
+            throw new Exception("Unable to create verify signature context");
+        }
+        if (0 != bbs_verify_set_public_key(handle, bbs_public_key)) {
             throw new Exception("Unable to set public key");
         }
         if (0 != bbs_verify_set_signature(handle, signature)) {
@@ -334,6 +387,33 @@ public class Bbs {
         return proof;
     }
 
+    public static byte[] blsCreateProof(byte[] public_key, byte[] nonce, byte[] signature, ProofMessage[] messages) throws Exception {
+        byte[] bbs_public_key = Bbs.blsPublicToBbsPublicKey(public_key, messages.length);
+        long handle = bbs_create_proof_context_init();
+        if (0 == handle) {
+            throw new Exception("Unable to create proof context");
+        }
+        if (0 != bbs_create_proof_context_set_public_key(handle, bbs_public_key)) {
+            throw new Exception("Unable to set public key");
+        }
+        if (0 != bbs_create_proof_context_set_nonce_bytes(handle, nonce)) {
+            throw new Exception("Unable to set nonce");
+        }
+        if (0 != bbs_create_proof_context_set_signature(handle, signature)) {
+            throw new Exception("Unable to set signature: " + get_last_error());
+        }
+        for (ProofMessage message : messages) {
+            if (0 != bbs_create_proof_context_add_proof_message_bytes(handle, message.message, message.type, message.blinding_factor)) {
+                throw new Exception("Unable to add proof message");
+            }
+        }
+        byte[] proof = new byte[bbs_create_proof_size(handle)];
+        if (0 != bbs_create_proof_context_finish(handle, proof)) {
+            throw new Exception("Unable to create proof");
+        }
+        return proof;
+    }
+
     public static boolean verifyProof(byte[] public_key, byte[] proof, byte[] nonce, byte[][] messages) throws Exception {
         long handle = bbs_verify_proof_context_init();
         if (0 == handle) {
@@ -349,6 +429,32 @@ public class Bbs {
             throw new Exception("Unable to set nonce");
         }
         for (byte[] msg : messages) {
+            if (0 != bbs_verify_proof_context_add_message_bytes(handle, msg)) {
+                throw new Exception("Unable to add message");
+            }
+        }
+        int res = bbs_verify_proof_context_finish(handle);
+
+        return res <= 0;
+    }
+
+    public static boolean blsVerifyProof(byte[] public_key, byte[] proof, byte[] nonce, byte[][] revealed_messages) throws Exception {
+        int messages = Bbs.getTotalMessagesCountForProof(proof);
+        byte[] bbs_public_key = Bbs.blsPublicToBbsPublicKey(public_key, messages);
+        long handle = bbs_verify_proof_context_init();
+        if (0 == handle) {
+            throw new Exception("Unable to create verify signature context");
+        }
+        if (0 != bbs_verify_proof_context_set_public_key(handle, bbs_public_key)) {
+            throw new Exception("Unable to set public key");
+        }
+        if (0 != bbs_verify_proof_context_set_proof(handle, proof)) {
+            throw new Exception("Unable to set proof");
+        }
+        if (0 != bbs_verify_proof_context_set_nonce_bytes(handle, nonce)) {
+            throw new Exception("Unable to set nonce");
+        }
+        for (byte[] msg : revealed_messages) {
             if (0 != bbs_verify_proof_context_add_message_bytes(handle, msg)) {
                 throw new Exception("Unable to add message");
             }

@@ -129,9 +129,9 @@ public class BbsSignatureTest {
         KeyPair keyPair = getBls12381G2KeyPair();
 
         byte[][] messages = {
-            "message1".getBytes(),
-            "message2".getBytes(),
-            "message3".getBytes(),
+                "message1".getBytes(),
+                "message2".getBytes(),
+                "message3".getBytes(),
         };
         byte[] bbsKey = Bbs.blsPublicToBbsPublicKey(keyPair.publicKey, messages.length);
         byte[] secretKey = keyPair.secretKey;
@@ -140,6 +140,29 @@ public class BbsSignatureTest {
 
         try {
             signature = Bbs.sign(secretKey, bbsKey, messages);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertNotNull(signature);
+    }
+
+    @Test
+    public void canBlsSignMessage() {
+        KeyPair keyPair = getBls12381G2KeyPair();
+        byte[] publicKey = keyPair.publicKey;
+        byte[] secretKey = keyPair.secretKey;
+
+        byte[][] messages = {
+                "message1".getBytes(),
+                "message2".getBytes(),
+                "message3".getBytes(),
+        };
+
+        byte[] signature = new byte[Bbs.getSignatureSize()];
+
+        try {
+            signature = Bbs.blsSign(secretKey, publicKey, messages);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -169,6 +192,34 @@ public class BbsSignatureTest {
 
         try {
             isVerified = Bbs.verify(bbsKey, signature, messages);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertTrue(isVerified);
+    }
+
+    @Test
+    public void canBlsVerifyMessage() {
+        KeyPair keyPair = getBls12381G2KeyPair();
+        byte[] publicKey = keyPair.publicKey;
+        byte[] secretKey = keyPair.secretKey;
+        byte[][] messages = {"message1".getBytes()};
+
+        byte[] signature = new byte[Bbs.getSignatureSize()];
+
+        try {
+            signature = Bbs.blsSign(secretKey, publicKey, messages);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertNotNull(signature);
+
+        boolean isVerified = false;
+
+        try {
+            isVerified = Bbs.blsVerify(publicKey, signature, messages);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -223,13 +274,11 @@ public class BbsSignatureTest {
 
         assertNotNull(signature);
 
-        // TODO Mock bbs_verify_set_signature to throw exception
-
         try {
-            Bbs.verify(bbsKey, signature, messages);
-            //fail("Expected an exception to be thrown");
+            Bbs.verify(bbsKey, new byte[112], messages);
+            fail("Expected an exception to be thrown");
         } catch (Exception exception) {
-            assertEquals("Unable to verify signature", exception.getMessage());
+            assertEquals("Unable to set signature", exception.getMessage());
         }
     }
 
@@ -442,7 +491,7 @@ public class BbsSignatureTest {
     }
 
     @Test
-    public void testBlsCreateProofRevealingSingleMessageFromSingleMessageSignature() {
+    public void testCreateProofRevealingSingleMessageFromSingleMessageSignature() {
         byte[] nonce = Base64.getDecoder().decode("MDEyMzQ1Njc4OQ==");
         byte[] message = Base64.getDecoder().decode("dXpBb1FGcUxnUmVpZHc9PQ==");
         byte[] publicKey = Base64.getDecoder().decode("qJgttTOthlZHltz+c0PE07hx3worb/cy7QY5iwRegQ9BfwvGahdqCO9Q9xuOnF5nD/Tq6t8zm9z26EAFCiaEJnL5b50D1cHDgNxBUPEEae+4bUb3JRsHaxBdZWDOo3pb");
@@ -459,6 +508,30 @@ public class BbsSignatureTest {
 
         try {
             proof = Bbs.createProof(bbsKey, nonce, signature, proofMessage);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertNotNull(proof);
+    }
+
+    @Test
+    public void testBlsCreateProofRevealingSingleMessageFromSingleMessageSignature() {
+        byte[] nonce = Base64.getDecoder().decode("MDEyMzQ1Njc4OQ==");
+        byte[] message = Base64.getDecoder().decode("dXpBb1FGcUxnUmVpZHc9PQ==");
+        byte[] publicKey = Base64.getDecoder().decode("qJgttTOthlZHltz+c0PE07hx3worb/cy7QY5iwRegQ9BfwvGahdqCO9Q9xuOnF5nD/Tq6t8zm9z26EAFCiaEJnL5b50D1cHDgNxBUPEEae+4bUb3JRsHaxBdZWDOo3pb");
+        byte[] signature = Base64.getDecoder().decode("r00WeXEj+07DUZb3JY6fbbKhHtQcxtLZsJUVU6liFZQKCLQYu77EXFZx4Vaa5VBtKpPK6tDGovHGgrgyizOm70VUZgzzBb0emvRIGSWhAKkcLL1z1HYwApnUE6XFFb96LUF4XM//QhEM774dX4ciqQ==");
+
+        int type = ProofMessage.PROOF_MESSAGE_TYPE_REVEALED;
+        byte[] blindingFactor = new byte[0];
+        ProofMessage[] proofMessage = new ProofMessage[]{
+                new ProofMessage(type, message, blindingFactor),
+        };
+
+        byte[] proof = new byte[0];
+
+        try {
+            proof = Bbs.blsCreateProof(publicKey, nonce, signature, proofMessage);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -558,14 +631,14 @@ public class BbsSignatureTest {
     }
 
     @Test
-    public void testBlsVerifyProofRevealingSingleMessageFromSingleMessageSignature() {
+    public void testVerifyProofRevealingSingleMessageFromSingleMessageSignature() {
         byte[] nonce = Base64.getDecoder().decode("MDEyMzQ1Njc4OQ==");
         byte[] message = Base64.getDecoder().decode("dXpBb1FGcUxnUmVpZHc9PQ==");
         byte[] publicKey = Base64.getDecoder().decode("qJgttTOthlZHltz+c0PE07hx3worb/cy7QY5iwRegQ9BfwvGahdqCO9Q9xuOnF5nD/Tq6t8zm9z26EAFCiaEJnL5b50D1cHDgNxBUPEEae+4bUb3JRsHaxBdZWDOo3pb");
         byte[] signature = Base64.getDecoder().decode("r00WeXEj+07DUZb3JY6fbbKhHtQcxtLZsJUVU6liFZQKCLQYu77EXFZx4Vaa5VBtKpPK6tDGovHGgrgyizOm70VUZgzzBb0emvRIGSWhAKkcLL1z1HYwApnUE6XFFb96LUF4XM//QhEM774dX4ciqQ==");
 
         ProofMessage[] proofMessage = new ProofMessage[]{
-            new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_REVEALED, message,  new byte[0]),
+                new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_REVEALED, message, new byte[0]),
         };
 
         byte[] proof = new byte[0];
@@ -580,13 +653,49 @@ public class BbsSignatureTest {
         assertNotNull(proof);
 
         byte[][] messages = {
-            message
+                message
         };
 
         boolean isVerified = false;
 
         try {
             isVerified = Bbs.verifyProof(bbsPublicKey, proof, nonce, messages);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertTrue(isVerified);
+    }
+
+    @Test
+    public void testBlsVerifyProofRevealingSingleMessageFromSingleMessageSignature() {
+        byte[] nonce = Base64.getDecoder().decode("MDEyMzQ1Njc4OQ==");
+        byte[] message = Base64.getDecoder().decode("dXpBb1FGcUxnUmVpZHc9PQ==");
+        byte[] publicKey = Base64.getDecoder().decode("qJgttTOthlZHltz+c0PE07hx3worb/cy7QY5iwRegQ9BfwvGahdqCO9Q9xuOnF5nD/Tq6t8zm9z26EAFCiaEJnL5b50D1cHDgNxBUPEEae+4bUb3JRsHaxBdZWDOo3pb");
+        byte[] signature = Base64.getDecoder().decode("r00WeXEj+07DUZb3JY6fbbKhHtQcxtLZsJUVU6liFZQKCLQYu77EXFZx4Vaa5VBtKpPK6tDGovHGgrgyizOm70VUZgzzBb0emvRIGSWhAKkcLL1z1HYwApnUE6XFFb96LUF4XM//QhEM774dX4ciqQ==");
+
+        ProofMessage[] proofMessage = new ProofMessage[]{
+                new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_REVEALED, message, new byte[0]),
+        };
+
+        byte[] proof = new byte[0];
+
+        try {
+            proof = Bbs.blsCreateProof(publicKey, nonce, signature, proofMessage);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        assertNotNull(proof);
+
+        byte[][] messages = {
+                message
+        };
+
+        boolean isVerified = false;
+
+        try {
+            isVerified = Bbs.blsVerifyProof(publicKey, proof, nonce, messages);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -602,7 +711,7 @@ public class BbsSignatureTest {
         byte[] bbsPublicKey = "invalidPublicKey".getBytes();
 
         byte[][] messages = {
-            message
+                message
         };
 
         try {
@@ -622,7 +731,7 @@ public class BbsSignatureTest {
         byte[] invalidProof = "".getBytes();
 
         byte[][] messages = {
-            message
+                message
         };
 
         try {
@@ -642,7 +751,7 @@ public class BbsSignatureTest {
         byte[] proof = Base64.getDecoder().decode("AAEBoaFg6VxcB6O4VIKYJO0+HzKeanbXM4uwmCHLNBm3lwdeBkfpqJ6WoVTy9J0vsvtIubBEnwEv9y1azjWWQx2kawyVzN2dvUNRK9IRLQC2ut9Iz8o3Roh4KNsG1Woe1NZKltxlXl2Be0AaoA0/8c0kyssv97BEFpKRH/hrp8UqQas3X/FyUeqQ6d7yJjMnGvIdAAAAdIvOcT/XUeKc0EeUnLVvrvpbnUAtRjWduhwPWFlDVT00Wo4LwMw/lxIDvF+TNecX3QAAAAIESbWq6giuMgFEi8bxkcrmWCoS3PsEpRkfinUw0Q8azAZhg1x/B56PbJGDGmb6jRNNaCB7DPrMNM2vUcEY07yHiY8Ro37TEL8B2M6Bh8oSYZriOXDKys+yHokCQ28YV/dj1J1vNJYScfBSZpyCKOn7AAAAAklvabUJvsh4FfKc0k/gO2VbUZwf4/4qGWnF49Ck/6SJJlzMtn5ZHzjPFNPhOsua8NtHVeni1cGrRHaLTfoEGio=");
 
         byte[][] messages = {
-            message
+                message
         };
 
         try {
@@ -662,7 +771,7 @@ public class BbsSignatureTest {
         byte[] proof = Base64.getDecoder().decode("AAEBoaFg6VxcB6O4VIKYJO0+HzKeanbXM4uwmCHLNBm3lwdeBkfpqJ6WoVTy9J0vsvtIubBEnwEv9y1azjWWQx2kawyVzN2dvUNRK9IRLQC2ut9Iz8o3Roh4KNsG1Woe1NZKltxlXl2Be0AaoA0/8c0kyssv97BEFpKRH/hrp8UqQas3X/FyUeqQ6d7yJjMnGvIdAAAAdIvOcT/XUeKc0EeUnLVvrvpbnUAtRjWduhwPWFlDVT00Wo4LwMw/lxIDvF+TNecX3QAAAAIESbWq6giuMgFEi8bxkcrmWCoS3PsEpRkfinUw0Q8azAZhg1x/B56PbJGDGmb6jRNNaCB7DPrMNM2vUcEY07yHiY8Ro37TEL8B2M6Bh8oSYZriOXDKys+yHokCQ28YV/dj1J1vNJYScfBSZpyCKOn7AAAAAklvabUJvsh4FfKc0k/gO2VbUZwf4/4qGWnF49Ck/6SJJlzMtn5ZHzjPFNPhOsua8NtHVeni1cGrRHaLTfoEGio=");
 
         byte[][] messages = {
-            invalidMessage
+                invalidMessage
         };
 
         try {
@@ -677,17 +786,17 @@ public class BbsSignatureTest {
     public void testBlsVerifyProofRevealingSingleMessageFromMultipleMessageSignature() {
         byte[] nonce = Base64.getDecoder().decode("4mmd5EVmGd0POg+/4M2l0A==");
         byte[][] messages = {
-            Base64.getDecoder().decode("oHMsObG6rdeVlAa5bWIwRA=="),
-            Base64.getDecoder().decode("DdJ54KFvrIJEiDTx8oV62g=="),
-            Base64.getDecoder().decode("k13FuVng4HlzyLU1zHACoA=="),
+                Base64.getDecoder().decode("oHMsObG6rdeVlAa5bWIwRA=="),
+                Base64.getDecoder().decode("DdJ54KFvrIJEiDTx8oV62g=="),
+                Base64.getDecoder().decode("k13FuVng4HlzyLU1zHACoA=="),
         };
         byte[] publicKey = Base64.getDecoder().decode("pnHwdXyl9R2erFrtJd1r5OAXioXFigeBrb94ir7Vzs8S38hW/N1y+BddYIunhXREApDDC75Z24ulyUZHo5wc09ZQE+hjdIUxsJCJZq9BTMOiMljq+V8Op9v7CVWmSzop");
         byte[] signature = Base64.getDecoder().decode("gwoVS/AOXDQJJwBhXfioEIo9dW//ppDJx/2TwaO6f6ATp3c8TH6I1NL8URh7X2bPJaeEKE0fMBS/uZeiQwbr92rTjw8BfNoxNDHrBZEnEmJbWC9fLyKfl3pcBNbvT2ESEKioGgHnwPiWuQ6WfBV7pg==");
 
         ProofMessage[] proofMessage = {
-            new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_REVEALED, messages[0], new byte[0]),
-            new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_HIDDEN_PROOF_SPECIFIC_BLINDING, messages[1], new byte[0]),
-            new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_HIDDEN_PROOF_SPECIFIC_BLINDING, messages[2], new byte[0]),
+                new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_REVEALED, messages[0], new byte[0]),
+                new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_HIDDEN_PROOF_SPECIFIC_BLINDING, messages[1], new byte[0]),
+                new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_HIDDEN_PROOF_SPECIFIC_BLINDING, messages[2], new byte[0]),
         };
 
         byte[] proof = new byte[0];
@@ -702,7 +811,7 @@ public class BbsSignatureTest {
         assertNotNull(proof);
 
         byte[][] revealed = {
-            messages[0]
+                messages[0]
         };
 
         boolean isVerified = false;
@@ -720,17 +829,17 @@ public class BbsSignatureTest {
     public void testBlsVerifyProofRevealingMultipleMessagesFromMultipleMessageSignature() {
         byte[] nonce = Base64.getDecoder().decode("4mmd5EVmGd0POg+/4M2l0A==");
         byte[][] messages = {
-            Base64.getDecoder().decode("oHMsObG6rdeVlAa5bWIwRA=="),
-            Base64.getDecoder().decode("DdJ54KFvrIJEiDTx8oV62g=="),
-            Base64.getDecoder().decode("k13FuVng4HlzyLU1zHACoA=="),
+                Base64.getDecoder().decode("oHMsObG6rdeVlAa5bWIwRA=="),
+                Base64.getDecoder().decode("DdJ54KFvrIJEiDTx8oV62g=="),
+                Base64.getDecoder().decode("k13FuVng4HlzyLU1zHACoA=="),
         };
         byte[] publicKey = Base64.getDecoder().decode("pnHwdXyl9R2erFrtJd1r5OAXioXFigeBrb94ir7Vzs8S38hW/N1y+BddYIunhXREApDDC75Z24ulyUZHo5wc09ZQE+hjdIUxsJCJZq9BTMOiMljq+V8Op9v7CVWmSzop");
         byte[] signature = Base64.getDecoder().decode("gwoVS/AOXDQJJwBhXfioEIo9dW//ppDJx/2TwaO6f6ATp3c8TH6I1NL8URh7X2bPJaeEKE0fMBS/uZeiQwbr92rTjw8BfNoxNDHrBZEnEmJbWC9fLyKfl3pcBNbvT2ESEKioGgHnwPiWuQ6WfBV7pg==");
 
         ProofMessage[] proofMessage = {
-            new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_REVEALED, messages[0], new byte[0]),
-            new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_HIDDEN_PROOF_SPECIFIC_BLINDING, messages[1], new byte[0]),
-            new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_REVEALED, messages[2], new byte[0]),
+                new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_REVEALED, messages[0], new byte[0]),
+                new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_HIDDEN_PROOF_SPECIFIC_BLINDING, messages[1], new byte[0]),
+                new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_REVEALED, messages[2], new byte[0]),
         };
 
         byte[] proof = new byte[0];
@@ -745,8 +854,8 @@ public class BbsSignatureTest {
         assertNotNull(proof);
 
         byte[][] revealed = {
-            messages[0],
-            messages[2]
+                messages[0],
+                messages[2]
         };
 
         boolean isVerified = false;
@@ -789,9 +898,9 @@ public class BbsSignatureTest {
         assertNotNull(proof);
 
         byte[][] revealed = {
-            messages[0],
-            messages[1],
-            messages[2]
+                messages[0],
+                messages[1],
+                messages[2]
         };
 
         boolean isVerified = false;
@@ -811,9 +920,9 @@ public class BbsSignatureTest {
 
         byte[] nonce = Base64.getDecoder().decode("NoWZhtX+u1wWLtUfPMmku1FtU2I=");
         byte[][] messages = {
-            "+FxEv3VLcNZ8sA==".getBytes(),
-            "eI2RcRExnbP8hw==".getBytes(),
-            "wll4zckqWAb0Kg==".getBytes(),
+                "+FxEv3VLcNZ8sA==".getBytes(),
+                "eI2RcRExnbP8hw==".getBytes(),
+                "wll4zckqWAb0Kg==".getBytes(),
         };
 
         byte[] publicKey = Bbs.blsPublicToBbsPublicKey(keyPair.publicKey, messages.length);
@@ -829,9 +938,9 @@ public class BbsSignatureTest {
         assertNotNull(signature);
 
         ProofMessage[] proofMessage = {
-            new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_REVEALED, messages[0], new byte[0]),
-            new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_HIDDEN_PROOF_SPECIFIC_BLINDING, messages[1], new byte[0]),
-            new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_HIDDEN_PROOF_SPECIFIC_BLINDING, messages[2], new byte[0]),
+                new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_REVEALED, messages[0], new byte[0]),
+                new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_HIDDEN_PROOF_SPECIFIC_BLINDING, messages[1], new byte[0]),
+                new ProofMessage(ProofMessage.PROOF_MESSAGE_TYPE_HIDDEN_PROOF_SPECIFIC_BLINDING, messages[2], new byte[0]),
         };
 
         byte[] proof = new byte[0];
@@ -843,7 +952,7 @@ public class BbsSignatureTest {
         }
 
         assertNotNull(proof);
-        
+
         int total_messages = 0;
 
         try {
