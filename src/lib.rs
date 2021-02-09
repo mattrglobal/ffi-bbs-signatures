@@ -97,7 +97,7 @@ impl From<&[u8]> for ByteArray {
 
 impl From<ByteBuffer> for ByteArray {
     fn from(b: ByteBuffer) -> Self {
-        Self::from_slice(&b.into_vec())
+        Self::from_slice(&b.destroy_into_vec())
     }
 }
 
@@ -286,4 +286,4 @@ pub mod bbs_verify_sign_proof;
 pub mod bls;
 
 #[cfg(any(target_os = "android", feature = "java"))]
-pub mod android;
+pub mod java;
