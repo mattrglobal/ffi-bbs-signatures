@@ -13,7 +13,7 @@ then
   exit 1
 fi
 
-if [ ! -d "$OUTPUT_LOCATION" ]
+if [ -z "$OUTPUT_LOCATION" ]
 then
   echo "ERROR: OUTPUT_LOCATION argument must be supplied and be a valid directory"
   exit 1
@@ -38,7 +38,7 @@ case $PLATFORM in
       cargo build --release
     ;;
   MACOS)
-      # TODO Check that the current OS is MAC
+      # Create the root directory for the MacOS release binaries
       mkdir -p $OUTPUT_LOCATION/macos
 
       # ARM x86_64 darwin build

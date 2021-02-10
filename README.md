@@ -1,6 +1,8 @@
+![Mattr logo](./docs/assets/mattr-black.svg)
+
 # BBS Signature FFI Wrapper
 
-This repository is home to a foreign function interface (FFI) wrapper around the rust based [bbs crate](https://crates.io/crates/bbs) maintained by the [Hyperledger Ursa project](https://github.com/hyperledger/ursa).
+This repository is home to a foreign function interface (FFI) wrapper around the Rust based [bbs crate](https://crates.io/crates/bbs) maintained by the [Hyperledger Ursa project](https://github.com/hyperledger/ursa).
 
 [BBS+ Signatures](https://github.com/mattrglobal/bbs-signatures) are a digital signature algorithm originally born from
 the work on [Short group signatures](https://crypto.stanford.edu/~xb/crypto04a/groupsigs.pdf) by Boneh, Boyen, and
@@ -39,14 +41,46 @@ To build the library for all available platforms run
 yarn build
 ```
 
-To build a particular wrapper run
+## Available wrappers
+
+.NET C# wrapper
+```
+./wrappers/dotnet
+```
+
+Java wrapper
+```
+./wrappers/java
+```
+
+Objective-C wrapper
+```
+./wrappers/obj-c
+```
+
+Each wrapper has individual documentation:
+
+- [.NET C#](./wrappers/dotnet/README.md)
+- [Java](./wrappers/java/README.md)  
+- [Objective-C](./wrappers/obj-c/README.md)  
+
+## Project Structure
 
 ```
-yarn wrappers:<name-of-wrapper>:build
+├── docs
+│   └─ {file_name.md}
+│
+│── scripts                 # Bash scripts for building static/dynamic rust libs
+│── src                     # Rust Bbs Signatures wrapper
+├── wrappers                # Individual wrapper source code
+│   └─ {wrapper_name}
+│       ├── README.md
+│       └─ {src files}
+│
+├── README.md
+└── CHANGELOG.md
 ```
 
-Where the available wrappers are
+## Contributing
 
-- obj-c => Objective-C wrapper
-
-**Note** The dotnet wrapper has its own build process documented [here](./wrappers/dotnet/README.md)
+Read our [contributing guide](./docs/CONTRIBUTING.md) to learn about our development process.

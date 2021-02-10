@@ -52,7 +52,7 @@ task buildAndroidBinaries(type:Exec) {
     workingDir '../../'
 
     // Builds the Android Binaries
-    commandLine './scripts/build.sh' ,'ANDROID' ,'out'
+    commandLine './scripts/build.sh' , 'ANDROID' , 'out'
 }
 
 // Builds all the available binaries
@@ -61,7 +61,7 @@ task buildMacosBinaries(type:Exec) {
     workingDir '../../'
 
     // Build MacOS Binaries (if on Mac)
-    commandLine './scripts/build.sh' ,'MACOS', 'out'
+    commandLine './scripts/build.sh' , 'MACOS', 'out'
 }
 
 // Builds and copies the required binaries for the java wrapper
