@@ -5,6 +5,7 @@ if ($null -eq $OutLocation) { throw "Parameter -OutLocation must be specified." 
 
 switch ($Platform) {
     windows {
+        mkdir $OutLocation
         cargo build --release 
         Copy-Item -Path .\target\release\bbs.dll -Destination $OutLocation
         break

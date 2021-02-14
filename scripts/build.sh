@@ -35,7 +35,9 @@ echo "To OUTPUT_LOCATION: $2"
 case $PLATFORM in
   WINDOWS)
       # rustup target install i686-pc-windows-gnu x86_64-pc-windows-gnu
+      mkdir -p $OUTPUT_LOCATION/windows
       cargo build --release
+      cp ./target/release/bbs.dll $OUTPUT_LOCATION/windows
     ;;
   MACOS)
       # Create the root directory for the MacOS release binaries
