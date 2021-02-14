@@ -1,4 +1,4 @@
-﻿namespace Hyperledger.Ursa.BbsSignatures
+﻿namespace BbsSignatures
 {
     /// <summary>
     /// Represents a message and its index within a collection

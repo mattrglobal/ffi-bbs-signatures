@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Hyperledger.Ursa.BbsSignatures
+namespace BbsSignatures
 {
     /// <summary>
     /// A request to create a BBS proof from a supplied BBS signature

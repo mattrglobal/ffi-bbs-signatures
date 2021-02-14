@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-namespace Hyperledger.Ursa.BbsSignatures
+namespace BbsSignatures
 {
     public class BbsSignatureService : IBbsSignatureService
     {

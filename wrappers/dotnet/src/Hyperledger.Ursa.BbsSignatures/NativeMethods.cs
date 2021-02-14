@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Hyperledger.Ursa.BbsSignatures
+namespace BbsSignatures
 {
     [SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Names must match C callable methods")]
     internal class NativeMethods

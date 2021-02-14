@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace Hyperledger.Ursa.BbsSignatures
+namespace BbsSignatures
 {
     public class BlindedCommitment
     {

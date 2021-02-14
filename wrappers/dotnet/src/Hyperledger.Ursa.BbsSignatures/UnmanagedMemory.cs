@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace Hyperledger.Ursa.BbsSignatures
+namespace BbsSignatures
 {
     /// <summary>
     /// Provides unmanaged memory context will automatic allocation and deallocation of pointers

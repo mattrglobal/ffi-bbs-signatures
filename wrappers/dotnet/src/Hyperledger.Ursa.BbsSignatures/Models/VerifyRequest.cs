@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Hyperledger.Ursa.BbsSignatures
+namespace BbsSignatures
 {
     /// <summary>
     /// A request to verify a BBS signature for a set of messages

@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Text;
 
-namespace Hyperledger.Ursa.BbsSignatures
+namespace BbsSignatures
 {
     /// <summary>
     /// A BLS 12-381 key pair

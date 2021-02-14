@@ -1,4 +1,4 @@
-﻿namespace Hyperledger.Ursa.BbsSignatures
+﻿namespace BbsSignatures
 {
     /// <summary>
     /// Proof message type

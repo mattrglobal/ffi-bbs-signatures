@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Hyperledger.Ursa.BbsSignatures
+namespace BbsSignatures
 {
     [StructLayout(LayoutKind.Sequential)]
     internal struct ExternError

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Hyperledger.Ursa.BbsSignatures
+namespace BbsSignatures
 {
     /// <summary>
     /// Verify Blinded Commitment Request

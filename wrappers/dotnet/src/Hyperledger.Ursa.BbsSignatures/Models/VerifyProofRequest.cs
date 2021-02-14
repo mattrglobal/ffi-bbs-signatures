@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Hyperledger.Ursa.BbsSignatures
+namespace BbsSignatures
 {
     /// <summary>
     /// Verify Proof Request

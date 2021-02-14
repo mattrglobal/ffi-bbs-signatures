@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Hyperledger.Ursa.BbsSignatures
+namespace BbsSignatures
 {
     [Serializable]
     public class BbsException : Exception

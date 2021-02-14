@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using System.Linq;
 
-namespace Hyperledger.Ursa.BbsSignatures.Tests
+namespace BbsSignatures.Tests
 {
     public class BbsIntegrationTests
     {

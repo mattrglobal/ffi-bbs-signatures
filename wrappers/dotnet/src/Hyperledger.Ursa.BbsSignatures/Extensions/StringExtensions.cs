@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hyperledger.Ursa.BbsSignatures
+namespace BbsSignatures
 {
     public static class StringExtensions
     {

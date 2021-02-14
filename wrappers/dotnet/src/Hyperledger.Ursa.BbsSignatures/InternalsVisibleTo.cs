@@ -1,5 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Hyperledger.Ursa.BbsSignatures.Tests")]
-[assembly: InternalsVisibleTo("Hyperledger.Ursa.BbsSignatures.Tests.Ios")]
-[assembly: InternalsVisibleTo("Hyperledger.Ursa.BbsSignatures.Tests.Android")]
+[assembly: InternalsVisibleTo("BbsSignatures.Tests")]
+[assembly: InternalsVisibleTo("BbsSignatures.Tests.Ios")]
+[assembly: InternalsVisibleTo("BbsSignatures.Tests.Android")]

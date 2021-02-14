@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 
-namespace Hyperledger.Ursa.BbsSignatures.Tests
+namespace BbsSignatures.Tests
 {
     public class BbsSignTests
     {

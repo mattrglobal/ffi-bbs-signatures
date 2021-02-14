@@ -1,4 +1,4 @@
-﻿namespace Hyperledger.Ursa.BbsSignatures
+﻿namespace BbsSignatures
 {
     /// <summary>
     /// A request to create a BBS signature for a set of messages from a BLS12-381 key pair

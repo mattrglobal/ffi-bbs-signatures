@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Foundation;
 using UIKit;
 
-namespace Hyperledger.Ursa.BbsSignatures.Tests.Ios
+namespace BbsSignatures.Tests.Ios
 {
     public class Application
     {

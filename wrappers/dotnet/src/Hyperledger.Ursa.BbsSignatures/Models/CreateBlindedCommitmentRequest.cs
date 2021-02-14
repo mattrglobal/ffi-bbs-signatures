@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Hyperledger.Ursa.BbsSignatures
+namespace BbsSignatures
 {
     /// <summary>
     /// A request to create a BBS signature that features blinded/committed messages
