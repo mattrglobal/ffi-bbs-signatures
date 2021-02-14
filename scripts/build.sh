@@ -13,7 +13,7 @@ then
   exit 1
 fi
 
-if [ ! -d "$OUTPUT_LOCATION" ]
+if [ -z "$OUTPUT_LOCATION" ]
 then
   echo "ERROR: OUTPUT_LOCATION argument must be supplied and be a valid directory"
   exit 1
@@ -24,14 +24,32 @@ then
   ANDROID_NDK_HOME=$3
 fi
 
+if [ ! -d "$ANDROID_NDK_HOME" ]
+then
+  ANDROID_NDK_HOME=$NDK_HOME
+fi
+
+echo "Building for PLATFORM: $1"
+echo "To OUTPUT_LOCATION: $2"
+
 case $PLATFORM in
   WINDOWS)
-    echo "Building for PLATFORM: $1"
-    echo "To OUTPUT_LOCATION: $2"
-    # rustup target install i686-pc-windows-gnu x86_64-pc-windows-gnu
-    cargo build --release
+      # rustup target install i686-pc-windows-gnu x86_64-pc-windows-gnu
+      cargo build --release
+    ;;
+  MACOS)
+      # Create the root directory for the MacOS release binaries
+      mkdir -p $OUTPUT_LOCATION/macos
+
+      # ARM x86_64 darwin build
+      echo "Building for Apple Darwin x86_64"
+      rustup target add x86_64-apple-darwin
+      mkdir -p $OUTPUT_LOCATION/macos/darwin-x86_64/
+      cargo build --target x86_64-apple-darwin --release --features java
+      cp ./target/x86_64-apple-darwin/release/libbbs.dylib $OUTPUT_LOCATION/macos/darwin-x86_64/
     ;;
   IOS)
+      # Create the root directory for the IOS release binaries
       mkdir -p $OUTPUT_LOCATION/ios
 
       # Create the directories at the output location for the release binaries
@@ -84,14 +102,6 @@ case $PLATFORM in
         mkdir -p $OUTPUT_LOCATION/android/x86/
         cargo build --target i686-linux-android --release
         cp ./target/i686-linux-android/release/libbbs.so $OUTPUT_LOCATION/android/x86/
-
-        # x86_64 build
-        # echo "Building for Android x86_64"
-        # "$ANDROID_NDK_HOME/build/tools/make_standalone_toolchain.py" --api $ANDROID_API_LEVEL --arch x86_64 --install-dir .NDK/x86_64 --force;
-        # rustup target add x86_64-linux-android
-        # mkdir -p $OUTPUT_LOCATION/android/x86_64/
-        # cargo build --target x86_64-linux-android --release
-        # cp ./target/x86_64-linux-android/release/libbbs.so $OUTPUT_LOCATION/android/x86_64/
       ;;
   *)
     echo "ERROR: PLATFORM unknown: $1"

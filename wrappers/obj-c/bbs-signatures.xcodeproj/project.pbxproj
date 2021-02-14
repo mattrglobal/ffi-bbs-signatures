@@ -1,0 +1,512 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0E83E59825C8980F00A3725A /* bbs.h in Headers */ = {isa = PBXBuildFile; fileRef = 0E83E59725C8980F00A3725A /* bbs.h */; };
+		9309BC3524FDF470004B1B6E /* bls12381g2_key_pair.m in Sources */ = {isa = PBXBuildFile; fileRef = 9309BC3424FDF470004B1B6E /* bls12381g2_key_pair.m */; };
+		9309BC3624FDF470004B1B6E /* bls12381g2_key_pair.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9309BC3324FDF470004B1B6E /* bls12381g2_key_pair.h */; };
+		9309BC4424FDFE45004B1B6E /* bls12381g2_key_pair.m in Sources */ = {isa = PBXBuildFile; fileRef = 9309BC4324FDFE45004B1B6E /* bls12381g2_key_pair.m */; };
+		9309BC4624FDFE45004B1B6E /* libbbs-signatures.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9309BC3024FDF470004B1B6E /* libbbs-signatures.a */; };
+		935A71AE24FF05F10083FC6D /* bbs_key_pair.m in Sources */ = {isa = PBXBuildFile; fileRef = 935A71AD24FF05F10083FC6D /* bbs_key_pair.m */; };
+		9387DA0824FF382800C402F2 /* libbbs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9387DA0724FF382800C402F2 /* libbbs.a */; };
+		9387DA0B24FF9EEE00C402F2 /* bbs_signature.m in Sources */ = {isa = PBXBuildFile; fileRef = 9387DA0A24FF9EEE00C402F2 /* bbs_signature.m */; };
+		9387DA0D250047EB00C402F2 /* bbs_key_pair.m in Sources */ = {isa = PBXBuildFile; fileRef = 9387DA0C250047EB00C402F2 /* bbs_key_pair.m */; };
+		9387DA102500715700C402F2 /* bbs_signature.m in Sources */ = {isa = PBXBuildFile; fileRef = 9387DA0F2500715700C402F2 /* bbs_signature.m */; };
+		9387DA132501C3C900C402F2 /* bbs_signature_proof.m in Sources */ = {isa = PBXBuildFile; fileRef = 9387DA122501C3C900C402F2 /* bbs_signature_proof.m */; };
+		9387DA152501D4CF00C402F2 /* bbs_signature_proof.m in Sources */ = {isa = PBXBuildFile; fileRef = 9387DA142501D4CF00C402F2 /* bbs_signature_proof.m */; };
+		9387DA18250596C100C402F2 /* BbsSignatureError.m in Sources */ = {isa = PBXBuildFile; fileRef = 9387DA17250596C100C402F2 /* BbsSignatureError.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		9309BC4724FDFE45004B1B6E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9309BC2824FDF470004B1B6E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9309BC2F24FDF470004B1B6E;
+			remoteInfo = "bbs-signatures";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		9309BC2E24FDF470004B1B6E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+				9309BC3624FDF470004B1B6E /* bls12381g2_key_pair.h in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		0E83E59725C8980F00A3725A /* bbs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bbs.h; sourceTree = "<group>"; };
+		9309BC3024FDF470004B1B6E /* libbbs-signatures.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libbbs-signatures.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9309BC3324FDF470004B1B6E /* bls12381g2_key_pair.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bls12381g2_key_pair.h; sourceTree = "<group>"; };
+		9309BC3424FDF470004B1B6E /* bls12381g2_key_pair.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = bls12381g2_key_pair.m; sourceTree = "<group>"; };
+		9309BC4124FDFE45004B1B6E /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9309BC4324FDFE45004B1B6E /* bls12381g2_key_pair.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = bls12381g2_key_pair.m; sourceTree = "<group>"; };
+		9309BC4524FDFE45004B1B6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		935A71AC24FF054D0083FC6D /* bbs_key_pair.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bbs_key_pair.h; sourceTree = "<group>"; };
+		935A71AD24FF05F10083FC6D /* bbs_key_pair.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = bbs_key_pair.m; sourceTree = "<group>"; };
+		9387DA0724FF382800C402F2 /* libbbs.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbbs.a; path = libraries/libbbs.a; sourceTree = "<group>"; };
+		9387DA0924FF9ED300C402F2 /* bbs_signature.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bbs_signature.h; sourceTree = "<group>"; };
+		9387DA0A24FF9EEE00C402F2 /* bbs_signature.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = bbs_signature.m; sourceTree = "<group>"; };
+		9387DA0C250047EB00C402F2 /* bbs_key_pair.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = bbs_key_pair.m; sourceTree = "<group>"; };
+		9387DA0F2500715700C402F2 /* bbs_signature.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = bbs_signature.m; path = tests/bbs_signature.m; sourceTree = SOURCE_ROOT; };
+		9387DA112501C25000C402F2 /* bbs_signature_proof.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bbs_signature_proof.h; sourceTree = "<group>"; };
+		9387DA122501C3C900C402F2 /* bbs_signature_proof.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = bbs_signature_proof.m; sourceTree = "<group>"; };
+		9387DA142501D4CF00C402F2 /* bbs_signature_proof.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = bbs_signature_proof.m; path = tests/bbs_signature_proof.m; sourceTree = SOURCE_ROOT; };
+		9387DA1625058FF400C402F2 /* BbsSignatureError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BbsSignatureError.h; sourceTree = "<group>"; };
+		9387DA17250596C100C402F2 /* BbsSignatureError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BbsSignatureError.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9309BC2D24FDF470004B1B6E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9387DA0824FF382800C402F2 /* libbbs.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9309BC3E24FDFE45004B1B6E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9309BC4624FDFE45004B1B6E /* libbbs-signatures.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9309BC2724FDF470004B1B6E = {
+			isa = PBXGroup;
+			children = (
+				9309BC3224FDF470004B1B6E /* bbs-signatures */,
+				9309BC4224FDFE45004B1B6E /* Tests */,
+				9309BC3124FDF470004B1B6E /* Products */,
+				9387DA0624FF382700C402F2 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		9309BC3124FDF470004B1B6E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9309BC3024FDF470004B1B6E /* libbbs-signatures.a */,
+				9309BC4124FDFE45004B1B6E /* Tests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9309BC3224FDF470004B1B6E /* bbs-signatures */ = {
+			isa = PBXGroup;
+			children = (
+				0E83E59725C8980F00A3725A /* bbs.h */,
+				9309BC3324FDF470004B1B6E /* bls12381g2_key_pair.h */,
+				9309BC3424FDF470004B1B6E /* bls12381g2_key_pair.m */,
+				935A71AC24FF054D0083FC6D /* bbs_key_pair.h */,
+				935A71AD24FF05F10083FC6D /* bbs_key_pair.m */,
+				9387DA0924FF9ED300C402F2 /* bbs_signature.h */,
+				9387DA0A24FF9EEE00C402F2 /* bbs_signature.m */,
+				9387DA112501C25000C402F2 /* bbs_signature_proof.h */,
+				9387DA122501C3C900C402F2 /* bbs_signature_proof.m */,
+				9387DA1625058FF400C402F2 /* BbsSignatureError.h */,
+				9387DA17250596C100C402F2 /* BbsSignatureError.m */,
+			);
+			path = "bbs-signatures";
+			sourceTree = "<group>";
+		};
+		9309BC4224FDFE45004B1B6E /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				9309BC4324FDFE45004B1B6E /* bls12381g2_key_pair.m */,
+				9309BC4524FDFE45004B1B6E /* Info.plist */,
+				9387DA0C250047EB00C402F2 /* bbs_key_pair.m */,
+				9387DA0F2500715700C402F2 /* bbs_signature.m */,
+				9387DA142501D4CF00C402F2 /* bbs_signature_proof.m */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		9387DA0624FF382700C402F2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9387DA0724FF382800C402F2 /* libbbs.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		9309BC4E24FE0936004B1B6E /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0E83E59825C8980F00A3725A /* bbs.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		9309BC2F24FDF470004B1B6E /* bbs-signatures */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9309BC3924FDF470004B1B6E /* Build configuration list for PBXNativeTarget "bbs-signatures" */;
+			buildPhases = (
+				9309BC4E24FE0936004B1B6E /* Headers */,
+				9309BC2C24FDF470004B1B6E /* Sources */,
+				9309BC2D24FDF470004B1B6E /* Frameworks */,
+				9309BC2E24FDF470004B1B6E /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "bbs-signatures";
+			productName = "bbs-signatures";
+			productReference = 9309BC3024FDF470004B1B6E /* libbbs-signatures.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		9309BC4024FDFE45004B1B6E /* Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9309BC4924FDFE45004B1B6E /* Build configuration list for PBXNativeTarget "Tests" */;
+			buildPhases = (
+				9309BC3D24FDFE45004B1B6E /* Sources */,
+				9309BC3E24FDFE45004B1B6E /* Frameworks */,
+				9309BC3F24FDFE45004B1B6E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9309BC4824FDFE45004B1B6E /* PBXTargetDependency */,
+			);
+			name = Tests;
+			productName = Tests;
+			productReference = 9309BC4124FDFE45004B1B6E /* Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9309BC2824FDF470004B1B6E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1120;
+				ORGANIZATIONNAME = "Tobias Looker";
+				TargetAttributes = {
+					9309BC2F24FDF470004B1B6E = {
+						CreatedOnToolsVersion = 11.2;
+						LastSwiftMigration = 1120;
+					};
+					9309BC4024FDFE45004B1B6E = {
+						CreatedOnToolsVersion = 11.2;
+					};
+				};
+			};
+			buildConfigurationList = 9309BC2B24FDF470004B1B6E /* Build configuration list for PBXProject "bbs-signatures" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 9309BC2724FDF470004B1B6E;
+			productRefGroup = 9309BC3124FDF470004B1B6E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9309BC2F24FDF470004B1B6E /* bbs-signatures */,
+				9309BC4024FDFE45004B1B6E /* Tests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9309BC3F24FDFE45004B1B6E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9309BC2C24FDF470004B1B6E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9387DA0B24FF9EEE00C402F2 /* bbs_signature.m in Sources */,
+				9387DA18250596C100C402F2 /* BbsSignatureError.m in Sources */,
+				9387DA132501C3C900C402F2 /* bbs_signature_proof.m in Sources */,
+				9309BC3524FDF470004B1B6E /* bls12381g2_key_pair.m in Sources */,
+				935A71AE24FF05F10083FC6D /* bbs_key_pair.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9309BC3D24FDFE45004B1B6E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9387DA102500715700C402F2 /* bbs_signature.m in Sources */,
+				9387DA152501D4CF00C402F2 /* bbs_signature_proof.m in Sources */,
+				9309BC4424FDFE45004B1B6E /* bls12381g2_key_pair.m in Sources */,
+				9387DA0D250047EB00C402F2 /* bbs_key_pair.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		9309BC4824FDFE45004B1B6E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9309BC2F24FDF470004B1B6E /* bbs-signatures */;
+			targetProxy = 9309BC4724FDFE45004B1B6E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		9309BC3724FDF470004B1B6E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					libraries,
+					"bbs-signatures",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				VALID_ARCHS = "arm64 arm64e x86_64";
+			};
+			name = Debug;
+		};
+		9309BC3824FDF470004B1B6E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				"HEADER_SEARCH_PATHS[arch=*]" = libraries;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = "arm64 arm64e x86_64";
+			};
+			name = Release;
+		};
+		9309BC3A24FDF470004B1B6E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/bbs-signatures",
+					"$(PROJECT_DIR)/libraries",
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "bbs-signatures/bbs-signatures-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9309BC3B24FDF470004B1B6E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/bbs-signatures",
+					"$(PROJECT_DIR)/libraries",
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "bbs-signatures/bbs-signatures-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		9309BC4A24FDFE45004B1B6E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = Tests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = mattr.Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9309BC4B24FDFE45004B1B6E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = Tests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = mattr.Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9309BC2B24FDF470004B1B6E /* Build configuration list for PBXProject "bbs-signatures" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9309BC3724FDF470004B1B6E /* Debug */,
+				9309BC3824FDF470004B1B6E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9309BC3924FDF470004B1B6E /* Build configuration list for PBXNativeTarget "bbs-signatures" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9309BC3A24FDF470004B1B6E /* Debug */,
+				9309BC3B24FDF470004B1B6E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9309BC4924FDFE45004B1B6E /* Build configuration list for PBXNativeTarget "Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9309BC4A24FDFE45004B1B6E /* Debug */,
+				9309BC4B24FDFE45004B1B6E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9309BC2824FDF470004B1B6E /* Project object */;
+}

@@ -1,0 +1,32 @@
+name: ci-obj-c
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+jobs:
+  build_test:
+    name: Build & Test Objective-C Wrapper
+    if: "! contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build binary for IOS
+        run: yarn build:ios
+
+      - name: Update binary for wrapper
+        run: yarn wrapper:obj-c:update-binary
+
+      - name: Build and test wrapper
+        run: yarn wrapper:obj-c:build
+        env:
+          DEVELOPER_DIR: /Applications/Xcode_11.7.app/Contents/Developer

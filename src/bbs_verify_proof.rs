@@ -1,28 +1,31 @@
 use crate::{BbsFfiError, ByteArray, SignatureProofStatus};
 use bbs::prelude::*;
 use ffi_support::*;
-use serde::{Deserialize, Deserializer, Serialize, Serializer, de::{Error as DError, Visitor}};
+use serde::{
+    de::{Error as DError, Visitor},
+    Deserialize, Deserializer, Serialize, Serializer,
+};
 use std::{
-    collections::{BTreeMap, BTreeSet},
+    collections::BTreeSet,
     convert::TryFrom,
 };
 
 lazy_static! {
-    static ref VERIFY_PROOF_CONTEXT: ConcurrentHandleMap<VerifyProofContext> =
+    pub static ref VERIFY_PROOF_CONTEXT: ConcurrentHandleMap<VerifyProofContext> =
         ConcurrentHandleMap::new();
 }
 
 define_handle_map_deleter!(VERIFY_PROOF_CONTEXT, free_verify_proof);
 
-struct VerifyProofContext {
-    messages: BTreeMap<usize, SignatureMessage>,
-    nonce: Option<ProofNonce>,
-    proof: Option<PoKOfSignatureProofWrapper>,
-    public_key: Option<PublicKey>,
+pub struct VerifyProofContext {
+    pub messages: Vec<SignatureMessage>,
+    pub nonce: Option<ProofNonce>,
+    pub proof: Option<PoKOfSignatureProofWrapper>,
+    pub public_key: Option<PublicKey>,
 }
 
 #[derive(Debug)]
-struct PoKOfSignatureProofWrapper {
+pub struct PoKOfSignatureProofWrapper {
     bit_vector: Vec<u8>,
     proof: PoKOfSignatureProof,
 }
@@ -52,7 +55,13 @@ impl TryFrom<Vec<u8>> for PoKOfSignatureProofWrapper {
 
 impl PoKOfSignatureProofWrapper {
     pub fn unpack(&self) -> (BTreeSet<usize>, PoKOfSignatureProof) {
-        (bitvector_to_revealed(&self.bit_vector[2..]), self.proof.clone())
+        let message_count = u16::from_be_bytes(*array_ref![self.bit_vector, 0, 2]) as usize;
+        let bitvector_length = (message_count / 8) + 1;
+        let offset = bitvector_length + 2;
+        (
+            bitvector_to_revealed(&self.bit_vector[2..offset]),
+            self.proof.clone(),
+        )
     }
 
     pub fn to_bytes(&self) -> Vec<u8> {
@@ -99,9 +108,15 @@ impl<'a> Deserialize<'a> for PoKOfSignatureProofWrapper {
 }
 
 #[no_mangle]
+pub extern "C" fn bbs_get_total_messages_count_for_proof(proof: ByteArray) -> i32 {
+    let proof = proof.to_vec();
+    u16::from_be_bytes(*array_ref![proof, 0, 2]) as i32
+}
+
+#[no_mangle]
 pub extern "C" fn bbs_verify_proof_context_init(err: &mut ExternError) -> u64 {
     VERIFY_PROOF_CONTEXT.insert_with_output(err, || VerifyProofContext {
-        messages: BTreeMap::new(),
+        messages: Vec::new(),
         nonce: None,
         public_key: None,
         proof: None,
@@ -112,8 +127,7 @@ add_message_impl!(
     bbs_verify_proof_context_add_message_string,
     bbs_verify_proof_context_add_message_bytes,
     bbs_verify_proof_context_add_message_prehashed,
-    VERIFY_PROOF_CONTEXT,
-    u32
+    VERIFY_PROOF_CONTEXT
 );
 
 add_bytes_impl!(
@@ -162,23 +176,19 @@ pub extern "C" fn bbs_verify_proof_context_finish(handle: u64, err: &mut ExternE
             let proofwrapper = ctx.proof.as_ref().unwrap();
 
             let (revealed, proof) = proofwrapper.unpack();
-            let passed_revealed: BTreeSet<usize> = ctx.messages.iter().map(|(k, _)| *k).collect();
 
             // These should be equal
-            if revealed != passed_revealed {
-                Err(BbsFfiError::new("Indices are not equal"))?;
+            if revealed.len() != ctx.messages.len() {
+                Err(BbsFfiError::new("Indices and messages are not equal"))?;
             }
 
-            let mut challenge_bytes =
-                proof.get_bytes_for_challenge(revealed.clone(), public_key);
+            let mut challenge_bytes = proof.get_bytes_for_challenge(revealed.clone(), public_key);
             challenge_bytes.extend_from_slice(&nonce.to_bytes_compressed_form()[..]);
 
+            let proof_msgs = revealed.iter().zip(ctx.messages.iter()).map(|(i, m)| (*i, *m)).collect();
+
             let challenge_verifier = ProofChallenge::hash(&challenge_bytes);
-            let res = proof.verify(
-                public_key,
-                &ctx.messages,
-                &challenge_verifier,
-            )?;
+            let res = proof.verify(public_key, &proof_msgs, &challenge_verifier)?;
             Ok(SignatureProofStatus::from(res) as i32)
         },
     );
@@ -188,13 +198,16 @@ pub extern "C" fn bbs_verify_proof_context_finish(handle: u64, err: &mut ExternE
             Err(e) => *err = ExternError::new_error(ErrorCode::new(1), format!("{:?}", e)),
             Ok(_) => {}
         };
-        res
+        match res {
+            200 => 0,
+            e => e
+        }
     } else {
         err.get_code().code()
     }
 }
 /// Convert big-endian vector to u32
-fn bitvector_to_revealed(data: &[u8]) -> BTreeSet<usize> {
+pub(crate) fn bitvector_to_revealed(data: &[u8]) -> BTreeSet<usize> {
     let mut revealed_messages = BTreeSet::new();
     let mut scalar = 0;
 

@@ -9,7 +9,7 @@
 */
 typedef struct {
     int64_t len;
-    uint8_t *data;
+    uint8_t *_Nullable data;
 } ByteBuffer;
 
 typedef struct {
@@ -114,6 +114,7 @@ int32_t bbs_blind_sign_context_set_commitment(uint64_t handle,
 uint64_t bbs_blind_sign_context_init(ExternError *err);
 
 int32_t bbs_blind_signature_size(void);
+int32_t bbs_signature_size(void);
 
 int32_t bbs_unblind_signature(ByteBuffer blind_signature,
                               ByteBuffer blinding_factor,
@@ -185,8 +186,6 @@ int32_t bbs_sign_context_set_public_key(uint64_t handle,
 int32_t bbs_sign_context_finish(uint64_t handle, ByteBuffer *signature, ExternError *err);
 
 uint64_t bbs_sign_context_init(ExternError *err);
-
-int32_t bbs_signature_size(void);
 
 int32_t bbs_verify_context_add_message_bytes(uint64_t handle,
                                              ByteBuffer message,
@@ -281,16 +280,35 @@ int32_t bbs_verify_proof_context_add_message_prehashed(uint64_t handle,
 
 uint64_t bbs_verify_proof_context_init(ExternError *err);
 
-int32_t bls_generate_key(ByteBuffer seed,
-                         ByteBuffer *public_key,
-                         ByteBuffer *secret_key,
-                         ExternError *err);
+int32_t bls_generate_g2_key(ByteBuffer seed,
+                            ByteBuffer *public_key,
+                            ByteBuffer *secret_key,
+                            ExternError *err);
+
+int32_t bls_generate_g1_key(ByteBuffer seed,
+                            ByteBuffer *public_key,
+                            ByteBuffer *secret_key,
+                            ExternError *err);
+
+int32_t bls_generate_blinded_g2_key(ByteBuffer seed,
+                                    ByteBuffer *public_key,
+                                    ByteBuffer *secret_key,
+                                    ByteBuffer *blinding_factor,
+                                    ExternError *err);
+
+int32_t bls_generate_blinded_g1_key(ByteBuffer seed,
+                                    ByteBuffer *public_key,
+                                    ByteBuffer *secret_key,
+                                    ByteBuffer *blinding_factor,
+                                    ExternError *err);
 
 int32_t bls_get_public_key(ByteBuffer secret_key ,
                            ByteBuffer *public_key,
                            ExternError *err);
 
-int32_t bls_public_key_size(void);
+int32_t bls_public_key_g1_size(void);
+int32_t bls_public_key_g2_size(void);
+int32_t blinding_factor_size(void);
 
 int32_t bls_public_key_to_bbs_key(ByteBuffer d_public_key,
                                   uint32_t message_count,

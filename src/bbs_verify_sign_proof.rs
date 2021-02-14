@@ -63,37 +63,44 @@ add_bytes_impl!(
 );
 
 #[no_mangle]
-pub extern "C" fn bbs_verify_blind_commitment_context_finish(handle: u64, err: &mut ExternError) -> i32 {
-    let res = VERIFY_SIGN_PROOF_CONTEXT.call_with_result(err, handle, move |ctx| -> Result<i32, BbsFfiError> {
-        if ctx.blinded.is_empty() {
-            Err(BbsFfiError::new("Blinded indices cannot be empty"))?;
-        }
-        if ctx.nonce.is_none() {
-            Err(BbsFfiError::new("Nonce must be set."))?;
-        }
-        if ctx.proof.is_none() {
-            Err(BbsFfiError::new("Proof must be set."))?;
-        }
-        if ctx.public_key.is_none() {
-            Err(BbsFfiError::new("Public Key must be set"))?;
-        }
-
-        let nonce = ctx.nonce.as_ref().unwrap();
-        let proof = ctx.proof.as_ref().unwrap();
-        let public_key = ctx.public_key.as_ref().unwrap();
-        let mut revealed = BTreeSet::new();
-        for i in 0..public_key.message_count() {
-            if !ctx.blinded.contains(&i) {
-                revealed.insert(i);
+pub extern "C" fn bbs_verify_blind_commitment_context_finish(
+    handle: u64,
+    err: &mut ExternError,
+) -> i32 {
+    let res = VERIFY_SIGN_PROOF_CONTEXT.call_with_result(
+        err,
+        handle,
+        move |ctx| -> Result<i32, BbsFfiError> {
+            if ctx.blinded.is_empty() {
+                Err(BbsFfiError::new("Blinded indices cannot be empty"))?;
             }
-        }
+            if ctx.nonce.is_none() {
+                Err(BbsFfiError::new("Nonce must be set."))?;
+            }
+            if ctx.proof.is_none() {
+                Err(BbsFfiError::new("Proof must be set."))?;
+            }
+            if ctx.public_key.is_none() {
+                Err(BbsFfiError::new("Public Key must be set"))?;
+            }
 
-        if proof.verify(&revealed, public_key, nonce)? {
-            Ok(SignatureProofStatus::Success as i32)
-        } else {
-            Ok(SignatureProofStatus::BadHiddenMessage as i32)
-        }
-    });
+            let nonce = ctx.nonce.as_ref().unwrap();
+            let proof = ctx.proof.as_ref().unwrap();
+            let public_key = ctx.public_key.as_ref().unwrap();
+            let mut revealed = BTreeSet::new();
+            for i in 0..public_key.message_count() {
+                if !ctx.blinded.contains(&i) {
+                    revealed.insert(i);
+                }
+            }
+
+            if proof.verify(&revealed, public_key, nonce)? {
+                Ok(SignatureProofStatus::Success as i32)
+            } else {
+                Ok(SignatureProofStatus::BadHiddenMessage as i32)
+            }
+        },
+    );
 
     if err.get_code().is_success() {
         match VERIFY_SIGN_PROOF_CONTEXT.remove_u64(handle) {
@@ -105,4 +112,3 @@ pub extern "C" fn bbs_verify_blind_commitment_context_finish(handle: u64, err: &
         err.get_code().code()
     }
 }
-

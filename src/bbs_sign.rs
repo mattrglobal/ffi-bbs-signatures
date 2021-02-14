@@ -4,16 +4,16 @@ use ffi_support::{ByteBuffer, ConcurrentHandleMap, ErrorCode, ExternError, FfiSt
 use std::convert::TryFrom;
 
 lazy_static! {
-    static ref SIGN_CONTEXT: ConcurrentHandleMap<SignContext> = ConcurrentHandleMap::new();
+    pub static ref SIGN_CONTEXT: ConcurrentHandleMap<SignContext> = ConcurrentHandleMap::new();
 }
 
 define_handle_map_deleter!(SIGN_CONTEXT, free_bbs_sign);
 
-struct SignContext {
-    messages: Vec<SignatureMessage>,
-    secret_key: Option<SecretKey>,
-    public_key: Option<PublicKey>,
-    signature: Option<Signature>,
+pub struct SignContext {
+    pub messages: Vec<SignatureMessage>,
+    pub secret_key: Option<SecretKey>,
+    pub public_key: Option<PublicKey>,
+    pub signature: Option<Signature>,
 }
 
 #[no_mangle]
@@ -151,11 +151,10 @@ pub extern "C" fn bbs_verify_context_finish(handle: u64, err: &mut ExternError) 
 
         match (ctx.signature.as_ref(), ctx.public_key.as_ref()) {
             (Some(ref sig), Some(ref pk)) => match sig.verify(ctx.messages.as_slice(), pk) {
-                Ok(b) => Ok(if b { 1 } else { 0 }),
-                Err(e) => Err(BbsFfiError(format!("{:?}", e)))
+                Ok(b) => Ok(if b { 0 } else { 1 }),
+                Err(e) => Err(BbsFfiError(format!("{:?}", e))),
             },
             (_, _) => Err(BbsFfiError::new("")),
         }
     })
 }
-

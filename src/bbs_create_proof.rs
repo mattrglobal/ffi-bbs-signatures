@@ -4,17 +4,43 @@ use ffi_support::*;
 use std::{collections::BTreeSet, convert::TryFrom};
 
 lazy_static! {
-    static ref CREATE_PROOF_CONTEXT: ConcurrentHandleMap<CreateProofContext> =
+    pub static ref CREATE_PROOF_CONTEXT: ConcurrentHandleMap<CreateProofContext> =
         ConcurrentHandleMap::new();
 }
 
 define_handle_map_deleter!(CREATE_PROOF_CONTEXT, free_create_proof);
 
-struct CreateProofContext {
-    signature: Option<Signature>,
-    public_key: Option<PublicKey>,
-    messages: Vec<ProofMessage>,
-    nonce: Option<ProofNonce>,
+pub struct CreateProofContext {
+    pub signature: Option<Signature>,
+    pub public_key: Option<PublicKey>,
+    pub messages: Vec<ProofMessage>,
+    pub nonce: Option<ProofNonce>,
+}
+
+struct USize(usize);
+
+unsafe impl IntoFfi for USize {
+    type Value = usize;
+
+    fn ffi_default() -> Self::Value {
+        0
+    }
+
+    fn into_ffi_value(self) -> Self::Value {
+        self.0
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn bbs_create_proof_context_size(handle: u64) -> i32 {
+    const OVERHEAD: usize = 5 * G1_COMPRESSED_SIZE + 3 * 4 + 4 * FR_COMPRESSED_SIZE + 2;
+    let mut err = ExternError::success();
+    let res = CREATE_PROOF_CONTEXT.call_with_output(&mut err, handle, |ctx| -> USize {
+        USize(32 * ctx.messages.iter().filter(|m| {
+           matches!(m, ProofMessage::Hidden(..))
+        }).count() + ((ctx.messages.len() / 8) + 1))
+    });
+    (OVERHEAD + res) as i32
 }
 
 #[no_mangle]

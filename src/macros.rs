@@ -171,11 +171,7 @@ macro_rules! add_bytes_impl {
         }
 
         #[no_mangle]
-        pub extern "C" fn $name_bytes(
-            handle: u64,
-            value: ByteArray,
-            err: &mut ExternError,
-        ) -> i32 {
+        pub extern "C" fn $name_bytes(handle: u64, value: ByteArray, err: &mut ExternError) -> i32 {
             let value = value.to_vec();
             if value.is_empty() {
                 *err = ExternError::new_error(
@@ -340,6 +336,19 @@ macro_rules! add_proof_message_impl {
                 Ok(())
             });
             err.get_code().code()
+        }
+    };
+}
+
+macro_rules! copy_to_jni {
+    ($env:expr, $var:expr, $from:expr) => {
+        if $env.set_byte_array_region($var, 0, $from).is_err() {
+            return 0;
+        }
+    };
+    ($env:expr, $var:expr, $from:expr, $val:expr) => {
+        if $env.set_byte_array_region($var, 0, $from).is_err() {
+            return $val;
         }
     };
 }

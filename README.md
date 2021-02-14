@@ -1,6 +1,8 @@
+![Mattr logo](./docs/assets/mattr-black.svg)
+
 # BBS Signature FFI Wrapper
 
-This repository is home to a foreign function interface (FFI) wrapper around the rust based [bbs crate](https://crates.io/crates/bbs) maintained by the [Hyperledger Ursa project](https://github.com/hyperledger/ursa).
+This repository is home to a foreign function interface (FFI) wrapper around the Rust based [bbs crate](https://crates.io/crates/bbs) maintained by the [Hyperledger Ursa project](https://github.com/hyperledger/ursa).
 
 [BBS+ Signatures](https://github.com/mattrglobal/bbs-signatures) are a digital signature algorithm originally born from
 the work on [Short group signatures](https://crypto.stanford.edu/~xb/crypto04a/groupsigs.pdf) by Boneh, Boyen, and
@@ -22,3 +24,63 @@ prover.
 
 Every release of this repository publishes a new [github release](https://github.com/mattrglobal/ffi-bbs-signatures/releases/tag/v0.1.0) including publishing the platform specific artifacts required to run the library in different environments. See the [release process](./docs/RELEASE.md) for
 more details on this process
+
+# Getting started
+
+This repository makes use of [Yarn](https://yarnpkg.com/) to manage the dependencies related to the development environment
+
+To install the development dependencies run
+
+```
+yarn install --frozen-lockfile
+```
+
+To build the library for all available platforms run
+
+```
+yarn build
+```
+
+## Available wrappers
+
+.NET C# wrapper
+```
+./wrappers/dotnet
+```
+
+Java wrapper
+```
+./wrappers/java
+```
+
+Objective-C wrapper
+```
+./wrappers/obj-c
+```
+
+Each wrapper has individual documentation:
+
+- [.NET C#](./wrappers/dotnet/README.md)
+- [Java](./wrappers/java/README.md)  
+- [Objective-C](./wrappers/obj-c/README.md)  
+
+## Project Structure
+
+```
+├── docs
+│   └─ {file_name.md}
+│
+│── scripts                 # Bash scripts for building static/dynamic rust libs
+│── src                     # Rust Bbs Signatures wrapper
+├── wrappers                # Individual wrapper source code
+│   └─ {wrapper_name}
+│       ├── README.md
+│       └─ {src files}
+│
+├── README.md
+└── CHANGELOG.md
+```
+
+## Contributing
+
+Read our [contributing guide](./docs/CONTRIBUTING.md) to learn about our development process.
