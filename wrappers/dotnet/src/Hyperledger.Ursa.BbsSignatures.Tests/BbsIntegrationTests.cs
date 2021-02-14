@@ -54,17 +54,9 @@ namespace Hyperledger.Ursa.BbsSignatures.Tests
                 Assert.NotNull(proofResult);
 
                 // Verify proof of revealed messages
-                var indexedMessages1 = new[]
-                {
-                    new IndexedMessage { Message = messages[0], Index = 0u },
-                    new IndexedMessage { Message = messages[1], Index = 1u },
-                    new IndexedMessage { Message = messages[2], Index = 2u },
-                    new IndexedMessage { Message = messages[3], Index = 3u },
-                    new IndexedMessage { Message = messages[4], Index = 4u }
-                };
-                var verifyResult1 = Service.VerifyProof(new VerifyProofRequest(publicKey, proofResult, indexedMessages1, nonce));
+                var verifyResult1 = Service.VerifyProof(new VerifyProofRequest(publicKey, proofResult, messages, nonce));
 
-                Assert.AreEqual(SignatureProofStatus.Success, verifyResult1);
+                Assert.IsTrue(verifyResult1);
             }
 
             // Create blinded commitment
@@ -126,15 +118,13 @@ namespace Hyperledger.Ursa.BbsSignatures.Tests
             Assert.True(proof.Length > 0);
 
             // Verify proof
-            var indexedMessages = new[]
-            {
-                new IndexedMessage { Message = messages[0], Index = 0u },
-                new IndexedMessage { Message = messages[1], Index = 1u }
-            };
+            var verifyProofMessages = proofMessages
+                .Where(x => x.ProofType == ProofMessageType.Revealed)
+                .Select(x => x.Message)
+                .ToArray();
+            var verifyProofResult = Service.VerifyProof(new VerifyProofRequest(publicKey, proof, verifyProofMessages, nonce));
 
-            var verifyProofResult = Service.VerifyProof(new VerifyProofRequest(publicKey, proof, indexedMessages, nonce));
-
-            Assert.AreEqual(SignatureProofStatus.Success, verifyProofResult);
+            Assert.IsTrue(verifyProofResult);
         }
     }
 }

@@ -81,7 +81,7 @@ namespace Hyperledger.Ursa.BbsSignatures
             var result = NativeMethods.bbs_verify_context_finish(handle, out error);
             context.ThrowOnError(error);
 
-            return result == 1;
+            return result == 0;
         }
 
         /// <summary>
@@ -236,12 +236,9 @@ namespace Hyperledger.Ursa.BbsSignatures
         /// <summary>
         /// Verifies a proof
         /// </summary>
-        /// <param name="publicKey">The public key.</param>
-        /// <param name="proof">The proof.</param>
-        /// <param name="revealedMessages">The indexed messages.</param>
-        /// <param name="nonce">The nonce.</param>
+        /// <param name="request">Verify proof request parameters</param>
         /// <returns></returns>
-        public SignatureProofStatus VerifyProof(VerifyProofRequest request)
+        public bool VerifyProof(VerifyProofRequest request)
         {
             using var context = new UnmanagedMemory();
 
@@ -259,14 +256,14 @@ namespace Hyperledger.Ursa.BbsSignatures
 
             foreach (var item in request.Messages)
             {
-                NativeMethods.bbs_verify_proof_context_add_message_string(handle, item.Index, item.Message, out error);
+                NativeMethods.bbs_verify_proof_context_add_message_string(handle, item, out error);
                 context.ThrowOnError(error);
             }
 
             var result = NativeMethods.bbs_verify_proof_context_finish(handle, out error);
             context.ThrowOnError(error);
 
-            return (SignatureProofStatus)result;
+            return result == 0;
         }
     }
 
@@ -286,6 +283,6 @@ namespace Hyperledger.Ursa.BbsSignatures
 
         byte[] CreateProof(CreateProofRequest proofRequest);
 
-        SignatureProofStatus VerifyProof(VerifyProofRequest request);
+        bool VerifyProof(VerifyProofRequest request);
     }
 }

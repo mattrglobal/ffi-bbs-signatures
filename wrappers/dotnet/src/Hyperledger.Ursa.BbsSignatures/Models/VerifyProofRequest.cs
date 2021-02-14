@@ -22,7 +22,7 @@ namespace Hyperledger.Ursa.BbsSignatures
         /// or
         /// publicKey
         /// </exception>
-        public VerifyProofRequest(BbsKey publicKey, byte[] proof, IndexedMessage[] messages, string nonce)
+        public VerifyProofRequest(BbsKey publicKey, byte[] proof, string[] messages, string nonce)
         {
             Proof = proof ?? throw new ArgumentNullException(nameof(proof));
             Messages = messages ?? throw new ArgumentNullException(nameof(messages));
@@ -44,7 +44,7 @@ namespace Hyperledger.Ursa.BbsSignatures
         /// <value>
         /// The messages.
         /// </value>
-        public IndexedMessage[] Messages { get; set; }
+        public string[] Messages { get; set; }
 
         /// <summary>
         /// Gets or sets the nonce.
