@@ -22,17 +22,17 @@ namespace BbsSignatures
         /// <summary>
         /// Default BLS 12-381 public key length
         /// </summary>
-        public int PublicKeyG1Size => NativeMethods.bls_public_key_g1_size();
+        public static int PublicKeyG1Size => NativeMethods.bls_public_key_g1_size();
 
         /// <summary>
         /// Default BLS 12-381 public key length
         /// </summary>
-        public int PublicKeyG2Size => NativeMethods.bls_public_key_g2_size();
+        public static int PublicKeyG2Size => NativeMethods.bls_public_key_g2_size();
 
         /// <summary>
         /// Default BLS 12-381 private key length
         /// </summary>
-        public int SecretKeySize => NativeMethods.bls_secret_key_size();
+        public static int SecretKeySize => NativeMethods.bls_secret_key_size();
 
         /// <summary>
         /// Raw public key value for the key pair
@@ -57,24 +57,37 @@ namespace BbsSignatures
         {
             using var context = new UnmanagedMemory();
 
-            if (SecretKey is null)
-            {
-                NativeMethods.bls_public_key_to_bbs_key(context.ToBuffer(PublicKey), messageCount, out var publicKey, out var error);
-                context.ThrowOnError(error);
-
-                return new BbsKey(context.ToByteArray(publicKey), messageCount);
-            }
-            else
+            if (SecretKey != null)
             {
                 NativeMethods.bls_secret_key_to_bbs_key(context.ToBuffer(SecretKey), messageCount, out var publicKey, out var error);
                 context.ThrowOnError(error);
 
                 return new BbsKey(context.ToByteArray(publicKey), messageCount);
             }
+            else if (IsG2())
+            {
+                NativeMethods.bls_public_key_to_bbs_key(context.ToBuffer(PublicKey), messageCount, out var publicKey, out var error);
+                context.ThrowOnError(error);
+
+                return new BbsKey(context.ToByteArray(publicKey), messageCount);
+            }
+            throw new BbsException("Cannot generate BbsKey from G1 public key");
         }
 
         /// <summary>
-        /// Creates new <see cref="BlsKeyPair"/> using a input seed as byte array.
+        /// Returns <c>true</c> if the current instance is of G2 cyclic group, otherwise <c>false</c>
+        /// </summary>
+        /// <returns></returns>
+        public bool IsG2() => PublicKey.Length == PublicKeyG2Size;
+
+        /// <summary>
+        /// Returns <c>true</c> if the current instance is of G1 cyclic group, otherwise <c>false</c>
+        /// </summary>
+        /// <returns></returns>
+        public bool IsG1() => PublicKey.Length == PublicKeyG1Size;
+
+        /// <summary>
+        /// Creates new <see cref="BlsKeyPair"/> using a input seed as string.
         /// </summary>
         /// <param name="seed">The seed.</param>
         /// <returns></returns>
@@ -94,7 +107,7 @@ namespace BbsSignatures
         }
 
         /// <summary>
-        /// Creates new <see cref="BlsKeyPair"/> using a input seed as byte array.
+        /// Creates new <see cref="BlsKeyPair"/> using a input seed as string.
         /// </summary>
         /// <param name="seed">The seed.</param>
         /// <returns></returns>

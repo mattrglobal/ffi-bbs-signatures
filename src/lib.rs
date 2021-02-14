@@ -183,7 +183,7 @@ const BLINDING_G2: &'static [u8] = &[
 /// `return` Object { publicKey: `ArrayBuffer`, secretKey: `ArrayBuffer`, blindingFactor: `ArrayBuffer` }
 fn bls_generate_blinded_g2_key(ikm: Option<Vec<u8>>) -> (Vec<u8>, Vec<u8>, Vec<u8>) {
     let (r, pk, sk) = bls_generate_keypair::<G2>(ikm, Some(BLINDING_G2));
-    (r.unwrap(), pk, sk)
+    (pk, sk, r.unwrap())
 }
 
 /// Generate a blinded BLS key pair where secret key `x` and blinding factor `r` in Fp
@@ -192,7 +192,7 @@ fn bls_generate_blinded_g2_key(ikm: Option<Vec<u8>>) -> (Vec<u8>, Vec<u8>, Vec<u
 /// `return` Object { publicKey: `ArrayBuffer`, secretKey: `ArrayBuffer`, blindingFactor: `ArrayBuffer` }
 fn bls_generate_blinded_g1_key(ikm: Option<Vec<u8>>) -> (Vec<u8>, Vec<u8>, Vec<u8>) {
     let (r, pk, sk) = bls_generate_keypair::<G1>(ikm, Some(BLINDING_G1));
-    (r.unwrap(), pk, sk)
+    (pk, sk, r.unwrap())
 }
 
 /// Generate a BLS key pair where secret key `x` in Fp
