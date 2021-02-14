@@ -7,7 +7,7 @@
     <NoWarn>$NoWarn;NU5100</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NullableReferenceTypes>true</NullableReferenceTypes>
-    <Bbs_SkipNativeLibsCopy>false</Bbs_SkipNativeLibsCopy>
+    <Bbs_CopyLibsForProjectReference>true</Bbs_CopyLibsForProjectReference>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,23 +22,23 @@
 
   <!-- Include build targets for different platforms -->
   <ItemGroup>
-    <Content Include="build\netstandard2.1\Hyperledger.Ursa.BbsSignatures.targets" Pack="true" PackagePath="build/netstandard2.1" Visible="false" />
-    <Content Include="build\xamarinios10\Hyperledger.Ursa.BbsSignatures.targets" Pack="true" PackagePath="build/xamarinios10" Visible="false" />
-    <Content Include="build\MonoAndroid10\Hyperledger.Ursa.BbsSignatures.targets" Pack="true" PackagePath="build/MonoAndroid10" Visible="false" />
+    <Content Include="build\netstandard2.1\BbsSignatures.targets" Pack="true" PackagePath="build/netstandard2.1" Visible="false" />
+    <Content Include="build\xamarinios10\BbsSignatures.targets" Pack="true" PackagePath="build/xamarinios10" Visible="false" />
+    <Content Include="build\MonoAndroid10\BbsSignatures.targets" Pack="true" PackagePath="build/MonoAndroid10" Visible="false" />
   </ItemGroup>
 
   <!-- Hide items in Visual Studio editor -->
   <ItemGroup>
     <None Update="SourceLink.csproj.include" Visible="false" />
-    <None Update="build\netstandard2.1\Hyperledger.Ursa.BbsSignatures.targets" Visible="false" />
-    <None Update="build\xamarinios10\Hyperledger.Ursa.BbsSignatures.targets" Visible="false" />
-    <None Update="build\MonoAndroid10\Hyperledger.Ursa.BbsSignatures.targets" Visible="false" />
+    <None Update="build\netstandard2.1\BbsSignatures.targets" Visible="false" />
+    <None Update="build\xamarinios10\BbsSignatures.targets" Visible="false" />
+    <None Update="build\MonoAndroid10\BbsSignatures.targets" Visible="false" />
   </ItemGroup>
 
   <Import Project="SourceLink.csproj.include" />
   
   <!-- Native reference for local solution projects. These are not included in the Nuget package -->
-  <ItemGroup>
+  <ItemGroup Condition="'$(Bbs_CopyLibsForProjectReference)' == 'true'">
     <Content Include="..\..\libs\windows\bbs.dll" Condition="'$([MSBuild]::IsOsPlatform(Windows))'">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <Link>bbs.dll</Link>

@@ -18,6 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Hyperledger.Ursa.BbsSignatures\BbsSignatures.csproj" />
+    <ProjectReference Include="..\BbsSignatures\BbsSignatures.csproj" />
   </ItemGroup>
 </Project>
