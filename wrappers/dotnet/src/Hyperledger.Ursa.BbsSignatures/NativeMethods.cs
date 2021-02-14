@@ -31,10 +31,25 @@ namespace Hyperledger.Ursa.BbsSignatures
         internal static extern int bls_secret_key_size();
 
         [DllImport(BbsSignaturesLibrary, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
-        internal static extern int bls_public_key_size();
+        internal static extern int bls_public_key_g2_size();
 
         [DllImport(BbsSignaturesLibrary, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
-        internal static extern int bls_generate_key(ByteBuffer seed, out ByteBuffer public_key, out ByteBuffer secret_key, out ExternError err);
+        internal static extern int blinding_factor_size();
+
+        [DllImport(BbsSignaturesLibrary, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        internal static extern int bls_public_key_g1_size();
+
+        [DllImport(BbsSignaturesLibrary, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        internal static extern int bls_generate_g1_key(ByteBuffer seed, out ByteBuffer public_key, out ByteBuffer secret_key, out ExternError err);
+
+        [DllImport(BbsSignaturesLibrary, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        internal static extern int bls_generate_g2_key(ByteBuffer seed, out ByteBuffer public_key, out ByteBuffer secret_key, out ExternError err);
+
+        [DllImport(BbsSignaturesLibrary, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        internal static extern int bls_generate_blinded_g1_key(ByteBuffer seed, out ByteBuffer public_key, out ByteBuffer secret_key, out ByteBuffer blinding_factor, out ExternError err);
+
+        [DllImport(BbsSignaturesLibrary, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+        internal static extern int bls_generate_blinded_g2_key(ByteBuffer seed, out ByteBuffer public_key, out ByteBuffer secret_key, out ByteBuffer blinding_factor, out ExternError err);
 
         [DllImport(BbsSignaturesLibrary, CharSet = CharSet.Ansi, BestFitMapping = false, ThrowOnUnmappableChar = true)]
         internal static extern int bls_get_public_key(ByteBuffer secret_key, out ByteBuffer public_key, out ExternError err);

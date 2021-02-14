@@ -26,7 +26,7 @@ namespace Hyperledger.Ursa.BbsSignatures.Tests
         [Test(Description = "Get BLS public key size")]
         public void GetPublicKeySize()
         {
-            var actual = NativeMethods.bls_public_key_size();
+            var actual = NativeMethods.bls_public_key_g2_size();
 
             Assert.AreEqual(actual, 96);
         }
@@ -36,47 +36,47 @@ namespace Hyperledger.Ursa.BbsSignatures.Tests
         {
             var seed = "my seed";
 
-            var actual = BlsKeyPair.Generate(seed);
+            var actual = BlsKeyPair.GenerateG2(seed);
 
             Assert.NotNull(actual);
             Assert.NotNull(actual.SecretKey);
             Assert.NotNull(actual.PublicKey);
-            Assert.AreEqual(32, actual.SecretKey.Count);
-            Assert.AreEqual(96, actual.PublicKey.Count);
+            Assert.AreEqual(32, actual.SecretKey.Length);
+            Assert.AreEqual(96, actual.PublicKey.Length);
         }
 
         [Test(Description = "Generate BLS key pair without seed using wrapper class")]
         public void GenerateBlsKeyWithoutSeed()
         {
-            var blsKeyPair = BlsKeyPair.Generate();
+            var blsKeyPair = BlsKeyPair.GenerateG2();
             var dPublicKey = blsKeyPair.PublicKey;
 
             Assert.NotNull(blsKeyPair);
             Assert.NotNull(dPublicKey);
             Assert.NotNull(blsKeyPair.SecretKey);
 
-            Assert.AreEqual(96, dPublicKey.Count);
-            Assert.AreEqual(32, blsKeyPair.SecretKey.Count);
+            Assert.AreEqual(96, dPublicKey.Length);
+            Assert.AreEqual(32, blsKeyPair.SecretKey.Length);
         }
 
         [Test(Description = "Create BBS public key from BLS secret key with message count 1")]
         public void CreateBbsKeyFromBlsSecretKey()
         {
-            var secretKey = BlsKeyPair.Generate();
+            var secretKey = BlsKeyPair.GenerateG2();
             var publicKey = secretKey.GetBbsKey(1);
 
             Assert.NotNull(secretKey);
             Assert.NotNull(publicKey);
             Assert.NotNull(secretKey.SecretKey);
 
-            Assert.AreEqual(196, publicKey.PublicKey.Count);
-            Assert.AreEqual(32, secretKey.SecretKey.Count);
+            Assert.AreEqual(196, publicKey.PublicKey.Length);
+            Assert.AreEqual(32, secretKey.SecretKey.Length);
         }
 
         [Test(Description = "Create BBS public key from BLS public key with message count 1")]
         public void CreateBbsKeyFromBlsPublicKey()
         {
-            var blsKeypair = BlsKeyPair.Generate();
+            var blsKeypair = BlsKeyPair.GenerateG2();
             var bbsKeyPair = new BlsKeyPair(blsKeypair.PublicKey.ToArray());
 
             Assert.IsNull(bbsKeyPair.SecretKey);
@@ -88,8 +88,8 @@ namespace Hyperledger.Ursa.BbsSignatures.Tests
             Assert.NotNull(bbsKeyPair.PublicKey);
             Assert.IsNull(bbsKeyPair.SecretKey);
 
-            Assert.AreEqual(196, publicKey.PublicKey.Count);
-            Assert.AreEqual(32, blsKeypair.SecretKey.Count);
+            Assert.AreEqual(196, publicKey.PublicKey.Length);
+            Assert.AreEqual(32, blsKeypair.SecretKey.Length);
         }
     }
 }

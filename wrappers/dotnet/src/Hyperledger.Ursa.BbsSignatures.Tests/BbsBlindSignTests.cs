@@ -16,7 +16,7 @@ namespace Hyperledger.Ursa.BbsSignatures.Tests
         [Test(Description = "Blind sign a message using API")]
         public void BlindSignSingleMessageUsingApi()
         {
-            var myKey = BlsKeyPair.Generate();
+            var myKey = BlsKeyPair.GenerateG2();
             var publicKey = myKey.GetBbsKey(2);
 
             var messages = new[]
@@ -36,7 +36,7 @@ namespace Hyperledger.Ursa.BbsSignatures.Tests
         [Test(Description = "Unblind a signature")]
         public void UnblindSignatureUsingApi()
         {
-            var myKey = BlsKeyPair.Generate();
+            var myKey = BlsKeyPair.GenerateG2();
             var publicKey = myKey.GetBbsKey(2);
 
             var messages = new[]

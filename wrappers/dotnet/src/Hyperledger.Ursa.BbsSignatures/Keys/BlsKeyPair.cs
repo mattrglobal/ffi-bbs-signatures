@@ -13,56 +13,32 @@ namespace Hyperledger.Ursa.BbsSignatures
         /// </summary>
         /// <param name="secretKey">The secret key.</param>
         /// <param name="deterministicPublicKey">The deterministic public key.</param>
-        internal BlsKeyPair(byte[] secretKey, byte[] deterministicPublicKey)
+        public BlsKeyPair(byte[] publicKey, byte[]? secretKey = default)
         {
-            SecretKey = new ReadOnlyCollection<byte>(secretKey);
-            PublicKey = new ReadOnlyCollection<byte>(deterministicPublicKey);
+            SecretKey = secretKey;
+            PublicKey = publicKey;
         }
 
         /// <summary>
         /// Default BLS 12-381 public key length
         /// </summary>
-        public int PublicKeySize => NativeMethods.bls_public_key_size();
+        public int PublicKeyG1Size => NativeMethods.bls_public_key_g1_size();
+
+        /// <summary>
+        /// Default BLS 12-381 public key length
+        /// </summary>
+        public int PublicKeyG2Size => NativeMethods.bls_public_key_g2_size();
 
         /// <summary>
         /// Default BLS 12-381 private key length
         /// </summary>
         public int SecretKeySize => NativeMethods.bls_secret_key_size();
 
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BlsKeyPair" /> class.
-        /// </summary>
-        /// <param name="keyData">The key data to instantiate this instance. Can be secret or public key.</param>
-        /// <exception cref="BbsException">Invalid key size</exception>
-        public BlsKeyPair(byte[] keyData)
-        {
-            if (keyData.Length == SecretKeySize)
-            {
-                SecretKey = new ReadOnlyCollection<byte>(keyData);
-
-                using var context = new UnmanagedMemory();
-
-                NativeMethods.bls_get_public_key(context.ToBuffer(keyData), out var publicKey, out var error);
-                context.ThrowOnError(error);
-
-                PublicKey = context.ToReadOnlyCollection(publicKey);
-            }
-            else if (keyData.Length == PublicKeySize)
-            {
-                PublicKey = new ReadOnlyCollection<byte>(keyData);
-            }
-            else
-            {
-                throw new BbsException("Invalid key size");
-            }
-        }
-
         /// <summary>
         /// Raw public key value for the key pair
         /// </summary>
         /// <returns></returns>
-        public ReadOnlyCollection<byte> PublicKey { get; internal set; }
+        public byte[] PublicKey { get; internal set; }
 
         /// <summary>
         /// Raw secret/private key value for the key pair
@@ -70,7 +46,7 @@ namespace Hyperledger.Ursa.BbsSignatures
         /// <value>
         /// The key.
         /// </value>
-        public ReadOnlyCollection<byte>? SecretKey { get; internal set; }
+        public byte[]? SecretKey { get; internal set; }
 
         /// <summary>
         /// Generates new BBS+ public key from the current BLS12-381
@@ -102,11 +78,11 @@ namespace Hyperledger.Ursa.BbsSignatures
         /// </summary>
         /// <param name="seed">The seed.</param>
         /// <returns></returns>
-        public static BlsKeyPair Generate(string? seed = null)
+        public static BlsKeyPair GenerateG1(string? seed = null)
         {
             using var context = new UnmanagedMemory();
 
-            var result = NativeMethods.bls_generate_key(
+            var result = NativeMethods.bls_generate_g1_key(
                 seed is null ? ByteBuffer.None : context.ToBuffer(Encoding.UTF8.GetBytes(seed)),
                 out var publicKey,
                 out var secretKey,
@@ -114,7 +90,27 @@ namespace Hyperledger.Ursa.BbsSignatures
 
             context.ThrowOnError(error);
 
-            return new BlsKeyPair(context.ToByteArray(secretKey), context.ToByteArray(publicKey));
+            return new BlsKeyPair(context.ToByteArray(publicKey), context.ToByteArray(secretKey));
+        }
+
+        /// <summary>
+        /// Creates new <see cref="BlsKeyPair"/> using a input seed as byte array.
+        /// </summary>
+        /// <param name="seed">The seed.</param>
+        /// <returns></returns>
+        public static BlsKeyPair GenerateG2(string? seed = null)
+        {
+            using var context = new UnmanagedMemory();
+
+            var result = NativeMethods.bls_generate_g2_key(
+                seed is null ? ByteBuffer.None : context.ToBuffer(Encoding.UTF8.GetBytes(seed)),
+                out var publicKey,
+                out var secretKey,
+                out var error);
+
+            context.ThrowOnError(error);
+
+            return new BlsKeyPair(context.ToByteArray(publicKey), context.ToByteArray(secretKey));
         }
     }
 }

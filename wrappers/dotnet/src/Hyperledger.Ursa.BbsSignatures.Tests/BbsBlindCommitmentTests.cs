@@ -23,7 +23,7 @@ namespace Hyperledger.Ursa.BbsSignatures.Tests
         [Test(Description = "Create blinded commitment")]
         public void BlindCommitmentSingleMessageUsingApi()
         {
-            var myKey = BlsKeyPair.Generate();
+            var myKey = BlsKeyPair.GenerateG2();
             var publicKey = myKey.GetBbsKey(1);
 
             var commitment = Service.CreateBlindedCommitment(new CreateBlindedCommitmentRequest(

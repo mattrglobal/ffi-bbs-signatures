@@ -15,7 +15,7 @@ namespace Hyperledger.Ursa.BbsSignatures.Tests
         [Test(Description = "Full end-to-end test")]
         public void FullDemoTest()
         {
-            var key = BlsKeyPair.Generate();
+            var key = BlsKeyPair.GenerateG2();
             var publicKey = key.GetBbsKey(5);
 
             var nonce = "123";

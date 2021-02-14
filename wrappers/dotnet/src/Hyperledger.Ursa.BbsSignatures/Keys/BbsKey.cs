@@ -10,7 +10,7 @@ namespace Hyperledger.Ursa.BbsSignatures
     {
         public BbsKey(byte[] publicKey, uint messageCount)
         {
-            PublicKey = new ReadOnlyCollection<byte>(publicKey);
+            PublicKey = publicKey;
             MessageCount = messageCount;
         }
 
@@ -18,7 +18,7 @@ namespace Hyperledger.Ursa.BbsSignatures
         /// Raw public key value for the key pair
         /// </summary>
         /// <returns></returns>
-        public ReadOnlyCollection<byte> PublicKey { get; }
+        public byte[] PublicKey { get; }
 
         /// <summary>
         /// Number of messages that can be signed

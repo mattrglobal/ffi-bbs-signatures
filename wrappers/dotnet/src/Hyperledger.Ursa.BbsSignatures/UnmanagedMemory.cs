@@ -27,9 +27,12 @@ namespace Hyperledger.Ursa.BbsSignatures
         /// <param name="buffer">The buffer.</param>
         /// <param name="byteBuffer">The byte buffer.</param>
         /// <exception cref="ArgumentNullException">buffer - Input buffer cannot be null.</exception>
-        internal ByteBuffer ToBuffer(byte[] buffer)
+        internal ByteBuffer ToBuffer(byte[]? buffer)
         {
-            if (buffer == null) throw new ArgumentNullException(nameof(buffer), "Input buffer cannot be null.");
+            if (buffer is null)
+            {
+                return new ByteBuffer { Length = 0, Data = IntPtr.Zero };
+            }
 
             var pinnedArray = GCHandle.Alloc(buffer, GCHandleType.Pinned);
             var pointer = pinnedArray.AddrOfPinnedObject();
