@@ -59,7 +59,7 @@ pub extern "C" fn bls_generate_blinded_g2_key(
     blinding_factor: &mut ByteBuffer,
     err: &mut ExternError,
 ) -> i32 {
-    let (p, s, b) = crate::bls_generate_blinded_g2_key(seed.to_opt_vec());
+    let (b, p, s) = crate::bls_generate_blinded_g2_key(seed.to_opt_vec());
     *public_key = ByteBuffer::from_vec(p);
     *secret_key = ByteBuffer::from_vec(s);
     *blinding_factor = ByteBuffer::from_vec(b);
@@ -75,7 +75,7 @@ pub extern "C" fn bls_generate_blinded_g1_key(
     blinding_factor: &mut ByteBuffer,
     err: &mut ExternError,
 ) -> i32 {
-    let (p, s, b) = crate::bls_generate_blinded_g1_key(seed.to_opt_vec());
+    let (b, p, s) = crate::bls_generate_blinded_g1_key(seed.to_opt_vec());
     *public_key = ByteBuffer::from_vec(p);
     *secret_key = ByteBuffer::from_vec(s);
     *blinding_factor = ByteBuffer::from_vec(b);

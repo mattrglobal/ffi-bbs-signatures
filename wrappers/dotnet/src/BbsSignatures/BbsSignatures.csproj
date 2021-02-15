@@ -1,0 +1,63 @@
+﻿<Project Sdk="MSBuild.Sdk.Extras/2.0.54">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.1;xamarinios10</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <NoWarn>$NoWarn;NU5100</NoWarn>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NullableReferenceTypes>true</NullableReferenceTypes>
+    <DebugType>portable</DebugType>
+    <Bbs_CopyLibsForProjectReference>true</Bbs_CopyLibsForProjectReference>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\libs\macos\libbbs.dylib" PackagePath="native/macos/libbbs.dylib" Pack="true" Visible="false" />
+    <None Include="..\..\libs\windows\bbs.dll" PackagePath="native/windows/bbs.dll" Pack="true" Visible="false" />
+    <None Include="..\..\libs\linux\libbbs.so" PackagePath="native/linux/libbbs.so" Pack="true" Visible="false" />
+    <None Include="..\..\libs\ios\universal\libbbs.a" PackagePath="native/ios/libbbs.a" Pack="true" Visible="false" />
+    <None Include="..\..\libs\android\arm64-v8a\libbbs.so" PackagePath="native/android/arm64-v8a/libbbs.so" Pack="true" Visible="false" />
+    <None Include="..\..\libs\android\armeabi-v7a\libbbs.so" PackagePath="native/android/armeabi-v7a/libbbs.so" Pack="true" Visible="false" />
+    <None Include="..\..\libs\android\x86\libbbs.so" PackagePath="native/android/x86/libbbs.so" Pack="true" Visible="false" />
+  </ItemGroup>
+
+  <!-- Include build targets for different platforms -->
+  <ItemGroup>
+    <Content Include="build\netstandard2.1\BbsSignatures.targets" Pack="true" PackagePath="build/netstandard2.1" Visible="false" />
+    <Content Include="build\xamarinios10\BbsSignatures.targets" Pack="true" PackagePath="build/xamarinios10" Visible="false" />
+    <Content Include="build\MonoAndroid10\BbsSignatures.targets" Pack="true" PackagePath="build/MonoAndroid10" Visible="false" />
+  </ItemGroup>
+
+  <!-- Hide items in Visual Studio editor -->
+  <ItemGroup>
+    <None Update="SourceLink.csproj.include" Visible="false" />
+    <None Update="build\netstandard2.1\BbsSignatures.targets" Visible="false" />
+    <None Update="build\xamarinios10\BbsSignatures.targets" Visible="false" />
+    <None Update="build\MonoAndroid10\BbsSignatures.targets" Visible="false" />
+  </ItemGroup>
+
+  <Import Project="SourceLink.csproj.include" />
+  
+  <!-- Native reference for local solution projects. These are not included in the Nuget package -->
+  <ItemGroup Condition="'$(Bbs_CopyLibsForProjectReference)' == 'true'">
+    <Content Include="..\..\libs\windows\bbs.dll" Condition="'$([MSBuild]::IsOsPlatform(Windows))'">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>bbs.dll</Link>
+      <Visible>false</Visible>
+      <Pack>false</Pack>
+    </Content>
+    <Content Include="..\..\libs\linux\libbbs.so" Condition="'$([MSBuild]::IsOsPlatform(Linux))'">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>libbbs.so</Link>
+      <Visible>false</Visible>
+      <Pack>false</Pack>
+    </Content>
+    <Content Include="..\..\libs\macos\libbbs.dylib" Condition="'$([MSBuild]::IsOsPlatform(OSX))'">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>libbbs.dylib</Link>
+      <Visible>false</Visible>
+      <Pack>false</Pack>
+    </Content>
+  </ItemGroup>
+
+</Project>

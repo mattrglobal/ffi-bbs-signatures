@@ -1,0 +1,95 @@
+name: ci-dotnet
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+    inputs:
+      packageVersion:
+        description: "Package Version"
+        required: true
+        default: "1.0.0"
+
+jobs:
+  build_windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v1
+      - run: |
+          mkdir .\out\windows
+          cargo build --release
+          cp .\target\release\bbs.dll .\out\windows
+      # - run: yarn build:windows
+      - uses: actions/upload-artifact@v2
+        with:
+          name: windows
+          path: ./out/windows/*
+
+  build_linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - run: yarn build:linux
+      - uses: actions/upload-artifact@v2
+        with:
+          name: linux
+          path: ./out/linux/*
+
+  build_macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v1
+      - run: yarn build:macos
+      - uses: actions/upload-artifact@v2
+        with:
+          name: macos
+          path: ./out/macos/darwin-x86_64/*
+
+  build_ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v1
+      - run: yarn build:ios
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ios
+          path: ./out/ios/*
+
+  build_android:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v1
+      - run: yarn build:android
+      - uses: actions/upload-artifact@v2
+        with:
+          name: android
+          path: ./out/android/*
+
+  package_nuget:
+    runs-on: windows-latest
+    needs: [build_windows, build_macos, build_linux, build_android, build_ios]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/download-artifact@v2
+        with:
+          path: ./wrappers/dotnet/libs
+      - run: |
+          $packageVersion = node -p -e "require('./package.json').version"
+          $manualVersion = "${{ github.event.inputs.packageVersion }}"
+          [xml]$projectFile = Get-Content ./wrappers/dotnet/Directory.Build.props
+          $projectFile.Project.PropertyGroup[0].Version = if ($manualVersion) { $manualVersion } else { $packageVersion }
+          $projectFile.Save("./wrappers/dotnet/Directory.Build.props")
+      - uses: microsoft/setup-msbuild@v1.0.2
+      - run: msbuild /t:restore,build /p:Configuration=Release ./wrappers/dotnet/
+      - run: dotnet test -c Release ./wrappers/dotnet/src/BbsSignatures.Tests/
+      - run: msbuild /t:restore,build,pack /p:Configuration=Release /p:Bbs_CopyLibsForProjectReference=false ./wrappers/dotnet/
+      - uses: actions/upload-artifact@v2
+        with:
+          name: package-nuget
+          path: |
+            ./wrappers/dotnet/src/BbsSignatures/bin/Release/*.nupkg
+            ./wrappers/dotnet/src/BbsSignatures/bin/Release/*.snupkg

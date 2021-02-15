@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)..\..\native\windows\bbs.dll" Condition="'$([MSBuild]::IsOsPlatform(Windows))'">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>bbs.dll</Link>
+      <Visible>false</Visible>
+    </Content>
+    <Content Include="$(MSBuildThisFileDirectory)..\..\native\linux\libbbs.so" Condition="'$([MSBuild]::IsOsPlatform(Linux))'">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>libbbs.so</Link>
+      <Visible>false</Visible>
+    </Content>
+    <Content Include="$(MSBuildThisFileDirectory)..\..\native\macos\libbbs.dylib" Condition="'$([MSBuild]::IsOsPlatform(OSX))'">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>libbbs.dylib</Link>
+      <Visible>false</Visible>
+    </Content>
+  </ItemGroup>
+
+</Project>
