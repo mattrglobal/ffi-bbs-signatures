@@ -5,6 +5,7 @@ from ...models.BbsException import BbsException
 from ...foreign_function_interface.bindings.bls import (
     bls_generate_g1_key,
     bls_generate_g2_key,
+    bls_get_public_key,
     bls_public_key_g1_size,
     bls_public_key_g2_size,
     bls_public_key_to_bbs_key,
@@ -56,3 +57,8 @@ class BlsKeyPair:
         res = bls_generate_g2_key(seed)
 
         return cls(res["public_key"], res["secret_key"])
+
+    @classmethod
+    def from_secret_key(cls, secret_key: bytes) -> "BlsKeyPair":
+        pub_key = bls_get_public_key(secret_key)
+        return cls(pub_key, secret_key)
