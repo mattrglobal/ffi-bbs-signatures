@@ -1,6 +1,4 @@
 from enum import IntEnum, unique
-from typing import Optional
-
 
 @unique
 class ProofMessageType(IntEnum):
@@ -12,13 +10,11 @@ class ProofMessageType(IntEnum):
 class ProofMessage:
     def __init__(
         self,
-        message: bytes,
+        message: str,
         proof_type: ProofMessageType,
-        blinding_factor: Optional[bytes] = None,
     ) -> None:
         self.proof_type = proof_type
         self.message = message
-        self.blinding_factor = blinding_factor
 
     def __repr__(self) -> str:
         return f"{self.proof_type.name}: {self.message}"

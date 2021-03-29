@@ -20,7 +20,7 @@ if __name__ == "__main__":
         author_email="aries@lists.hyperledger.org",
         long_description=long_description,
         long_description_content_type="text/markdown",
-        url="https://github.com/hyperledger/aries-askar",
+        url="https://github.com/mattrglobal/ffi-bbs-signatures",
         packages=find_packages(),
         # include_package_data=True,
         
@@ -29,7 +29,7 @@ if __name__ == "__main__":
             "": [
                 "libbbs.dll",
                 "libbbs.dylib",
-                "libbbs.so",
+                "bbs.so",
             ]
         },
         python_requires=">=3.6.3",
