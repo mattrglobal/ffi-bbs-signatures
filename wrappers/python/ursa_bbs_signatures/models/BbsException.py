@@ -1,5 +1,2 @@
-
-
-
 class BbsException(Exception):
-  pass
+    pass

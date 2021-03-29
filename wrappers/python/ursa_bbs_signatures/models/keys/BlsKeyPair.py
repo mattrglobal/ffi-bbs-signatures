@@ -1,18 +1,16 @@
 from typing import Optional, Union
 
-from ...models.BbsException import BbsException
-
-from ...foreign_function_interface.bindings.bls import (
-    bls_generate_g1_key,
-    bls_generate_g2_key,
-    bls_get_public_key,
+from .BbsKey import BbsKey
+from ..._ffi.bindings.bls import (
     bls_public_key_g1_size,
     bls_public_key_g2_size,
-    bls_public_key_to_bbs_key,
     bls_secret_key_to_bbs_key,
+    bls_public_key_to_bbs_key,
+    bls_generate_g1_key,
+    bls_generate_g2_key,
+    bls_get_public_key, bls_secret_key_size
 )
-from ...foreign_function_interface.ffi_util import encode_bytes
-from .BbsKey import BbsKey
+from ...models.BbsException import BbsException
 
 
 class BlsKeyPair:
@@ -20,13 +18,17 @@ class BlsKeyPair:
         self.public_key = public_key
         self.secret_key = secret_key
 
-    @property
-    def public_g1_key_size(self) -> int:
+    @staticmethod
+    def public_g1_key_size() -> int:
         return bls_public_key_g1_size()
 
-    @property
-    def public_g2_key_size(self) -> int:
+    @staticmethod
+    def public_g2_key_size() -> int:
         return bls_public_key_g2_size()
+
+    @staticmethod
+    def secret_key_size() -> int:
+        return bls_secret_key_size()
 
     @property
     def is_g1(self) -> bool:
