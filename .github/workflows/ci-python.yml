@@ -3,10 +3,10 @@ name: ci-python
 on:
   pull_request:
     branches:
-      - python-wrapper
+      - master
   push:
     branches:
-      - python-wrapper
+      - master
 
 jobs:
   build_windows:
