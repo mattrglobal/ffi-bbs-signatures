@@ -17,7 +17,6 @@ jobs:
           mkdir .\out\windows
           cargo build --release
           cp .\target\release\bbs.dll .\out\windows
-      # - run: yarn build:windows
       - uses: actions/upload-artifact@v2
         with:
           name: windows
@@ -43,13 +42,12 @@ jobs:
           name: macos
           path: ./out/macos/darwin-x86_64/*
 
-
   test_macos:
     needs: [build_macos]
     runs-on: macos-latest
     strategy:
       matrix:
-        python-version: [3.7, 3.8, 3.9]
+        python-version: [3.6, 3.7, 3.8, 3.9]
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
