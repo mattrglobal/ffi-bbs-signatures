@@ -22,6 +22,14 @@ from .models.VerifyRequest import VerifyRequest
 
 
 def sign(request: SignRequest) -> bytes:
+    """Signs a set of messages with a BBS key pair and produces a BBS signature
+    Args:
+        request: Request for the sign operation
+    Raises:
+        BbsException: if the secret key cannot be found.
+    Returns:
+        The raw signature value
+    """
     if not request.key_pair.secret_key:
         raise BbsException("Secret key not found")
 
@@ -42,6 +50,12 @@ def sign(request: SignRequest) -> bytes:
 
 
 def verify(request: VerifyRequest) -> bool:
+    """Verifies a BBS+ signature for a set of messages with a BBS public key
+    Args:
+        request: Request for the signature verification operation
+    Returns:
+        True if the signature is valid, otherwise False
+    """
     bbs_key_pair = request.key_pair.get_bbs_key(len(request.messages))
 
     handle = bbs_verify.bbs_verify_context_init()
@@ -58,6 +72,12 @@ def verify(request: VerifyRequest) -> bool:
 
 
 def blind_sign(request: BlindSignRequest) -> bytes:
+    """Signs a set of messages featuring both known and blinded messages to the signer and produces a BBS+ signature
+    Args:
+        request: Request for the blind sign operation
+    Returns:
+        Raw signature value
+    """
     handle = bbs_blind_sign.bbs_blind_sign_context_init()
     print(handle)
     for item in request.messages:
@@ -73,12 +93,24 @@ def blind_sign(request: BlindSignRequest) -> bytes:
 
 
 def unblind_signature(request: UnblindSignatureRequest) -> bytes:
+    """Unblinds the signature asynchronous.
+    Args:
+        request: Request for the unblinding operation
+    Returns:
+        Unblinded signature
+    """
     return bbs_blind_sign.bbs_unblind_signature(request.blinded_signature, request.blinding_factor)
 
 
 def create_blinded_commitment(
         request: CreateBlindedCommitmentRequest,
 ) -> BlindedCommitment:
+    """Create a blinded commitment of messages for use in producing a blinded BBS+ signature
+    Args:
+        request: Request for producing the blinded commitment
+    Returns:
+        The blinded commitment
+    """
     handle = bbs_blind_commitment.bbs_blind_commitment_context_init()
 
     for item in request.messages:
@@ -100,6 +132,12 @@ def create_blinded_commitment(
 def verify_blinded_commitment(
         request: VerifyBlindedCommitmentRequest,
 ) -> SignatureProofStatus:
+    """Verifies a blinded commitment of messages
+    Args:
+        request: Request for the commitment verification
+    Returns:
+        The resulting proof status
+    """
     handle = bbs_verify_blind_commitment.bbs_verify_blind_commitment_context_init()
 
     bbs_verify_blind_commitment.bbs_verify_blind_commitment_context_set_nonce_bytes(request.nonce)
@@ -117,6 +155,12 @@ def verify_blinded_commitment(
 
 
 def create_proof(request: CreateProofRequest) -> bytes:
+    """Creates the proof asynchronous.
+    Args:
+        request: Request for creating the proof
+    Returns:
+        The proof
+    """
     handle = bbs_create_proof.bbs_create_proof_context_init()
 
     for msg in request.messages:
@@ -134,6 +178,12 @@ def create_proof(request: CreateProofRequest) -> bytes:
 
 
 def verify_proof(request: VerifyProofRequest) -> bool:
+    """Verifies the proof
+    Args:
+        request: Request for the proof verification operation
+    Return:
+        True if verification was successful, False if not
+    """
     handle = bbs_verify_proof.bbs_verify_proof_context_init()
 
     bbs_verify_proof.bbs_verify_proof_context_set_public_key(handle, request.key.public_key)
@@ -151,4 +201,10 @@ def verify_proof(request: VerifyProofRequest) -> bool:
 
 
 def get_total_message_count(proof: bytes) -> int:
+    """Returns the total amount of messages for a given proof
+    Args:
+        proof: a bytes object containing the proof value
+    Returns:
+        The amount of messages.
+    """
     return bbs_verify_proof.bbs_get_total_messages_count_for_proof(proof)
