@@ -14,7 +14,13 @@ from ...models.BbsException import BbsException
 
 
 class BlsKeyPair:
-    def __init__(self, public_key: bytes, secret_key: Optional[bytes] = None):
+    def __init__(self, public_key: bytes, secret_key: Optional[bytes] = None) -> None:
+        """ A BLS 12-381 key pair
+
+        Args:
+            public_key: The deterministic public key
+            secret_key: The secret key
+        """
         self.public_key = public_key
         self.secret_key = secret_key
 

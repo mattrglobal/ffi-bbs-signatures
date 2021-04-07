@@ -4,7 +4,6 @@ from ..._ffi.bindings.bls import (
     bls_generate_blinded_g1_key,
     bls_generate_blinded_g2_key, blinding_factor_size,
 )
-from ..._ffi.ffi_util import encode_bytes
 from .BlsKeyPair import BlsKeyPair
 
 

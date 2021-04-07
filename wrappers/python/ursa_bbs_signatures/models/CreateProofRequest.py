@@ -6,15 +6,26 @@ from .keys import BbsKey
 
 
 class CreateProofRequest:
+
     def __init__(
-        self,
-        public_key: BbsKey,
-        messages: List[ProofMessage],
-        signature: bytes,
-        nonce: bytes,
-        blinding_factor: Optional[bytes] = None,
+            self,
+            public_key: BbsKey,
+            messages: List[ProofMessage],
+            signature: bytes,
+            nonce: bytes,
+            blinding_factor: Optional[bytes] = None,
     ) -> None:
-        # Check wether there are any messages with type HiddenExternalBlinding
+        """A request object for creating proofs
+
+        Args:
+            public_key (): Public key of the original signer of the signature
+            messages (): The messages that were originally signed
+            signature (): BBS signature to generate the BBS proof from
+            nonce (): A nonce for the resulting proof
+            blinding_factor (): The blinding factor used in blinded signature, if any messages are hidden using
+                ProofMessageType.HiddenExternalBlinding
+        """
+        # Check weather there are any messages with type HiddenExternalBlinding
         has_hidden_blinding = any(
             [x.proof_type == ProofMessageType.HiddenExternalBlinding for x in messages]
         )
