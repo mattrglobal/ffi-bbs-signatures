@@ -27,9 +27,9 @@ if __name__ == "__main__":
         package_data={
             "models": [],
             "": [
-                "libbbs.dll",
+                "bbs.dll",
                 "libbbs.dylib",
-                "bbs.so",
+                "libbbs.so",
             ]
         },
         python_requires=">=3.6.3",
