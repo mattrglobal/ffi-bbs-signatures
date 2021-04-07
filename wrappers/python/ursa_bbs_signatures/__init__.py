@@ -4,7 +4,7 @@ from .models.BlindedCommitment import BlindedCommitment
 from .models.CreateBlindedCommitmentRequest import CreateBlindedCommitmentRequest
 from .models.CreateProofRequest import CreateProofRequest
 from .models.IndexedMessage import IndexedMessage
-from .models.ProofMessage import ProofMessage
+from .models.ProofMessage import ProofMessage, ProofMessageType
 from .models.SignRequest import SignRequest
 from .models.SignatureProofStatus import SignatureProofStatus
 from .models.UnblindSignatureRequest import UnblindSignatureRequest
@@ -25,7 +25,7 @@ from .api import (
     create_proof,
     get_total_message_count,
     unblind_signature,
-    verify_blinded_commitment
+    verify_blinded_commitment,
 )
 
 __all__ = [
@@ -36,17 +36,16 @@ __all__ = [
     CreateProofRequest,
     IndexedMessage,
     ProofMessage,
+    ProofMessageType,
     SignRequest,
     SignatureProofStatus,
     UnblindSignatureRequest,
     VerifyBlindedCommitmentRequest,
     VerifyProofRequest,
     VerifyRequest,
-
     BlsKeyPair,
     BbsKey,
     BlindedBlsKeyPair,
-
     sign,
     verify,
     verify_proof,
@@ -55,5 +54,5 @@ __all__ = [
     create_proof,
     get_total_message_count,
     unblind_signature,
-    verify_blinded_commitment
+    verify_blinded_commitment,
 ]
