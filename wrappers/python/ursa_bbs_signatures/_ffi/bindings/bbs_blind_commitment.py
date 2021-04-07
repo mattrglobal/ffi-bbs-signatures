@@ -1,5 +1,5 @@
 import sys
-from ctypes import POINTER, byref, c_char_p, c_uint, c_ulong
+from ctypes import POINTER, byref, c_char_p, c_uint, c_ulong, c_uint64, c_int64
 
 from ..ExternError import ExternError
 from ..ffi_util import (
@@ -32,7 +32,7 @@ def bbs_blind_commitment_context_init() -> int:
     func = wrap_native_func(
         "bbs_blind_commitment_context_init",
         arg_types=[POINTER(ExternError)],
-        return_type=c_ulong,
+        return_type=c_uint64,
     )
     err = ExternError()
     handle = func(byref(err))
@@ -48,7 +48,7 @@ def bbs_blind_commitment_context_finish(
     func = wrap_native_func(
         "bbs_blind_commitment_context_finish",
         arg_types=[
-            c_ulong,
+            c_uint64,
             POINTER(FfiByteBuffer),
             POINTER(FfiByteBuffer),
             POINTER(FfiByteBuffer),
@@ -84,7 +84,7 @@ def bbs_blind_commitment_context_add_message_string(
 ) -> None:
     func = wrap_native_func(
         "bbs_blind_commitment_context_add_message_string",
-        arg_types=[c_ulong, c_uint, c_char_p, POINTER(ExternError)],
+        arg_types=[c_uint64, c_int64, c_char_p, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, index, encode_str(message), byref(err))
@@ -96,7 +96,7 @@ def bbs_blind_commitment_context_add_message_bytes(
 ) -> None:
     func = wrap_native_func(
         "bbs_blind_commitment_context_add_message_bytes",
-        arg_types=[c_ulong, c_uint, FfiByteBuffer, POINTER(ExternError)],
+        arg_types=[c_uint64, c_int64, FfiByteBuffer, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, index, encode_bytes(message), byref(err))
@@ -108,7 +108,7 @@ def bbs_blind_commitment_context_add_message_prehashed(
 ) -> None:
     func = wrap_native_func(
         "bbs_blind_commitment_context_add_message_prehashed",
-        arg_types=[c_ulong, c_uint, FfiByteBuffer, POINTER(ExternError)],
+        arg_types=[c_uint64, c_int64, FfiByteBuffer, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, index, encode_bytes(message), byref(err))
@@ -118,7 +118,7 @@ def bbs_blind_commitment_context_add_message_prehashed(
 def bbs_blind_commitment_context_set_public_key(handle: int, value: bytes) -> None:
     func = wrap_native_func(
         "bbs_blind_commitment_context_set_public_key",
-        arg_types=[c_ulong, FfiByteBuffer, POINTER(ExternError)],
+        arg_types=[c_uint64, FfiByteBuffer, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, encode_bytes(value), byref(err))
@@ -128,7 +128,7 @@ def bbs_blind_commitment_context_set_public_key(handle: int, value: bytes) -> No
 def bbs_blind_commitment_context_set_nonce_string(handle: int, value: str) -> None:
     func = wrap_native_func(
         "bbs_blind_commitment_context_set_public_key",
-        arg_types=[c_ulong, c_char_p, POINTER(ExternError)],
+        arg_types=[c_uint64, c_char_p, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, encode_str(value), byref(err))
@@ -138,7 +138,7 @@ def bbs_blind_commitment_context_set_nonce_string(handle: int, value: str) -> No
 def bbs_blind_commitment_context_set_nonce_bytes(handle: int, value: bytes) -> None:
     func = wrap_native_func(
         "bbs_blind_commitment_context_set_nonce_bytes",
-        arg_types=[c_ulong, FfiByteBuffer, POINTER(ExternError)],
+        arg_types=[c_uint64, FfiByteBuffer, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, encode_bytes(value), byref(err))
@@ -148,7 +148,7 @@ def bbs_blind_commitment_context_set_nonce_bytes(handle: int, value: bytes) -> N
 def bbs_blind_commitment_context_set_nonce_prehashed(handle: int, value: bytes) -> None:
     func = wrap_native_func(
         "bbs_blind_commitment_context_set_nonce_prehashed",
-        arg_types=[c_ulong, FfiByteBuffer, POINTER(ExternError)],
+        arg_types=[c_uint64, FfiByteBuffer, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, encode_bytes(value), byref(err))

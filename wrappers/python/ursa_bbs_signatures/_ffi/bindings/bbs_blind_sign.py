@@ -1,4 +1,4 @@
-from ctypes import POINTER, byref, c_char_p, c_int, c_uint, c_ulong
+from ctypes import POINTER, byref, c_char_p, c_int, c_uint, c_ulong, c_uint64, c_int32, c_int64
 
 import sys
 
@@ -20,7 +20,7 @@ def bbs_blind_sign_context_init() -> int:
     func = wrap_native_func(
         "bbs_blind_sign_context_init",
         arg_types=[POINTER(ExternError)],
-        return_type=c_ulong,
+        return_type=c_uint64,
     )
     err = ExternError()
     handle = func(byref(err))
@@ -30,8 +30,8 @@ def bbs_blind_sign_context_init() -> int:
 def bbs_blind_sign_context_finish(handle: int) -> bytes:
     func = wrap_native_func(
         "bbs_blind_sign_context_finish",
-        arg_types=[c_ulong, POINTER(FfiByteBuffer), POINTER(ExternError)],
-        return_type=c_int,
+        arg_types=[c_uint64, POINTER(FfiByteBuffer), POINTER(ExternError)],
+        return_type=c_int32,
     )
     bl_sig, err = FfiByteBuffer(), ExternError()
     func(handle, byref(bl_sig), byref(err))
@@ -44,7 +44,7 @@ def bbs_blind_sign_context_add_message_string(
 ) -> None:
     func = wrap_native_func(
         "bbs_blind_sign_context_add_message_string",
-        arg_types=[c_ulong, c_uint, c_char_p, POINTER(ExternError)],
+        arg_types=[c_uint64, c_int64, c_char_p, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, index, encode_str(message), byref(err))
@@ -56,7 +56,7 @@ def bbs_blind_sign_context_add_message_bytes(
 ) -> None:
     func = wrap_native_func(
         "bbs_blind_sign_context_add_message_bytes",
-        arg_types=[c_ulong, c_uint, FfiByteBuffer, POINTER(ExternError)],
+        arg_types=[c_uint64, c_int64, FfiByteBuffer, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, index, encode_bytes(message), byref(err))
@@ -68,7 +68,7 @@ def bbs_blind_sign_context_add_message_prehashed(
 ) -> None:
     func = wrap_native_func(
         "bbs_blind_sign_context_add_message_prehashed",
-        arg_types=[c_ulong, c_uint, FfiByteBuffer, POINTER(ExternError)],
+        arg_types=[c_uint64, c_int64, FfiByteBuffer, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, index, encode_bytes(message), byref(err))
@@ -80,7 +80,7 @@ def bbs_blind_sign_context_set_public_key(
 ) -> None:
     func = wrap_native_func(
         "bbs_blind_sign_context_set_public_key",
-        arg_types=[c_ulong, FfiByteBuffer, POINTER(ExternError)],
+        arg_types=[c_uint64, FfiByteBuffer, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, encode_bytes(public_key), byref(err))
@@ -92,7 +92,7 @@ def bbs_blind_sign_context_set_secret_key(
 ) -> None:
     func = wrap_native_func(
         "bbs_blind_sign_context_set_secret_key",
-        arg_types=[c_ulong, FfiByteBuffer, POINTER(ExternError)],
+        arg_types=[c_uint64, FfiByteBuffer, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, encode_bytes(secret_key), byref(err))
@@ -104,7 +104,7 @@ def bbs_blind_sign_context_set_commitment(
 ) -> None:
     func = wrap_native_func(
         "bbs_blind_sign_context_set_commitment",
-        arg_types=[c_ulong, FfiByteBuffer, POINTER(ExternError)],
+        arg_types=[c_uint64, FfiByteBuffer, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, encode_bytes(commitment), byref(err))

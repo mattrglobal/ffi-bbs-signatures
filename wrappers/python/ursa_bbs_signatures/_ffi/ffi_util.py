@@ -12,6 +12,7 @@ from ctypes import (
     c_ubyte,
     c_void_p,
     string_at,
+    c_int32
 )
 from ctypes.util import find_library
 from typing import Any, Callable, List, Optional, Union
@@ -26,7 +27,6 @@ LOG_LEVELS = {
     4: logging.DEBUG,
 }
 
-# FIXME: this is a double declaration (see setup.py)
 PACKAGE_NAME = "ursa_bbs_signatures"
 
 LIB: CDLL = None
@@ -43,6 +43,8 @@ def wrap_native_func(
         lib_func.argtypes = arg_types
     if return_type:
         lib_func.restype = return_type
+    else:
+        lib_func.restype = c_int32
 
     return lib_func
 
@@ -67,7 +69,6 @@ def _load_library(lib_name: str):
         lib_path = os.path.join(
             os.path.dirname(__file__), '..', f"{lib_prefix}{lib_name}{lib_suffix}"
         )
-        print(lib_path)
 
         # lib_path = os.path.join(
         #     os.path.abspath("."), PACKAGE_NAME, f"{lib_prefix}{lib_name}{lib_suffix}"
@@ -97,7 +98,6 @@ class ByteBuffer(Structure):
 
     @property
     def raw(self) -> Array:
-        # print(self.len, self.value)
         ret = (c_ubyte * self.len).from_address(self.value)
         setattr(ret, "_ref_", self)  # ensure buffer is not dropped
         return ret
@@ -124,9 +124,7 @@ class FfiByteBuffer(Structure):
 
     @property
     def raw(self) -> bytes:
-        # print(self.len, self.value)
         ret = string_at(self.value, self.len)
-        # setattr(ret, "_ref_", self)  # ensure buffer is not dropped
         return ret
 
     def __bytes__(self) -> bytes:

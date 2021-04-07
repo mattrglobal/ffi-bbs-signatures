@@ -1,4 +1,4 @@
-from ctypes import POINTER, byref, c_char_p, c_ulong
+from ctypes import POINTER, byref, c_char_p, c_ulong, c_uint64
 import sys
 from typing import Optional, Union
 from ..ExternError import ExternError
@@ -19,7 +19,7 @@ else:
 # Binding functions
 def bbs_verify_context_init() -> int:
     func = wrap_native_func(
-        "bbs_verify_context_init", arg_types=[POINTER(ExternError)], return_type=c_ulong
+        "bbs_verify_context_init", arg_types=[POINTER(ExternError)], return_type=c_uint64
     )
     err = ExternError()
     handle = func(byref(err))
@@ -30,7 +30,7 @@ def bbs_verify_context_init() -> int:
 def bbs_verify_context_add_message_string(handle: int, message: str) -> None:
     func = wrap_native_func(
         "bbs_verify_context_add_message_string",
-        arg_types=[c_ulong, c_char_p, POINTER(ExternError)],
+        arg_types=[c_uint64, c_char_p, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, encode_str(message), err)
@@ -40,7 +40,7 @@ def bbs_verify_context_add_message_string(handle: int, message: str) -> None:
 def bbs_verify_context_add_message_bytes(handle: int, message: bytes) -> None:
     func = wrap_native_func(
         "bbs_verify_context_add_message_string",
-        arg_types=[c_ulong, FfiByteBuffer, POINTER(ExternError)],
+        arg_types=[c_uint64, FfiByteBuffer, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, encode_bytes(message), err)
@@ -51,7 +51,7 @@ def bbs_verify_context_add_message_prehashed(handle: int, message: bytes) -> Non
 
     func = wrap_native_func(
         "bbs_verify_context_add_message_prehashed",
-        arg_types=[c_ulong, FfiByteBuffer, POINTER(ExternError)],
+        arg_types=[c_uint64, FfiByteBuffer, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, encode_bytes(message), err)
@@ -61,7 +61,7 @@ def bbs_verify_context_add_message_prehashed(handle: int, message: bytes) -> Non
 def bbs_verify_context_set_public_key(handle: int, public_key: bytes) -> None:
     func = wrap_native_func(
         "bbs_verify_context_set_public_key",
-        arg_types=[c_ulong, FfiByteBuffer, POINTER(ExternError)],
+        arg_types=[c_uint64, FfiByteBuffer, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, encode_bytes(public_key), err)
@@ -71,7 +71,7 @@ def bbs_verify_context_set_public_key(handle: int, public_key: bytes) -> None:
 def bbs_verify_context_set_signature(handle: int, signature: bytes) -> None:
     func = wrap_native_func(
         "bbs_verify_context_set_signature",
-        arg_types=[c_ulong, FfiByteBuffer, POINTER(ExternError)],
+        arg_types=[c_uint64, FfiByteBuffer, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, encode_bytes(signature), err)
@@ -80,7 +80,7 @@ def bbs_verify_context_set_signature(handle: int, signature: bytes) -> None:
 
 def bbs_verify_context_finish(handle: int) -> int:
     func = wrap_native_func(
-        "bbs_verify_context_finish", arg_types=[c_ulong, POINTER(ExternError)]
+        "bbs_verify_context_finish", arg_types=[c_uint64, POINTER(ExternError)]
     )
     err = ExternError()
     result = func(handle, err)

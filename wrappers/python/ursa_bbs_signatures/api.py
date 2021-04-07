@@ -79,7 +79,7 @@ def blind_sign(request: BlindSignRequest) -> bytes:
         Raw signature value
     """
     handle = bbs_blind_sign.bbs_blind_sign_context_init()
-    print(handle)
+
     for item in request.messages:
         bbs_blind_sign.bbs_blind_sign_context_add_message_string(handle, item.index, item.message)
 
