@@ -1,4 +1,4 @@
-from ctypes import POINTER, byref, c_char_p, c_long, c_uint, c_ulong
+from ctypes import POINTER, byref, c_char_p, c_long, c_uint, c_ulong, c_uint32, c_uint64
 import sys
 from typing import Optional, Union
 from ..ExternError import ExternError
@@ -16,7 +16,7 @@ def bbs_verify_blind_commitment_context_init() -> int:
     func = wrap_native_func(
         "bbs_verify_blind_commitment_context_init",
         arg_types=[POINTER(ExternError)],
-        return_type=c_ulong,
+        return_type=c_uint64,
     )
     err = ExternError()
     handle = func(err)
@@ -27,7 +27,7 @@ def bbs_verify_blind_commitment_context_init() -> int:
 def bbs_verify_blind_commitment_context_add_blinded(handle: int, index: int) -> None:
     func = wrap_native_func(
         "bbs_verify_blind_commitment_context_add_blinded",
-        arg_types=[c_ulong, c_uint, POINTER(ExternError)],
+        arg_types=[c_uint64, c_uint32, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, index, err)
@@ -39,7 +39,7 @@ def bbs_verify_blind_commitment_context_set_public_key(
 ) -> None:
     func = wrap_native_func(
         "bbs_verify_blind_commitment_context_set_public_key",
-        arg_types=[c_ulong, FfiByteBuffer, POINTER(ExternError)],
+        arg_types=[c_uint64, FfiByteBuffer, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, public_key, err)
@@ -51,7 +51,7 @@ def bbs_verify_blind_commitment_context_set_nonce_string(
 ) -> None:
     func = wrap_native_func(
         "bbs_verify_blind_commitment_context_set_nonce_string",
-        arg_types=[c_ulong, c_char_p, POINTER(ExternError)],
+        arg_types=[c_uint64, c_char_p, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, nonce, err)
@@ -63,7 +63,7 @@ def bbs_verify_blind_commitment_context_set_nonce_bytes(
 ) -> None:
     func = wrap_native_func(
         "bbs_verify_blind_commitment_context_set_nonce_bytes",
-        arg_types=[c_ulong, FfiByteBuffer, POINTER(ExternError)],
+        arg_types=[c_uint64, FfiByteBuffer, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, encode_bytes(nonce), err)
@@ -75,7 +75,7 @@ def bbs_verify_blind_commitment_context_set_nonce_prehashed(
 ) -> None:
     func = wrap_native_func(
         "bbs_verify_blind_commitment_context_set_nonce_prehashed",
-        arg_types=[c_ulong, FfiByteBuffer, POINTER(ExternError)],
+        arg_types=[c_uint64, FfiByteBuffer, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, encode_bytes(nonce), err)
@@ -87,7 +87,7 @@ def bbs_verify_blind_commitment_context_set_proof(
 ) -> None:
     func = wrap_native_func(
         "bbs_verify_blind_commitment_context_set_proof",
-        arg_types=[c_ulong, FfiByteBuffer, POINTER(ExternError)],
+        arg_types=[c_uint64, FfiByteBuffer, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, encode_bytes(proof), err)
@@ -97,12 +97,13 @@ def bbs_verify_blind_commitment_context_set_proof(
 def bbs_verify_blind_commitment_context_finish(handle: int) -> int:
     func = wrap_native_func(
         "bbs_verify_blind_commitment_context_finish",
-        arg_types=[c_ulong, POINTER(ExternError)],
+        arg_types=[c_uint64, POINTER(ExternError)],
     )
     err = ExternError()
     result = func(handle, err)
     err.throw_on_error()
     return result
+
 
 __all__ = [
     bbs_verify_blind_commitment_context_init,

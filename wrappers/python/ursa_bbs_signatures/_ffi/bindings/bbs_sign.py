@@ -1,5 +1,5 @@
 import sys
-from ctypes import POINTER, byref, c_char_p, c_double, c_int, c_long, c_uint, c_ulong
+from ctypes import POINTER, byref, c_char_p, c_double, c_int, c_long, c_uint, c_ulong, c_int32, c_uint64
 from email import message
 from typing import Optional, Union
 from ..ExternError import ExternError
@@ -19,13 +19,13 @@ else:
 
 
 def bbs_signature_size() -> int:
-    func = wrap_native_func("bbs_signature_size", return_type=c_uint)
+    func = wrap_native_func("bbs_signature_size", return_type=c_int32)
     return func()
 
 
 def bbs_sign_context_init() -> int:
     func = wrap_native_func(
-        "bbs_sign_context_init", arg_types=[POINTER(ExternError)], return_type=c_long
+        "bbs_sign_context_init", arg_types=[POINTER(ExternError)], return_type=c_uint64
     )
     err = ExternError()
     handle = func(byref(err))
@@ -38,7 +38,7 @@ def bbs_sign_context_init() -> int:
 def bbs_sign_context_finish(handle: int) -> FfiByteBuffer:
     func = wrap_native_func(
         "bbs_sign_context_finish",
-        arg_types=[c_ulong, POINTER(FfiByteBuffer), POINTER(ExternError)]
+        arg_types=[c_uint64, POINTER(FfiByteBuffer), POINTER(ExternError)]
     )
     sig, err = FfiByteBuffer(), ExternError()
     func(handle, byref(sig), byref(err))
@@ -51,7 +51,7 @@ def bbs_sign_context_finish(handle: int) -> FfiByteBuffer:
 def bbs_sign_context_add_message_string(handle: int, message: str) -> None:
     func = wrap_native_func(
         "bbs_sign_context_add_message_string",
-        arg_types=[c_ulong, c_char_p, POINTER(ExternError)],
+        arg_types=[c_uint64, c_char_p, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, encode_str(message), byref(err))
@@ -62,7 +62,7 @@ def bbs_sign_context_add_message_string(handle: int, message: str) -> None:
 def bbs_sign_context_add_message_bytes(handle: int, message: Union[str, bytes]) -> None:
     func = wrap_native_func(
         "bbs_sign_context_add_message_bytes",
-        arg_types=[c_ulong, FfiByteBuffer, POINTER(ExternError)],
+        arg_types=[c_uint64, FfiByteBuffer, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, encode_bytes(message), byref(err))
@@ -75,7 +75,7 @@ def bbs_sign_context_add_message_prehashed(
 ) -> None:
     func = wrap_native_func(
         "bbs_sign_context_add_message_prehashed",
-        arg_types=[c_ulong, FfiByteBuffer, POINTER(ExternError)],
+        arg_types=[c_uint64, FfiByteBuffer, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, encode_bytes(message), byref(err))
@@ -85,7 +85,7 @@ def bbs_sign_context_add_message_prehashed(
 def bbs_sign_context_set_public_key(handle: int, public_key: Union[str, bytes]) -> None:
     func = wrap_native_func(
         "bbs_sign_context_set_public_key",
-        arg_types=[c_ulong, FfiByteBuffer, POINTER(ExternError)],
+        arg_types=[c_uint64, FfiByteBuffer, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, encode_bytes(public_key), byref(err))
@@ -95,11 +95,12 @@ def bbs_sign_context_set_public_key(handle: int, public_key: Union[str, bytes]) 
 def bbs_sign_context_set_secret_key(handle: int, secret_key: Union[str, bytes]) -> None:
     func = wrap_native_func(
         "bbs_sign_context_set_secret_key",
-        arg_types=[c_ulong, FfiByteBuffer, POINTER(ExternError)],
+        arg_types=[c_uint64, FfiByteBuffer, POINTER(ExternError)],
     )
     err = ExternError()
     func(handle, encode_bytes(secret_key), byref(err))
     err.throw_on_error()
+
 
 __all__ = [
     bbs_signature_size,
