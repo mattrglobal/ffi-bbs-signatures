@@ -1,5 +1,5 @@
 # Hyperledger Ursa BBS Signatures Wrapper for Python
-
+[![ci-python](https://github.com/animo/ffi-bbs-signatures/actions/workflows/ci-python.yml/badge.svg?branch=master)](https://github.com/animo/ffi-bbs-signatures/actions/workflows/ci-python.yml)
 ## Table of Contents
 
 - [About](#about)
@@ -26,9 +26,10 @@ This is a Python wrapper for Hyperledger Ursa's C callable BBS+ package.
     - Follow installation instructions at https://github.com/mattrglobal/ffi-bbs-signatures
 
 ### Installing
-
 #### Using pip
-
+```sh
+pip install ursa-bbs-signatures
+```
 #### Manually
 1. Build the Rust BBS+ library as described [here](https://github.com/mattrglobal/ffi-bbs-signatures)
 2. Place the resulting library (located in the `target/debug` directory) into the `wrappers/python/ursa_bbs_signatures` directory

@@ -7,66 +7,69 @@ on:
   push:
     branches:
       - master
+  release:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "Publish packages"
+        required: true
+        default: "false"
 
 jobs:
-  build_windows:
-    runs-on: windows-latest
+  build_ursa:
+    name: Build Ursa
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: [3.6]
+        include:
+          - os: ubuntu-latest
+            plat-name-simple: linux
+            target-path: ./out/linux
+          - os: macos-latest
+            plat-name-simple: macos
+            target-path: ./out/macos/darwin-x86_64
+          - os: windows-latest
+            plat-name-simple: windows
+            target-path: ./out/windows
+
+    runs-on: ${{ matrix.os }}
+
     steps:
       - uses: actions/checkout@v1
-      - run: |
+      - if: "matrix.os == 'windows-latest'"
+        run: |
           mkdir .\out\windows
           cargo build --release
           cp .\target\release\bbs.dll .\out\windows
+      - if: "matrix.os != 'windows-latest'"
+        run: yarn build:${{matrix.plat-name-simple}}
       - uses: actions/upload-artifact@v2
         with:
-          name: windows
-          path: ./out/windows/*
+          name: ${{matrix.plat-name-simple}}
+          path: ${{matrix.target-path}}/*
 
-  build_linux:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - run: yarn build:linux
-      - uses: actions/upload-artifact@v2
-        with:
-          name: linux
-          path: ./out/linux/*
-
-  build_macos:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v1
-      - run: yarn build:macos
-      - uses: actions/upload-artifact@v2
-        with:
-          name: macos
-          path: ./out/macos/darwin-x86_64/*
-
-  test_macos:
-    needs: [build_macos]
-    runs-on: macos-latest
+  test_python_wrapper:
+    name: Test Python Wrapper
+    needs: [build_ursa]
     strategy:
       matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: [3.6, 3.7, 3.8, 3.9]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-      - uses: actions/download-artifact@v2
-        with:
-          name: macos
-          path: ./wrappers/python/ursa_bbs_signatures
-      - name: Run tests
-        run: python -m unittest discover
+        include:
+          - os: ubuntu-latest
+            plat-name-simple: linux
+            target-name: libbbs.so
+          - os: macos-latest
+            plat-name-simple: macos
+            target-name: libbbs.dylib
+          - os: windows-latest
+            plat-name-simple: windows
+            target-name: bbs.dll
+    
+    runs-on: ${{ matrix.os }}
         
-  test_linux:
-    needs: [build_linux]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.7, 3.8, 3.9]
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
@@ -75,28 +78,77 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - uses: actions/download-artifact@v2
         with:
-          name: linux
-          path: ./wrappers/python/ursa_bbs_signatures
-      - name: Run tests
-        run: python -m unittest discover
-        
-  test_windows:
-    needs: [build_windows]
-    runs-on: windows-latest
-    strategy:
-      matrix:
-        python-version: [3.7, 3.8, 3.9]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-      - uses: actions/download-artifact@v2
-        with:
-          name: windows
+          name: ${{matrix.plat-name-simple}}
           path: ./wrappers/python/ursa_bbs_signatures
       - name: Run tests
         run: python -m unittest discover
 
+  build-py:
+    name: Build and Publish Python Wrapper
+    needs: [test_python_wrapper]
 
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: [3.6]
+        include:
+          - os: ubuntu-latest
+            plat-name-simple: linux
+            plat-name: manylinux2014_x86_64
+          - os: macos-latest
+            plat-name-simple: macos
+            plat-name: macosx_10_9_x86_64 # macosx_10_9_universal2
+          - os: windows-latest
+            plat-name-simple: windows
+            plat-name: win_amd64
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install setuptools wheel twine auditwheel
+
+      - name: Download library artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{matrix.plat-name-simple}}
+          path: ./wrappers/python/ursa_bbs_signatures
+          
+      - name: Build python wheels
+        shell: sh
+        run: |
+          python setup.py bdist_wheel --python-tag=py3 --plat-name=${{ matrix.plat-name }}
+        working-directory: wrappers/python
+
+      - if: "runner.os == 'Linux'"
+        name: Auditwheel
+        run: auditwheel show ./wrappers/python/dist/*
+
+      - name: Upload python package
+        uses: actions/upload-artifact@v2
+        with:
+          name: python-${{ runner.os }}
+          path: ./wrappers/python/dist/*
+          if-no-files-found: error
+
+      - if: |
+          (github.event_name == 'release' ||
+            (github.event_name == 'workflow_dispatch' &&
+              github.event.inputs.publish == 'true'))
+        name: Publish python package
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        run: |
+          twine upload --skip-existing dist/*
+        working-directory: ./wrappers/python
