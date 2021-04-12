@@ -59,11 +59,11 @@ def get_library() -> CDLL:
 
 def _load_library(lib_name: str):
     """Load the CDLL library."""
-    lib_prefix_mapping = {"darwin": "lib", "win32": ""}
+    lib_prefix_mapping = {"win32": ""}
     lib_suffix_mapping = {"darwin": ".dylib", "win32": ".dll"}
     try:
         os_name = sys.platform
-        lib_prefix = lib_prefix_mapping.get(os_name, "")
+        lib_prefix = lib_prefix_mapping.get(os_name, "lib")
         lib_suffix = lib_suffix_mapping.get(os_name, ".so")
 
         lib_path = os.path.join(
