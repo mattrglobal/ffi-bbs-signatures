@@ -58,11 +58,17 @@ Objective-C wrapper
 ./wrappers/obj-c
 ```
 
+Python wrapper
+```
+./wrappers/python
+```
+
 Each wrapper has individual documentation:
 
 - [.NET C#](./wrappers/dotnet/README.md)
 - [Java](./wrappers/java/README.md)  
 - [Objective-C](./wrappers/obj-c/README.md)  
+- [Python](./wrappers/python/README.md)  
 
 ## Project Structure
 
