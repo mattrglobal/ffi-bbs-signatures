@@ -16,6 +16,8 @@ from .models.keys.BlsKeyPair import BlsKeyPair
 from .models.keys.BbsKey import BbsKey
 from .models.keys.BlindedBlsKeyPair import BlindedBlsKeyPair
 
+from ._ffi import FfiException
+
 from .api import (
     sign,
     verify,
@@ -30,6 +32,7 @@ from .api import (
 
 __all__ = [
     BbsException,
+    FfiException,
     BlindSignRequest,
     BlindedCommitment,
     CreateBlindedCommitmentRequest,
