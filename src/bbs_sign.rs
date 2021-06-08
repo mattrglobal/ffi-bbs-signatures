@@ -60,13 +60,13 @@ pub extern "C" fn bbs_sign_context_finish(
     let sig =
         SIGN_CONTEXT.call_with_result(err, handle, move |ctx| -> Result<ByteBuffer, BbsFfiError> {
             if ctx.secret_key.is_none() {
-                Err(BbsFfiError::new("Secret Key must be set"))?;
+                return Err(BbsFfiError::new("Secret Key must be set"))
             }
             if ctx.public_key.is_none() {
-                Err(BbsFfiError::new("Public Key must be set"))?;
+                return Err(BbsFfiError::new("Public Key must be set"))
             }
             if ctx.messages.is_empty() {
-                Err(BbsFfiError::new("Messages cannot be empty"))?;
+                return Err(BbsFfiError::new("Messages cannot be empty"))
             }
 
             match (ctx.secret_key.as_ref(), ctx.public_key.as_ref()) {
@@ -80,10 +80,9 @@ pub extern "C" fn bbs_sign_context_finish(
 
     if err.get_code().is_success() {
         *signature = sig;
-        match SIGN_CONTEXT.remove_u64(handle) {
-            Err(e) => *err = ExternError::new_error(ErrorCode::new(1), format!("{:?}", e)),
-            Ok(_) => {}
-        };
+        if let Err(e) = SIGN_CONTEXT.remove_u64(handle) { 
+            *err = ExternError::new_error(ErrorCode::new(1), format!("{:?}", e)) 
+        }
     }
     err.get_code().code()
 }
@@ -140,13 +139,13 @@ add_bytes_impl!(
 pub extern "C" fn bbs_verify_context_finish(handle: u64, err: &mut ExternError) -> i32 {
     SIGN_CONTEXT.call_with_result(err, handle, move |ctx| -> Result<i32, BbsFfiError> {
         if ctx.signature.is_none() {
-            Err(BbsFfiError::new("Signature must be set"))?;
+            return Err(BbsFfiError::new("Signature must be set"))
         }
         if ctx.public_key.is_none() {
-            Err(BbsFfiError::new("Public Key must be set"))?;
+            return Err(BbsFfiError::new("Public Key must be set"))
         }
         if ctx.messages.is_empty() {
-            Err(BbsFfiError::new("Messages cannot be empty"))?;
+            return Err(BbsFfiError::new("Messages cannot be empty"))
         }
 
         match (ctx.signature.as_ref(), ctx.public_key.as_ref()) {

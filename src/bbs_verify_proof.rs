@@ -160,16 +160,16 @@ pub extern "C" fn bbs_verify_proof_context_finish(handle: u64, err: &mut ExternE
         handle,
         move |ctx| -> Result<i32, BbsFfiError> {
             if ctx.proof.is_none() {
-                Err(BbsFfiError::new("Proof must be set"))?;
+                return Err(BbsFfiError::new("Proof must be set"))
             }
             if ctx.public_key.is_none() {
-                Err(BbsFfiError::new("Public key must be set"))?;
+                return Err(BbsFfiError::new("Public key must be set"))
             }
             if ctx.nonce.is_none() {
-                Err(BbsFfiError::new("Nonce must be set"))?;
+                return Err(BbsFfiError::new("Nonce must be set"))
             }
             if ctx.messages.is_empty() {
-                Err(BbsFfiError::new("Messages cannot be empty"))?;
+                return Err(BbsFfiError::new("Messages cannot be empty"))
             }
             let public_key = &ctx.public_key.as_ref().unwrap();
             let nonce = &ctx.nonce.as_ref().unwrap();
@@ -179,7 +179,7 @@ pub extern "C" fn bbs_verify_proof_context_finish(handle: u64, err: &mut ExternE
 
             // These should be equal
             if revealed.len() != ctx.messages.len() {
-                Err(BbsFfiError::new("Indices and messages are not equal"))?;
+                return Err(BbsFfiError::new("Indices and messages are not equal"))
             }
 
             let mut challenge_bytes = proof.get_bytes_for_challenge(revealed.clone(), public_key);
@@ -194,10 +194,9 @@ pub extern "C" fn bbs_verify_proof_context_finish(handle: u64, err: &mut ExternE
     );
 
     if err.get_code().is_success() {
-        match VERIFY_PROOF_CONTEXT.remove_u64(handle) {
-            Err(e) => *err = ExternError::new_error(ErrorCode::new(1), format!("{:?}", e)),
-            Ok(_) => {}
-        };
+        if let Err(e) = VERIFY_PROOF_CONTEXT.remove_u64(handle) { 
+            *err = ExternError::new_error(ErrorCode::new(1), format!("{:?}", e)) 
+        }
         match res {
             200 => 0,
             e => e
