@@ -72,16 +72,16 @@ pub extern "C" fn bbs_verify_blind_commitment_context_finish(
         handle,
         move |ctx| -> Result<i32, BbsFfiError> {
             if ctx.blinded.is_empty() {
-                Err(BbsFfiError::new("Blinded indices cannot be empty"))?;
+                return Err(BbsFfiError::new("Blinded indices cannot be empty"))
             }
             if ctx.nonce.is_none() {
-                Err(BbsFfiError::new("Nonce must be set."))?;
+                return Err(BbsFfiError::new("Nonce must be set"))
             }
             if ctx.proof.is_none() {
-                Err(BbsFfiError::new("Proof must be set."))?;
+                return Err(BbsFfiError::new("Proof must be set"))
             }
             if ctx.public_key.is_none() {
-                Err(BbsFfiError::new("Public Key must be set"))?;
+                return Err(BbsFfiError::new("Public Key must be set"))
             }
 
             let nonce = ctx.nonce.as_ref().unwrap();
@@ -103,10 +103,9 @@ pub extern "C" fn bbs_verify_blind_commitment_context_finish(
     );
 
     if err.get_code().is_success() {
-        match VERIFY_SIGN_PROOF_CONTEXT.remove_u64(handle) {
-            Err(e) => *err = ExternError::new_error(ErrorCode::new(1), format!("{:?}", e)),
-            Ok(_) => {}
-        };
+        if let Err(e) = VERIFY_SIGN_PROOF_CONTEXT.remove_u64(handle) { 
+            *err = ExternError::new_error(ErrorCode::new(1), format!("{:?}", e)) 
+        }
         res
     } else {
         err.get_code().code()
