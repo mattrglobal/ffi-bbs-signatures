@@ -15,6 +15,7 @@
     "build:windows": "mkdir -p .\\out && .\\scripts\\build.sh WINDOWS .\\out",
     "build:linux": "mkdir -p ./out && ./scripts/build.sh LINUX ./out",
     "test": "make test",
+    "test:macos": "./scripts/test.sh C MACOS",
     "wrapper:obj-c:build": "pod lib lint --allow-warnings",
     "wrapper:obj-c:update-binary": "yarn build:ios && cp out/ios/universal/libbbs.a wrappers/obj-c/libraries/libbbs.a",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md",
