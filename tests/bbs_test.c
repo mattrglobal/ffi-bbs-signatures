@@ -51,7 +51,7 @@ int main(int argc, char** argv) {
     printf("Create key pair...");
     fflush(stdout);
 
-    if (bls_generate_key(*seed, d_public_key, secret_key, err) != 0) {
+    if (bls_generate_g2_key(*seed, d_public_key, secret_key, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -59,9 +59,9 @@ int main(int argc, char** argv) {
 
     printf("Public key is correct size...");
     fflush(stdout);
-    if (d_public_key->len != bls_public_key_size()) {
+    if (d_public_key->len != bls_public_key_g2_size()) {
         printf("fail\n");
-        printf("    Expected %d, Found: %lld\n", bls_public_key_size(), d_public_key->len);
+        printf("    Expected %d, Found: %lld\n", bls_public_key_g2_size(), d_public_key->len);
         goto Exit;
     }
     printf("pass\n");
