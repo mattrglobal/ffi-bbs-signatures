@@ -343,7 +343,7 @@ int main(int argc, char** argv) {
 
     printf("Verifying signature...");
     fflush(stdout);
-    if (bbs_verify_context_finish(handle, err) != 1) {
+    if (bbs_verify_context_finish(handle, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
