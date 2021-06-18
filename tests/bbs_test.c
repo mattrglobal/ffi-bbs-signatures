@@ -453,25 +453,11 @@ int main(int argc, char** argv) {
 
     printf("Verify blind sign context...");
     fflush(stdout);
-    result = bbs_verify_proof_context_finish(handle, err);
-
-    switch(result) {
-        case Success:
-            printf("pass\n");
-            break;
-        case BadSignature:
-            printf("fail.  Bad signature was used.\n");
-            goto Fail;
-        case BadHiddenMessage:
-            printf("fail.  Bad hidden message was used.\n");
-            goto Fail;
-        case BadRevealedMessage:
-            printf("fail. A message that wasn't signed was used.\n");
-            goto Fail;
-        default:
-            printf("fail. Status = %d\n", result);
-            goto Fail;
+    if (bbs_verify_proof_context_finish(handle, err) != 0) {
+        printf("fail\n");
+        goto Fail;
     }
+    printf("pass\n");
 
     printf("Create new proof context 2...");
     fflush(stdout);
@@ -586,25 +572,11 @@ int main(int argc, char** argv) {
 
     printf("Verify blind sign context 2...");
     fflush(stdout);
-    result = bbs_verify_proof_context_finish(handle, err);
-
-    switch(result) {
-        case Success:
-            printf("pass\n");
-            break;
-        case BadSignature:
-            printf("fail.  Bad signature was used.\n");
-            goto Fail;
-        case BadHiddenMessage:
-            printf("fail.  Bad hidden message was used.\n");
-            goto Fail;
-        case BadRevealedMessage:
-            printf("fail. A message that wasn't signed was used.\n");
-            goto Fail;
-        default:
-            printf("fail. Status = %d\n", result);
-            goto Fail;
+    if (bbs_verify_proof_context_finish(handle, err) != 0) {
+        printf("fail\n");
+        goto Fail;
     }
+    printf("pass\n");
 
     printf("Tests Passed\n");
 
