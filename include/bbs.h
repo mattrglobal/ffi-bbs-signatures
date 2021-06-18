@@ -264,17 +264,14 @@ int32_t bbs_verify_proof_context_set_nonce_prehashed(uint64_t handle,
 
 
 int32_t bbs_verify_proof_context_add_message_string(uint64_t handle,
-                                                    uint32_t index,
                                                     const char *const message,
                                                     ExternError *err);
 
 int32_t bbs_verify_proof_context_add_message_bytes(uint64_t handle,
-                                                   uint32_t index,
                                                    ByteBuffer message,
                                                    ExternError *err);
 
 int32_t bbs_verify_proof_context_add_message_prehashed(uint64_t handle,
-                                                       uint32_t index,
                                                        ByteBuffer message,
                                                        ExternError *err);
 

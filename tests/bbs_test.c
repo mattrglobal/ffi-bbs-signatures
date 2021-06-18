@@ -420,7 +420,7 @@ int main(int argc, char** argv) {
     printf("Adding revealed messages to verify proof context...");
     fflush(stdout);
     for (i = 0; i < 2; i++) {
-        if (bbs_verify_proof_context_add_message_bytes(handle, i, *messages[i], err) != 0) {
+        if (bbs_verify_proof_context_add_message_bytes(handle, *messages[i], err) != 0) {
             printf("fail\n");
             goto Fail;
         }
@@ -550,11 +550,11 @@ int main(int argc, char** argv) {
 
     printf("Adding revealed messages to verify proof context 2...");
     fflush(stdout);
-    if (bbs_verify_proof_context_add_message_bytes(handle, 1, *messages[1], err) != 0) {
+    if (bbs_verify_proof_context_add_message_bytes(handle, *messages[1], err) != 0) {
         printf("fail\n");
         goto Fail;
     }
-    if (bbs_verify_proof_context_add_message_bytes(handle, 3, *messages[3], err) != 0) {
+    if (bbs_verify_proof_context_add_message_bytes(handle, *messages[3], err) != 0) {
         printf("fail\n");
         goto Fail;
     }
