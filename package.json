@@ -14,6 +14,7 @@
     "build:macos": "mkdir -p ./out && ./scripts/build.sh MACOS ./out",
     "build:windows": "mkdir -p .\\out && .\\scripts\\build.sh WINDOWS .\\out",
     "build:linux": "mkdir -p ./out && ./scripts/build.sh LINUX ./out",
+    "gen:c-header": "./scripts/generate-c-header.sh",
     "test": "make test",
     "test:macos": "./scripts/test.sh C MACOS",
     "wrapper:obj-c:build": "pod lib lint --allow-warnings",

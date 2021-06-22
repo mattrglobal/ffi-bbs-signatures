@@ -10,48 +10,49 @@
 
 int main(int argc, char** argv) {
     const int message_count = 5;
-    ByteBuffer* seed;
-    ByteBuffer* d_public_key;
-    ByteBuffer* public_key;
-    ByteBuffer* secret_key;
-    ByteBuffer** messages;
-    ByteBuffer* message;
-    ByteBuffer* signature;
-    ByteBuffer* nonce;
-    ByteBuffer* commitment;
-    ByteBuffer* blind_sign_context;
-    ByteBuffer* blinding_factor;
-    ByteBuffer* blind_signature;
-    ByteBuffer* unblind_signature;
-    ByteBuffer* proof;
+    ByteArray* seed;
+    ByteArray* public_key;
+    ByteArray* secret_key;
+    ByteArray** messages;
+    ByteArray* message;
+    ByteArray* signature;
+    ByteArray* nonce;
+    ByteArray* commitment;
+    ByteArray* blind_sign_context;
+    ByteArray* blinding_factor;
+    ByteArray* blind_signature;
+    ByteArray* unblind_signature;
+    ByteArray* proof;
     ExternError* err;
-    signature_proof_status result;
+    SignatureProofStatus result;
     uint64_t handle;
     int i;
 
-    seed = (ByteBuffer*) malloc(sizeof(ByteBuffer));
-    d_public_key = (ByteBuffer*) malloc(sizeof(ByteBuffer));
-    public_key = (ByteBuffer*) malloc(sizeof(ByteBuffer));
-    secret_key = (ByteBuffer*) malloc(sizeof(ByteBuffer));
-    messages = (ByteBuffer**) malloc(message_count * sizeof(ByteBuffer*));
-    signature = (ByteBuffer*) malloc(sizeof(ByteBuffer));
-    nonce = (ByteBuffer*) malloc(sizeof(ByteBuffer));
-    commitment = (ByteBuffer*) malloc(sizeof(ByteBuffer));
-    blind_sign_context = (ByteBuffer*) malloc(sizeof(ByteBuffer));
-    blinding_factor = (ByteBuffer*) malloc(sizeof(ByteBuffer));
-    blind_signature = (ByteBuffer*) malloc(sizeof(ByteBuffer));
-    unblind_signature = (ByteBuffer*) malloc(sizeof(ByteBuffer));
-    proof = (ByteBuffer*) malloc(sizeof(ByteBuffer));
+    seed = (ByteArray*) malloc(sizeof(ByteArray));
+    public_key = (ByteArray*) malloc(sizeof(ByteArray));
+    secret_key = (ByteArray*) malloc(sizeof(ByteArray));
+    messages = (ByteArray**) malloc(message_count * sizeof(ByteArray*));
+    signature = (ByteArray*) malloc(sizeof(ByteArray));
+    nonce = (ByteArray*) malloc(sizeof(ByteArray));
+    commitment = (ByteArray*) malloc(sizeof(ByteArray));
+    blind_sign_context = (ByteArray*) malloc(sizeof(ByteArray));
+    blinding_factor = (ByteArray*) malloc(sizeof(ByteArray));
+    blind_signature = (ByteArray*) malloc(sizeof(ByteArray));
+    unblind_signature = (ByteArray*) malloc(sizeof(ByteArray));
+    proof = (ByteArray*) malloc(sizeof(ByteArray));
     err = (ExternError*) malloc(sizeof(ExternError));
 
-    nonce->len = 16;
+    seed->length = 0;
+    seed->data = NULL;
+
+    nonce->length = 16;
     nonce->data = (uint8_t *)malloc(60);
-    memset(nonce->data, 15, 16);
+    memset((uint8_t *)nonce->data, 15, 16);
 
     printf("Create key pair...");
     fflush(stdout);
 
-    if (bls_generate_g2_key(*seed, d_public_key, secret_key, err) != 0) {
+    if (bls_generate_g2_key(*seed, (ByteBuffer*) public_key, (ByteBuffer*) secret_key, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -59,35 +60,35 @@ int main(int argc, char** argv) {
 
     printf("Public key is correct size...");
     fflush(stdout);
-    if (d_public_key->len != bls_public_key_g2_size()) {
+    if (public_key->length != bls_public_key_g2_size()) {
         printf("fail\n");
-        printf("    Expected %d, Found: %lld\n", bls_public_key_g2_size(), d_public_key->len);
+        printf("    Expected %d, Found: %lu\n", bls_public_key_g2_size(), public_key->length);
         goto Exit;
     }
     printf("pass\n");
 
     printf("Secret key is correct size...");
     fflush(stdout);
-    if (secret_key->len != bls_secret_key_size()) {
+    if (secret_key->length != bls_secret_key_size()) {
         printf("fail\n");
-        printf("Expected %d, Found: %lld\n", bls_secret_key_size(), secret_key->len);
+        printf("Expected %d, Found: %lu\n", bls_secret_key_size(), secret_key->length);
         goto Exit;
     }
     printf("pass\n");
 
     printf("Create BBS key from BLS key that can sign %d messages...", message_count);
     fflush(stdout);
-    if (bls_public_key_to_bbs_key(*d_public_key, message_count, public_key, err) != 0) {
+    if (bls_public_key_to_bbs_key(*public_key, message_count, (ByteBuffer*) public_key, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
     printf("pass\n");
 
     for (i = 0; i < message_count; i++) {
-        message = (ByteBuffer*) malloc(sizeof(ByteBuffer));
-        message->len = 10;
+        message = (ByteArray*) malloc(sizeof(ByteArray));
+        message->length = 10;
         message->data = (uint8_t *)malloc(10);
-        memset(message->data, i+1, 10);
+        memset((uint8_t *)message->data, i+1, 10);
         messages[i] = message;
     }
 
@@ -129,16 +130,16 @@ int main(int argc, char** argv) {
 
     printf("Sign %d messages ...", message_count);
     fflush(stdout);
-    if (bbs_sign_context_finish(handle, signature, err) != 0) {
+    if (bbs_sign_context_finish(handle, (ByteBuffer*)signature, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
     printf("pass\n");
 
     printf("Signature is correct size...");
-    if (signature->len != bbs_blind_signature_size()) {
+    if (signature->length != bbs_blind_signature_size()) {
         printf("fail\n");
-        printf("Expected %d, found %lld\n", bbs_blind_signature_size(), signature->len);
+        printf("Expected %d, found %lu\n", bbs_blind_signature_size(), signature->length);
         goto Exit;
     }
     printf("pass\n");
@@ -178,7 +179,7 @@ int main(int argc, char** argv) {
 
     printf("Get blind sign commitment...");
     fflush(stdout);
-    if (bbs_blind_commitment_context_finish(handle, commitment, blind_sign_context, blinding_factor, err) != 0) {
+    if (bbs_blind_commitment_context_finish(handle, (ByteBuffer*)commitment, (ByteBuffer*)blind_sign_context, (ByteBuffer*)blinding_factor, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -292,7 +293,7 @@ int main(int argc, char** argv) {
 
     printf("Creating blind signature...");
     fflush(stdout);
-    if (bbs_blind_sign_context_finish(handle, blind_signature, err) != 0) {
+    if (bbs_blind_sign_context_finish(handle, (ByteBuffer*)blind_signature, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -300,7 +301,7 @@ int main(int argc, char** argv) {
 
     printf("Unblinding signature...");
     fflush(stdout);
-    if (bbs_unblind_signature(*blind_signature, *blinding_factor, unblind_signature, err) != 0) {
+    if (bbs_unblind_signature(*blind_signature, *blinding_factor, (ByteBuffer*)unblind_signature, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -402,7 +403,7 @@ int main(int argc, char** argv) {
 
     printf("Creating proof...");
     fflush(stdout);
-    if (bbs_create_proof_context_finish(handle, proof, err) != 0) {
+    if (bbs_create_proof_context_finish(handle, (ByteBuffer*)proof, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -519,7 +520,7 @@ int main(int argc, char** argv) {
 
     printf("Creating proof 2...");
     fflush(stdout);
-    if (bbs_create_proof_context_finish(handle, proof, err) != 0) {
+    if (bbs_create_proof_context_finish(handle, (ByteBuffer*)proof, err) != 0) {
         printf("fail\n");
         goto Fail;
     }
@@ -587,28 +588,26 @@ Fail:
 Err:
     free(err->message);
 Exit:
-    bbs_byte_buffer_free(*seed);
-    bbs_byte_buffer_free(*d_public_key);
-    bbs_byte_buffer_free(*public_key);
-    bbs_byte_buffer_free(*secret_key);
-    bbs_byte_buffer_free(*signature);
+    bbs_byte_buffer_free(*(ByteBuffer*)seed);
+    bbs_byte_buffer_free(*(ByteBuffer*)public_key);
+    bbs_byte_buffer_free(*(ByteBuffer*)secret_key);
+    bbs_byte_buffer_free(*(ByteBuffer*)signature);
     for (i = 0; i < message_count; i++) {
-        bbs_byte_buffer_free(*messages[i]);
+        bbs_byte_buffer_free(*(ByteBuffer*)messages[i]);
         free(messages[i]);
     }
-    bbs_byte_buffer_free(*nonce);
-    bbs_byte_buffer_free(*commitment);
-    bbs_byte_buffer_free(*blind_sign_context);
-    bbs_byte_buffer_free(*blinding_factor);
-    bbs_byte_buffer_free(*blind_signature);
-    bbs_byte_buffer_free(*proof);
+    bbs_byte_buffer_free(*(ByteBuffer*)nonce);
+    bbs_byte_buffer_free(*(ByteBuffer*)commitment);
+    bbs_byte_buffer_free(*(ByteBuffer*)blind_sign_context);
+    bbs_byte_buffer_free(*(ByteBuffer*)blinding_factor);
+    bbs_byte_buffer_free(*(ByteBuffer*)blind_signature);
+    bbs_byte_buffer_free(*(ByteBuffer*)proof);
     free(nonce);
     free(proof);
     free(signature);
     free(blind_signature);
     free(err);
     free(seed);
-    free(d_public_key);
     free(public_key);
     free(secret_key);
     free(commitment);
