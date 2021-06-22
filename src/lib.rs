@@ -9,7 +9,6 @@ use bbs::errors::BBSError;
 use bbs::pok_vc::PoKVCError;
 use ffi_support::{ByteBuffer, ErrorCode, ExternError};
 
-use bbs::pok_sig::PoKOfSignatureProofStatus;
 use pairing_plus::{
     bls12_381::{Bls12, Fr, G1, G2},
     hash_to_field::BaseFromRO,
@@ -107,31 +106,6 @@ pub enum ProofMessageType {
     Revealed = 1,
     HiddenProofSpecificBlinding = 2,
     HiddenExternalBlinding = 3,
-}
-
-#[repr(C)]
-pub enum SignatureProofStatus {
-    /// The proof verified
-    Success = 200,
-    /// The proof failed because the signature proof of knowledge failed
-    BadSignature = 400,
-    /// The proof failed because a hidden message was invalid when the proof was created
-    BadHiddenMessage = 401,
-    /// The proof failed because a revealed message was invalid
-    BadRevealedMessage = 402,
-}
-
-impl From<PoKOfSignatureProofStatus> for SignatureProofStatus {
-    fn from(value: PoKOfSignatureProofStatus) -> Self {
-        match value {
-            PoKOfSignatureProofStatus::Success => SignatureProofStatus::Success,
-            PoKOfSignatureProofStatus::BadSignature => SignatureProofStatus::BadSignature,
-            PoKOfSignatureProofStatus::BadHiddenMessage => SignatureProofStatus::BadHiddenMessage,
-            PoKOfSignatureProofStatus::BadRevealedMessage => {
-                SignatureProofStatus::BadRevealedMessage
-            }
-        }
-    }
 }
 
 define_string_destructor!(bbs_string_free);

@@ -1,4 +1,4 @@
-use crate::{BbsFfiError, ByteArray, SignatureProofStatus};
+use crate::{BbsFfiError, ByteArray};
 use bbs::prelude::*;
 use ffi_support::*;
 use std::{collections::BTreeSet, convert::TryFrom};
@@ -67,7 +67,7 @@ pub extern "C" fn bbs_verify_blind_commitment_context_finish(
     handle: u64,
     err: &mut ExternError,
 ) -> i32 {
-    let res = VERIFY_SIGN_PROOF_CONTEXT.call_with_result(
+    let _ = VERIFY_SIGN_PROOF_CONTEXT.call_with_result(
         err,
         handle,
         move |ctx| -> Result<i32, BbsFfiError> {
@@ -95,19 +95,18 @@ pub extern "C" fn bbs_verify_blind_commitment_context_finish(
             }
 
             if proof.verify(&revealed, public_key, nonce)? {
-                Ok(SignatureProofStatus::Success as i32)
+                Ok(i32::ffi_default())
             } else {
-                Ok(SignatureProofStatus::BadHiddenMessage as i32)
+                Err(BbsFfiError::new("Bad hidden message in proof"))
             }
         },
     );
 
     if err.get_code().is_success() {
         if let Err(e) = VERIFY_SIGN_PROOF_CONTEXT.remove_u64(handle) { 
-            *err = ExternError::new_error(ErrorCode::new(1), format!("{:?}", e)) 
+            *err = ExternError::from(e);
         }
-        res
-    } else {
-        err.get_code().code()
     }
+
+    err.get_code().code()
 }

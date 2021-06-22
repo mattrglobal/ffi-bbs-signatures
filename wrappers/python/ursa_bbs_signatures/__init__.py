@@ -6,7 +6,6 @@ from .models.CreateProofRequest import CreateProofRequest
 from .models.IndexedMessage import IndexedMessage
 from .models.ProofMessage import ProofMessage, ProofMessageType
 from .models.SignRequest import SignRequest
-from .models.SignatureProofStatus import SignatureProofStatus
 from .models.UnblindSignatureRequest import UnblindSignatureRequest
 from .models.VerifyBlindedCommitmentRequest import VerifyBlindedCommitmentRequest
 from .models.VerifyProofRequest import VerifyProofRequest
@@ -41,7 +40,6 @@ __all__ = [
     ProofMessage,
     ProofMessageType,
     SignRequest,
-    SignatureProofStatus,
     UnblindSignatureRequest,
     VerifyBlindedCommitmentRequest,
     VerifyProofRequest,

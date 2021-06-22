@@ -1,4 +1,4 @@
-use crate::{BbsFfiError, ByteArray, SignatureProofStatus};
+use crate::{BbsFfiError, ByteArray};
 use bbs::prelude::*;
 use ffi_support::*;
 use serde::{
@@ -155,7 +155,7 @@ add_bytes_impl!(
 
 #[no_mangle]
 pub extern "C" fn bbs_verify_proof_context_finish(handle: u64, err: &mut ExternError) -> i32 {
-    let res = VERIFY_PROOF_CONTEXT.call_with_result(
+    let _ = VERIFY_PROOF_CONTEXT.call_with_result(
         err,
         handle,
         move |ctx| -> Result<i32, BbsFfiError> {
@@ -189,21 +189,24 @@ pub extern "C" fn bbs_verify_proof_context_finish(handle: u64, err: &mut ExternE
 
             let challenge_verifier = ProofChallenge::hash(&challenge_bytes);
             let res = proof.verify(public_key, &proof_msgs, &challenge_verifier)?;
-            Ok(SignatureProofStatus::from(res) as i32)
+            match res
+            {
+                PoKOfSignatureProofStatus::Success => Ok(i32::ffi_default()),
+                PoKOfSignatureProofStatus::BadSignature => Err(BbsFfiError::new("Bad signature")),
+                PoKOfSignatureProofStatus::BadHiddenMessage => Err(BbsFfiError::new("Bad hidden message")),
+                PoKOfSignatureProofStatus::BadRevealedMessage => Err(BbsFfiError::new("Bad revealed message")),
+            }
         },
     );
 
     if err.get_code().is_success() {
         if let Err(e) = VERIFY_PROOF_CONTEXT.remove_u64(handle) { 
-            *err = ExternError::new_error(ErrorCode::new(1), format!("{:?}", e)) 
+            *err = ExternError::from(e)
         }
-        match res {
-            200 => 0,
-            e => e
-        }
-    } else {
-        err.get_code().code()
     }
+
+    err.get_code().code()
+
 }
 /// Convert big-endian vector to u32
 pub(crate) fn bitvector_to_revealed(data: &[u8]) -> BTreeSet<usize> {

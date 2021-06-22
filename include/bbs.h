@@ -5,13 +5,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
-typedef enum SignatureProofStatus {
-    Success = 200,
-    BadSignature = 400,
-    BadHiddenMessage = 401,
-    BadRevealedMessage = 402
-} SignatureProofStatus;
-
 
 typedef enum ProofMessageType {
   Revealed = 1,

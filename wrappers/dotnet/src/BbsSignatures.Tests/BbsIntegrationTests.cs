@@ -72,7 +72,7 @@ namespace BbsSignatures.Tests
             // Verify blinded commitment
             var verifyResult = Service.VerifyBlindedCommitment(new VerifyBlindedCommitmentRequest(publicKey, commitment.BlindSignContext.ToArray(), new [] { 0u }, nonce));
 
-            Assert.AreEqual(SignatureProofStatus.Success, verifyResult);
+            Assert.IsTrue(verifyResult);
 
             // Blind sign
             var messagesToSign = new[]
