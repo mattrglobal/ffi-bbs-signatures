@@ -169,7 +169,7 @@ namespace BbsSignatures
         /// </summary>
         /// <param name="request">Request for the commitment verification</param>
         /// <returns></returns>
-        public SignatureProofStatus VerifyBlindedCommitment(VerifyBlindedCommitmentRequest request)
+        public bool VerifyBlindedCommitment(VerifyBlindedCommitmentRequest request)
         {
             using var context = new UnmanagedMemory();
 
@@ -194,7 +194,7 @@ namespace BbsSignatures
             var result = NativeMethods.bbs_verify_blind_commitment_context_finish(handle, out error);
             context.ThrowOnError(error);
 
-            return (SignatureProofStatus)result;
+            return result == 0;
         }
 
         /// <summary>
@@ -286,7 +286,7 @@ namespace BbsSignatures
 
         BlindedCommitment CreateBlindedCommitment(CreateBlindedCommitmentRequest request);
 
-        SignatureProofStatus VerifyBlindedCommitment(VerifyBlindedCommitmentRequest request);
+        bool VerifyBlindedCommitment(VerifyBlindedCommitmentRequest request);
 
         byte[] CreateProof(CreateProofRequest proofRequest);
 
