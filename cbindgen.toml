@@ -2,15 +2,6 @@ language = "C"
 
 include_guard = "__bbs__plus__included__"
 
-after_includes = """
-typedef enum SignatureProofStatus {
-    Success = 200,
-    BadSignature = 400,
-    BadHiddenMessage = 401,
-    BadRevealedMessage = 402
-} SignatureProofStatus;
-"""
-
 [defines]
 "target_os = android" = "DEFINE_ANDROID"
 "feature = java" = "DEFINE_JAVA"

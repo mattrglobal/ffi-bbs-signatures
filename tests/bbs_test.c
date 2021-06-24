@@ -24,7 +24,6 @@ int main(int argc, char** argv) {
     ByteArray* unblind_signature;
     ByteArray* proof;
     ExternError* err;
-    SignatureProofStatus result;
     uint64_t handle;
     int i;
 
@@ -228,25 +227,11 @@ int main(int argc, char** argv) {
 
     printf("Verify blind sign context...");
     fflush(stdout);
-    result = bbs_verify_blind_commitment_context_finish(handle, err);
-
-    switch(result) {
-        case Success:
-            printf("pass\n");
-            break;
-        case BadSignature:
-            printf("fail.  Bad signature was used.\n");
-            goto Fail;
-        case BadHiddenMessage:
-            printf("fail.  Bad hidden message was used.\n");
-            goto Fail;
-        case BadRevealedMessage:
-            printf("fail. A message that wasn't signed was used.\n");
-            goto Fail;
-        default:
-            printf("fail. Status = %d\n", result);
-            goto Fail;
+    if (bbs_verify_blind_commitment_context_finish(handle, err) != 0) {
+        printf("fail\n");
+        goto Fail;
     }
+    printf("pass\n");
 
     printf("Create blind signing context...");
     fflush(stdout);

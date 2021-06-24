@@ -14,7 +14,6 @@ from .models.BlindedCommitment import BlindedCommitment
 from .models.CreateBlindedCommitmentRequest import CreateBlindedCommitmentRequest
 from .models.CreateProofRequest import CreateProofRequest
 from .models.SignRequest import SignRequest
-from .models.SignatureProofStatus import SignatureProofStatus
 from .models.UnblindSignatureRequest import UnblindSignatureRequest
 from .models.VerifyBlindedCommitmentRequest import VerifyBlindedCommitmentRequest
 from .models.VerifyProofRequest import VerifyProofRequest
@@ -131,7 +130,7 @@ def create_blinded_commitment(
 
 def verify_blinded_commitment(
         request: VerifyBlindedCommitmentRequest,
-) -> SignatureProofStatus:
+) -> bool:
     """Verifies a blinded commitment of messages
     Args:
         request: Request for the commitment verification
@@ -151,7 +150,7 @@ def verify_blinded_commitment(
 
     result = bbs_verify_blind_commitment.bbs_verify_blind_commitment_context_finish(handle)
 
-    return SignatureProofStatus(result)
+    return result == 0
 
 
 def create_proof(request: CreateProofRequest) -> bytes:
