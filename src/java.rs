@@ -916,7 +916,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1add_1proo
 #[allow(non_snake_case)]
 #[no_mangle]
 pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1size(_: JNIEnv, _: JObject, handle: jlong) -> jint {
-    return bbs_create_proof_context_size(handle as u64)
+    bbs_create_proof_context_size(handle as u64)
 }
 
 #[allow(non_snake_case)]
@@ -1074,7 +1074,7 @@ fn get_secret_key(env: &JNIEnv, secret_key: jbyteArray) -> Result<SecretKey, jin
         Err(_) => Err(0),
         Ok(s) => {
             if s.len() != FR_COMPRESSED_SIZE {
-                return Err(0);
+                Err(0)
             } else {
                 Ok(SecretKey::from(array_ref![s, 0, FR_COMPRESSED_SIZE]))
             }

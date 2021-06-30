@@ -20,6 +20,9 @@ jobs:
       - name: Install Dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Lint
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
       - name: Build
         run: yarn build
 
