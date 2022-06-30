@@ -109,7 +109,7 @@ pub extern "C" fn bbs_create_proof_context_finish(
             let public_key = &ctx.public_key.as_ref().unwrap();
             let nonce = &ctx.nonce.as_ref().unwrap();
 
-            let pok = PoKOfSignature::init(signature, public_key, &ctx.messages.as_slice())?;
+            let pok = PoKOfSignature::init(signature, public_key, ctx.messages.as_slice())?;
             let mut challenge_bytes = pok.to_bytes();
             challenge_bytes.extend_from_slice(&nonce.to_bytes_compressed_form()[..]);
             let challenge_hash = ProofChallenge::hash(&challenge_bytes);

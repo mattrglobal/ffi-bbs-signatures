@@ -70,7 +70,7 @@ pub extern "C" fn bbs_sign_context_finish(
             }
 
             match (ctx.secret_key.as_ref(), ctx.public_key.as_ref()) {
-                (Some(ref sk), Some(ref pk)) => {
+                (Some(sk), Some(pk)) => {
                     let s = Signature::new(ctx.messages.as_slice(), sk, pk)?;
                     Ok(ByteBuffer::from_vec(s.to_bytes_compressed_form().to_vec()))
                 }
@@ -149,7 +149,7 @@ pub extern "C" fn bbs_verify_context_finish(handle: u64, err: &mut ExternError) 
         }
 
         match (ctx.signature.as_ref(), ctx.public_key.as_ref()) {
-            (Some(ref sig), Some(ref pk)) => match sig.verify(ctx.messages.as_slice(), pk) {
+            (Some(sig), Some(pk)) => match sig.verify(ctx.messages.as_slice(), pk) {
                 Ok(b) => Ok(if b { 0 } else { 1 }),
                 Err(e) => Err(BbsFfiError(format!("{:?}", e))),
             },

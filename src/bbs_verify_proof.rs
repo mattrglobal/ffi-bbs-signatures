@@ -76,7 +76,7 @@ impl Serialize for PoKOfSignatureProofWrapper {
     where
         S: Serializer,
     {
-        serializer.serialize_bytes(&self.to_bytes().as_slice())
+        serializer.serialize_bytes(self.to_bytes().as_slice())
     }
 }
 
