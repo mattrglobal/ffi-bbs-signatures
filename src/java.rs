@@ -126,10 +126,9 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1g1_1key(
     public_key: jbyteArray,
     secret_key: jbyteArray,
 ) -> jint {
-    let ikm;
-    match env.convert_byte_array(seed) {
+    let ikm = match env.convert_byte_array(seed) {
         Err(_) => return 1,
-        Ok(s) => ikm = s,
+        Ok(s) => s,
     };
     let s = if ikm.is_empty() { None } else { Some(ikm) };
     let (pk_bytes, sk_bytes) = bls_generate_g1_key(s);
@@ -149,10 +148,9 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1g2_1key(
     public_key: jbyteArray,
     secret_key: jbyteArray,
 ) -> jint {
-    let ikm;
-    match env.convert_byte_array(seed) {
+    let ikm = match env.convert_byte_array(seed) {
         Err(_) => return 1,
-        Ok(s) => ikm = s,
+        Ok(s) => s,
     };
     let s = if ikm.is_empty() { None } else { Some(ikm) };
     let (pk_bytes, sk_bytes) = bls_generate_g2_key(s);
@@ -173,10 +171,9 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1blinded_1g1_1key(
     public_key: jbyteArray,
     secret_key: jbyteArray,
 ) -> jint {
-    let ikm;
-    match env.convert_byte_array(seed) {
+    let ikm =match env.convert_byte_array(seed) {
         Err(_) => return 1,
-        Ok(s) => ikm = s,
+        Ok(s) => s,
     };
     let s = if ikm.is_empty() { None } else { Some(ikm) };
     let (r_bytes, pk_bytes, sk_bytes) = bls_generate_blinded_g1_key(s);
@@ -199,10 +196,9 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1blinded_1g2_1key(
     public_key: jbyteArray,
     secret_key: jbyteArray,
 ) -> jint {
-    let ikm;
-    match env.convert_byte_array(seed) {
+    let ikm = match env.convert_byte_array(seed) {
         Err(_) => return 1,
-        Ok(s) => ikm = s,
+        Ok(s) => s,
     };
     let s = if ikm.is_empty() { None } else { Some(ikm) };
     let (r_bytes, pk_bytes, sk_bytes) = bls_generate_blinded_g2_key(s);
@@ -230,10 +226,9 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bls_1secret_1key_1to_1bbs_1key(
     }
     let sk = sk.unwrap();
     let (dpk, _) = DeterministicPublicKey::new(Some(KeyGenOption::FromSecretKey(sk)));
-    let pk;
-    match dpk.to_public_key(message_count as usize) {
+    let pk = match dpk.to_public_key(message_count as usize) {
         Err(_) => return bad_res,
-        Ok(p) => pk = p,
+        Ok(p) => p,
     };
     if pk.validate().is_err() {
         return bad_res;
@@ -259,25 +254,23 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bls_1public_1key_1to_1bbs_1key(
     message_count: jint,
 ) -> jbyteArray {
     let bad_res = env.new_byte_array(0).unwrap();
-    let dpk;
-    match env.convert_byte_array(short_public_key) {
+    let dpk = match env.convert_byte_array(short_public_key) {
         Err(_) => return bad_res,
         Ok(s) => {
             if s.len() != DETERMINISTIC_PUBLIC_KEY_COMPRESSED_SIZE {
                 return bad_res;
             }
-            dpk = DeterministicPublicKey::from(*array_ref![
+            DeterministicPublicKey::from(*array_ref![
                 s,
                 0,
                 DETERMINISTIC_PUBLIC_KEY_COMPRESSED_SIZE
-            ]);
+            ])
         }
-    }
-    let pk;
-    match dpk.to_public_key(message_count as usize) {
+    };
+    let pk = match dpk.to_public_key(message_count as usize) {
         Err(_) => return bad_res,
-        Ok(p) => pk = p,
-    }
+        Ok(p) => p,
+    };
     if pk.validate().is_err() {
         return bad_res;
     }
@@ -767,15 +760,13 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1unblind_1signature(
     unblind_signature: jbyteArray,
 ) -> jint {
     let mut err = ExternError::success();
-    let bs;
-    match env.convert_byte_array(blind_signature) {
+    let bs = match env.convert_byte_array(blind_signature) {
         Err(_) => return 1,
-        Ok(s) => bs = s,
+        Ok(s) => s,
     };
-    let bf;
-    match env.convert_byte_array(blinding_factor) {
+    let bf = match env.convert_byte_array(blinding_factor) {
         Err(_) => return 1,
-        Ok(s) => bf = s,
+        Ok(s) => s,
     };
 
     let mut signature = ByteBuffer::default();

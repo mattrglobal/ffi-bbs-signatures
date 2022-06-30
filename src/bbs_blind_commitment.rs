@@ -79,7 +79,7 @@ pub extern "C" fn bbs_blind_commitment_context_finish(
             }
 
             match (ctx.nonce.as_ref(), ctx.public_key.as_ref()) {
-                (Some(ref n), Some(ref pk)) => {
+                (Some(n), Some(pk)) => {
                     let (c, b) = Prover::new_blind_signature_context(pk, &ctx.messages, n)?;
                     let mut output = Vec::new();
                     output.append(&mut b.to_bytes_compressed_form().to_vec());

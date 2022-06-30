@@ -88,7 +88,7 @@ pub extern "C" fn bbs_blind_sign_context_finish(
             let commitment = ctx.commitment.as_ref().unwrap();
             let sk = ctx.secret_key.as_ref().unwrap();
             let pk = ctx.public_key.as_ref().unwrap();
-            let sig = BlindSignature::new(&commitment, &ctx.messages, &sk, &pk)?;
+            let sig = BlindSignature::new(commitment, &ctx.messages, sk, pk)?;
             Ok(ByteBuffer::from_vec(
                 sig.to_bytes_compressed_form().to_vec(),
             ))
