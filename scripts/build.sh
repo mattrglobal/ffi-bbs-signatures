@@ -82,6 +82,7 @@ case $PLATFORM in
       fi
         # TODO make this configurable in the environment
         ANDROID_API_LEVEL=21
+        API=$ANDROID_API_LEVEL
 
         mkdir -p .NDK
         mkdir -p $OUTPUT_LOCATION/android
