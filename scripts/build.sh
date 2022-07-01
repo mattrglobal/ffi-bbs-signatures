@@ -90,6 +90,7 @@ case $PLATFORM in
         # ARM build
         echo "Building for Android ARM"
         "$ANDROID_NDK_HOME/build/tools/make_standalone_toolchain.py" --api $ANDROID_API_LEVEL --arch arm --install-dir .NDK/arm --force
+        ls -R .NDK
         rustup target add armv7-linux-androideabi
         mkdir -p $OUTPUT_LOCATION/android/armeabi-v7a/
         cargo build --target armv7-linux-androideabi --release
