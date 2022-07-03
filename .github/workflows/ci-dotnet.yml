@@ -70,6 +70,7 @@ jobs:
       - run: yarn build:android
         env:
           NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
       - uses: actions/upload-artifact@v2
         with:
           name: android
