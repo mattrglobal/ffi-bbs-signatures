@@ -66,7 +66,7 @@ jobs:
       - uses: nttld/setup-ndk@v1
         id: setup-ndk
         with:
-          ndk-version: r23c
+          ndk-version: r21c
       - run: yarn build:android
         env:
           NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
