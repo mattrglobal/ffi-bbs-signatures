@@ -32,12 +32,6 @@ fi
 echo "Building for PLATFORM: $1"
 echo "To OUTPUT_LOCATION: $2"
 
-find $ANDROID_NDK_HOME -type d -exec ls -ld "{}" \;
-echo "Finding AR's"
-find $ANDROID_NDK_HOME -name "*-ar"
-echo "Finding clangs"
-find $ANDROID_NDK_HOME -name "*-clang"
-
 case $PLATFORM in
   WINDOWS)
       # rustup target install i686-pc-windows-gnu x86_64-pc-windows-gnu
@@ -92,7 +86,7 @@ case $PLATFORM in
 
         echo "Using NDK home: $ANDROID_NDK_HOME"
 
-        mkdir -p .NDK
+        ln -s $ANDROID_NDK_HOME .NDK
         mkdir -p $OUTPUT_LOCATION/android
 
         # ARM build

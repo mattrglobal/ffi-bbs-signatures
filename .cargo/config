@@ -1,11 +1,11 @@
 [target.aarch64-linux-android]
-ar = "/Users/runner/hostedtoolcache/ndk/r21e/x64/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android-ar"
-linker = "/Users/runner/hostedtoolcache/ndk/r21e/x64/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android21-clang"
+ar = ".NDK/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android-ar"
+linker = ".NDK/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android21-clang"
 
 [target.armv7-linux-androideabi]
-ar = "/Users/runner/hostedtoolcache/ndk/r21e/x64/toolchains/llvm/prebuilt/darwin-x86_64/bin/arm-linux-androideabi-ar"
-linker = "/Users/runner/hostedtoolcache/ndk/r21e/x64/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi21-clang"
+ar = ".NDK/llvm/prebuilt/darwin-x86_64/bin/arm-linux-androideabi-ar"
+linker = ".NDK/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi21-clang"
 
 [target.i686-linux-android]
-ar = "/Users/runner/hostedtoolcache/ndk/r21e/x64/toolchains/llvm/prebuilt/darwin-x86_64/bin/i686-linux-android-ar"
-linker = "/Users/runner/hostedtoolcache/ndk/r21e/x64/toolchains/llvm/prebuilt/darwin-x86_64/bin/i686-linux-android21-clang"
+ar = ".NDK/toolchains/llvm/prebuilt/darwin-x86_64/bin/i686-linux-android-ar"
+linker = ".NDK/toolchains/llvm/prebuilt/darwin-x86_64/bin/i686-linux-android21-clang"
