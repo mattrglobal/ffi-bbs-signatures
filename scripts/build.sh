@@ -33,6 +33,9 @@ echo "Building for PLATFORM: $1"
 echo "To OUTPUT_LOCATION: $2"
 echo "Using NDK home: $ANDROID_NDK_HOME"
 
+find . -maxdepth 5 -type d -exec ls -ld "{}" \;
+
+
 case $PLATFORM in
   WINDOWS)
       # rustup target install i686-pc-windows-gnu x86_64-pc-windows-gnu
