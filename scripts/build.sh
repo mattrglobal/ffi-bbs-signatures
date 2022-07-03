@@ -34,7 +34,6 @@ echo "To OUTPUT_LOCATION: $2"
 
 find $ANDROID_NDK_HOME -type d -exec ls -ld "{}" \;
 
-
 case $PLATFORM in
   WINDOWS)
       # rustup target install i686-pc-windows-gnu x86_64-pc-windows-gnu
@@ -82,11 +81,12 @@ case $PLATFORM in
       then
         echo "ERROR: ANDROID_NDK_HOME argument must be supplied and be a valid directory pointing to the installation of android ndk"
         exit 1
-      echo "Using NDK home: $ANDROID_NDK_HOME"
       fi
         # TODO make this configurable in the environment
         ANDROID_API_LEVEL=21
         API=$ANDROID_API_LEVEL
+
+        echo "Using NDK home: $ANDROID_NDK_HOME"
 
         mkdir -p .NDK
         mkdir -p $OUTPUT_LOCATION/android
