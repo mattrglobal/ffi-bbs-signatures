@@ -33,6 +33,10 @@ echo "Building for PLATFORM: $1"
 echo "To OUTPUT_LOCATION: $2"
 
 find $ANDROID_NDK_HOME -type d -exec ls -ld "{}" \;
+echo "Finding AR's"
+find $ANDROID_NDK_HOME -name "*-ar"
+echo "Finding clangs"
+find $ANDROID_NDK_HOME -name "*-clang"
 
 case $PLATFORM in
   WINDOWS)
