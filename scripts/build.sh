@@ -31,6 +31,7 @@ fi
 
 echo "Building for PLATFORM: $1"
 echo "To OUTPUT_LOCATION: $2"
+echo "Using NDK home: $ANDROID_NDK_HOME"
 
 case $PLATFORM in
   WINDOWS)
