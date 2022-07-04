@@ -82,7 +82,6 @@ case $PLATFORM in
       fi
         # TODO make this configurable in the environment
         ANDROID_API_LEVEL=21
-        API=$ANDROID_API_LEVEL
 
         echo "Using NDK home: $ANDROID_NDK_HOME"
 
@@ -98,7 +97,6 @@ case $PLATFORM in
 
         # ARM 64 build
         echo "Building for Android ARM 64"
-        #"$ANDROID_NDK_HOME/build/tools/make_standalone_toolchain.py" --api $ANDROID_API_LEVEL --arch arm64 --install-dir .NDK/arm64 --force
         rustup target add aarch64-linux-android
         mkdir -p $OUTPUT_LOCATION/android/arm64-v8a/
         cargo build --target aarch64-linux-android --release
@@ -106,7 +104,6 @@ case $PLATFORM in
 
         # x86 build
         echo "Building for Android x86"
-        #"$ANDROID_NDK_HOME/build/tools/make_standalone_toolchain.py" --api $ANDROID_API_LEVEL --arch x86 --install-dir .NDK/x86 --force;
         rustup target add i686-linux-android
         mkdir -p $OUTPUT_LOCATION/android/x86/
         cargo build --target i686-linux-android --release
