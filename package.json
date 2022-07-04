@@ -21,32 +21,16 @@
     "wrapper:obj-c:update-binary": "yarn build:ios && cp out/ios/universal/libbbs.a wrappers/obj-c/libraries/libbbs.a",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md",
     "release:prepare": "./scripts/prepare-release-artifacts.sh",
-    "version:release": "yarn version --minor --message \"chore(release): publish [skip ci]\""
+    "version:release": "yarn version --minor --message \"chore(release): publish [skip ci]\"",
+    "prepare": "husky install"
   },
   "devDependencies": {
-    "@commitlint/cli": "8.3.5",
-    "@commitlint/config-conventional": "8.3.4",
-    "conventional-changelog": "3.1.18",
-    "conventional-changelog-cli": "2.0.31",
-    "cz-conventional-changelog": "3.1.0",
-    "husky": "4.2.5",
-    "pretty-quick": "2.0.1",
-    "prettier": "2.0.4"
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "[[ -n $HUSKY_BYPASS ]] || commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "[[ -n $HUSKY_BYPASS ]] || pretty-quick --staged"
-    }
-  },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
-  },
-  "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
-    }
+    "@commitlint/cli": "17.0.3",
+    "@commitlint/config-conventional": "17.0.3",
+    "conventional-changelog": "3.1.25",
+    "conventional-changelog-cli": "2.2.2",
+    "husky": "8.0.1",
+    "prettier": "2.7.1",
+    "pretty-quick": "3.1.3"
   }
 }
