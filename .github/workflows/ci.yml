@@ -23,6 +23,24 @@ jobs:
       - name: Lint
         run: cargo clippy --all-targets --all-features -- -D warnings
 
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - uses: actions/cache@v3
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-ci-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ./.NDK
+          key: ${{ runner.os }}--ndk-ci-cargo-${{ hashfiles('.NDK/toolchains/llvm/prebuilt/darwin-x86_64/bin/*') }}
+
       - name: Set up Android NDK
         uses: nttld/setup-ndk@v1
         id: setup-ndk

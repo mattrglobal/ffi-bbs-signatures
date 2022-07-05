@@ -19,6 +19,14 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v1
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+          key: ${{ runner.os }}-cargo-windows-ci-${{ hashfiles('.NDK/toolchains/llvm/prebuilt/darwin-x86_64/bin/*') }}
       - run: |
           mkdir .\out\windows
           cargo build --release
@@ -33,6 +41,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+          key: ${{ runner.os }}-linux-ci-cargo-${{ hashfiles('**/cargo.lock') }}
       - run: yarn build:linux
       - uses: actions/upload-artifact@v2
         with:
@@ -43,6 +59,14 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v1
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+          key: ${{ runner.os }}-cargo-macos-ci-${{ hashfiles('**/cargo.lock') }}
       - run: yarn build:macos
       - uses: actions/upload-artifact@v2
         with:
@@ -53,6 +77,14 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v1
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+          key: ${{ runner.os }}-cargo-ios-ci-${{ hashfiles('**/cargo.lock') }}
       - run: yarn build:ios
       - uses: actions/upload-artifact@v2
         with:
@@ -63,6 +95,14 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v1
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+          key: ${{ runner.os }}-cargo-android-ci-${{ hashfiles('**/cargo.lock') }}
       - uses: nttld/setup-ndk@v1
         id: setup-ndk
         with:
@@ -80,6 +120,14 @@ jobs:
     needs: [build_windows, build_macos, build_linux, build_android, build_ios]
     steps:
       - uses: actions/checkout@v1
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+          key: ${{ runner.os }}-cargo-nuget-windows-${{ hashfiles('**/cargo.lock') }}
       - uses: actions/download-artifact@v2
         with:
           path: ./wrappers/dotnet/libs
