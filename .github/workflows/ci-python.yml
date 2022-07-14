@@ -16,6 +16,10 @@ on:
         required: true
         default: "false"
 
+concurrency:
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
+
 jobs:
   build_ursa:
     name: Build Ursa

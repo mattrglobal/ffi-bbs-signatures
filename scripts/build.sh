@@ -88,26 +88,33 @@ case $PLATFORM in
         ln -s $ANDROID_NDK_HOME .NDK
         mkdir -p $OUTPUT_LOCATION/android
 
-        # ARM build
-        echo "Building for Android ARM"
-        rustup target add armv7-linux-androideabi
-        mkdir -p $OUTPUT_LOCATION/android/armeabi-v7a/
-        cargo build --target armv7-linux-androideabi --release
-        cp ./target/armv7-linux-androideabi/release/libbbs.so $OUTPUT_LOCATION/android/armeabi-v7a/
+        # # ARM build
+        # echo "Building for Android ARM"
+        # rustup target add armv7-linux-androideabi
+        # mkdir -p $OUTPUT_LOCATION/android/armeabi-v7a/
+        # cargo build --target armv7-linux-androideabi --release
+        # cp ./target/armv7-linux-androideabi/release/libbbs.so $OUTPUT_LOCATION/android/armeabi-v7a/
 
-        # ARM 64 build
-        echo "Building for Android ARM 64"
-        rustup target add aarch64-linux-android
-        mkdir -p $OUTPUT_LOCATION/android/arm64-v8a/
-        cargo build --target aarch64-linux-android --release
-        cp ./target/aarch64-linux-android/release/libbbs.so $OUTPUT_LOCATION/android/arm64-v8a/
+        # # ARM 64 build
+        # echo "Building for Android ARM 64"
+        # rustup target add aarch64-linux-android
+        # mkdir -p $OUTPUT_LOCATION/android/arm64-v8a/
+        # cargo build --target aarch64-linux-android --release
+        # cp ./target/aarch64-linux-android/release/libbbs.so $OUTPUT_LOCATION/android/arm64-v8a/
 
-        # x86 build
-        echo "Building for Android x86"
-        rustup target add i686-linux-android
-        mkdir -p $OUTPUT_LOCATION/android/x86/
-        cargo build --target i686-linux-android --release
-        cp ./target/i686-linux-android/release/libbbs.so $OUTPUT_LOCATION/android/x86/
+        # # x86 build
+        # echo "Building for Android x86"
+        # rustup target add i686-linux-android
+        # mkdir -p $OUTPUT_LOCATION/android/x86/
+        # cargo build --target i686-linux-android --release
+        # cp ./target/i686-linux-android/release/libbbs.so $OUTPUT_LOCATION/android/x86/
+
+        # x86_64 build
+        echo "Building for Android x86_64"
+        rustup target add x86_64-linux-android
+        mkdir -p $OUTPUT_LOCATION/android/x86_64/
+        cargo build --target x86_64-linux-android --release
+        cp ./target/x86_64-linux-android/release/libbbs.so $OUTPUT_LOCATION/android/x86_64/
       ;;
   *)
     echo "ERROR: PLATFORM unknown: $1"
