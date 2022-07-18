@@ -14,6 +14,10 @@ on:
         required: true
         default: "1.0.0"
 
+concurrency:
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
+
 jobs:
   build_windows:
     runs-on: windows-latest
