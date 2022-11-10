@@ -36,3 +36,6 @@ jobs:
 
       - name: Test
         run: yarn test:macos
+
+      - name: License Check
+        run: yarn license:check
