@@ -17,14 +17,14 @@ plugins {
 group 'com.github.mattrglobal'
 version '1.6-SNAPSHOT'
 
-apply plugin : "java" 
+apply plugin: "java"
 apply plugin: "maven-publish"
 apply plugin: 'signing'
 
 ext {
-   javaMainClass = "bbs.signatures.Bbs"
+    javaMainClass = "bbs.signatures.Bbs"
 }
- 
+
 application {
     mainClassName = javaMainClass
 }
@@ -46,22 +46,53 @@ dependencies {
     testImplementation 'junit:junit:4.13'
 }
 
+build {
+    dependsOn ':copyWindowsBinaries'
+    dependsOn ':copyLinuxBinaries'
+}
+
+task copyWindowsBinaries(type: Copy) {
+    dependsOn ':buildWindowsBinaries'
+    from "../../target/x86_64-pc-windows-gnu/release/bbs.dll"
+    into "src/main/jniLibs/windows"
+}
+
+task buildWindowsBinaries(type: Exec) {
+    workingDir "${projectDir}"
+    commandLine 'rustup', 'target', 'add', 'x86_64-pc-windows-gnu'
+    commandLine 'cargo', 'build', '--target', 'x86_64-pc-windows-gnu', '--release', '--features', 'java'
+}
+
+task copyLinuxBinaries(type: Copy) {
+    dependsOn ':buildLinuxBinaries'
+    from "../../target/x86_64-unknown-linux-gnu/release/libbbs.so"
+    into "src/main/jniLibs/linux"
+}
+
+task buildLinuxBinaries(type: Exec) {
+    workingDir "${projectDir}"
+    commandLine 'rustup', 'target', 'add', 'x86_64-unknown-linux-gnu'
+    commandLine 'cargo', 'build', '--target', 'x86_64-unknown-linux-gnu', '--release', '--features', 'java'
+}
+
+
+
 // Builds all the available binaries
 // given the current host
-task buildAndroidBinaries(type:Exec) {  
+task buildAndroidBinaries(type: Exec) {
     workingDir '../../'
 
     // Builds the Android Binaries
-    commandLine './scripts/build.sh' , 'ANDROID' , 'out'
+    commandLine './scripts/build.sh', 'ANDROID', 'out'
 }
 
 // Builds all the available binaries
 // given the current host
-task buildMacosBinaries(type:Exec) {  
+task buildMacosBinaries(type: Exec) {
     workingDir '../../'
 
     // Build MacOS Binaries (if on Mac)
-    commandLine './scripts/build.sh' , 'MACOS', 'out'
+    commandLine './scripts/build.sh', 'MACOS', 'out'
 }
 
 // Builds and copies the required binaries for the java wrapper
@@ -71,7 +102,7 @@ task buildBinaries {
 }
 
 // Copies the android binaries to the JNI libraries folder
-task copyAndroidBinaries(type:Exec) {
+task copyAndroidBinaries(type: Exec) {
     workingDir '../../'
 
     //on linux
@@ -79,9 +110,9 @@ task copyAndroidBinaries(type:Exec) {
 }
 
 // Copies the android binaries to the JNI libraries folder
-task copyMacosBinaries(type:Exec) {
+task copyMacosBinaries(type: Exec) {
     workingDir '../../'
-    
+
     //on macos
     commandLine 'cp', '-r', 'out/macos/', 'wrappers/java/src/main/jniLibs/'
 }
@@ -104,17 +135,27 @@ task copyMacosNativeDep(type: Copy) {
     into 'build/libs'
 }
 
-/* Test with JUNIT on Macos */
+/* Test with JUNIT on different platform (windows, linux, ...) */
 test {
-    dependsOn copyMacosNativeDep
-    systemProperty "java.library.path", 'build/libs'
+    if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
+        dependsOn ':copyWindowsBinaries'
+        systemProperty "java.library.path", 'src/main/jniLibs/windows'
+        useJUnit()
+    } else if (org.gradle.internal.os.OperatingSystem.current().isLinux()){
+        dependsOn ':copyLinuxBinaries'
+        systemProperty "java.library.path", 'src/main/jniLibs/linux'
+        useJUnit()
+    } else {
+        dependsOn ':copyMacosNativeDep'
+        systemProperty "java.library.path", 'build/libs'
 
-    useJUnit()
+        useJUnit()
 
-    maxHeapSize = '1G'
-    
-    // Enable logging output to stderr
-    testLogging.showStandardStreams = true
+        maxHeapSize = '1G'
+
+        // Enable logging output to stderr
+        testLogging.showStandardStreams = true
+    }
 }
 
 task runMain(type: JavaExec) {
@@ -126,8 +167,8 @@ task runMain(type: JavaExec) {
 }
 
 task sourceJar(type: Jar) {
-  from sourceSets.main.allJava
-  archiveClassifier = "sources"
+    from sourceSets.main.allJava
+    archiveClassifier = "sources"
 }
 
 jar {
