@@ -23,3 +23,6 @@ node_modules
 
 wrappers/dotnet/libs
 wrappers/dotnet/nuget
+target
+.idea
+.bsp
