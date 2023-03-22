@@ -1,7 +1,9 @@
 package ce.iohk.bbs
 
-import ce.iohk.bbs.BbsPlus.EExternError
-import ce.iohk.bbs.BbsPlusOps.{BbsHandle, Ops}
+import ce.iohk.bbs.BbsPlusNative.EExternError
+import ce.iohk.bbs.BbsPlusOps.{BbsHandle, BbsPlus, Ops}
+
+case class MessageWithProofType(msg: Array[Byte], proofType: ProofMessageType)
 
 case class BbsCreateProofContext(api: BbsPlus, private val handle: BbsHandle) extends ContextTracker {
 
@@ -15,6 +17,12 @@ case class BbsCreateProofContext(api: BbsPlus, private val handle: BbsHandle) ex
 
   def setSignature(signature: Array[Byte]): EExternError[BbsCreateProofContext] = synced {
     api.bbsCreateProofContextSetSignature(handle, signature).map(_ => this)
+  }
+
+  def addMessages(messages: Seq[MessageWithProofType], blindingFactor: Array[Byte]): EExternError[BbsCreateProofContext] = {
+    messages.zipWithIndex.foldLeft[EExternError[BbsCreateProofContext]](Right(this)) {
+      case (acc, (MessageWithProofType(m, pt), i)) => acc.flatMap(_ => addMessage(m, pt, blindingFactor))
+    }
   }
 
   def addMessage(

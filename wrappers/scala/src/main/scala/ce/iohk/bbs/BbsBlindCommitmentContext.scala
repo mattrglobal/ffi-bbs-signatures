@@ -1,7 +1,7 @@
 package ce.iohk.bbs
 
-import ce.iohk.bbs.BbsPlus.EExternError
-import ce.iohk.bbs.BbsPlusOps.{BbsHandle, BlindCommitment, Ops}
+import ce.iohk.bbs.BbsPlusNative.EExternError
+import ce.iohk.bbs.BbsPlusOps.{BbsHandle, BbsPlus, BlindCommitment, Ops}
 
 
 case class BbsBlindCommitmentContext(api: BbsPlus, private val handle: BbsHandle) extends ContextTracker {
@@ -12,6 +12,12 @@ case class BbsBlindCommitmentContext(api: BbsPlus, private val handle: BbsHandle
 
   def setNonce(nonce: Array[Byte]): EExternError[BbsBlindCommitmentContext] = synced {
     api.bbsBlindCommitmentContextSetNonceBytes(handle, nonce).map(_ => this)
+  }
+
+  def addMessages(messages: Array[Array[Byte]]): EExternError[BbsBlindCommitmentContext] = synced {
+    messages.zipWithIndex.foldLeft[EExternError[BbsBlindCommitmentContext]](Right(this)) {
+      case (acc, (msg, i)) => acc.flatMap(_ => addMessage(i, msg))
+    }
   }
 
   def addMessage(index: Int, message: Array[Byte]): EExternError[BbsBlindCommitmentContext] = synced {

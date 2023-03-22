@@ -1,7 +1,7 @@
 package ce.iohk.bbs
 
-import ce.iohk.bbs.BbsPlus.EExternError
-import ce.iohk.bbs.BbsPlusOps.{BbsHandle, Ops}
+import ce.iohk.bbs.BbsPlusNative.EExternError
+import ce.iohk.bbs.BbsPlusOps.{BbsHandle, BbsPlus, Ops}
 
 
 case class BbsSignContext(api: BbsPlus, private val handle: BbsHandle) extends ContextTracker {

@@ -1,25 +1,25 @@
 package ce.iohk.bbs
 
-import ce.iohk.bbs.BbsPlus.{FfiStr, Handle}
+import ce.iohk.bbs.BbsPlusNative.{FfiStr, Handle}
 import jnr.ffi.{LibraryLoader, Pointer, Runtime}
 import jnr.ffi.byref.PointerByReference
 import jnr.ffi.types._
 
-object BbsPlus {
+object BbsPlusNative {
 
   type EExternError[T] = Either[ErrorCodeMsg, T]
   type FfiStr = String
   type Handle = Long@u_int64_t
   case class ErrorCodeMsg(code: Long, message: String)
 
-  def apply(): BbsPlus = apply(
+  def apply(): BbsPlusNative = apply(
     Seq(ClasspathSharedObject.createTempFolderWithExtractedLibs.toString)
   )
 
   def apply(pathsToSearch: Seq[String],
-            libsToLoad: Seq[String] = ClasspathSharedObject.namesOfSharedObjectsToLoad): BbsPlus = {
+            libsToLoad: Seq[String] = ClasspathSharedObject.namesOfSharedObjectsToLoad): BbsPlusNative = {
 
-    val withPathsToSearch = pathsToSearch.foldLeft(LibraryLoader.create(classOf[BbsPlus])) {
+    val withPathsToSearch = pathsToSearch.foldLeft(LibraryLoader.create(classOf[BbsPlusNative])) {
       case (acc, e) => acc.search(e)
     }
     val withLibsToLoadAndPathsToSearch = libsToLoad.foldLeft(withPathsToSearch) {
@@ -49,9 +49,9 @@ object BbsPlus {
 
 }
 
-trait BbsPlus {
+trait BbsPlusNative {
 
-  def runtime: Runtime = Runtime.getRuntime(BbsPlus.this)
+  def runtime: Runtime = Runtime.getRuntime(BbsPlusNative.this)
 
   def bbs_blind_signature_size(): Long @int32_t
 

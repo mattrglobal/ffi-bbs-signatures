@@ -259,5 +259,5 @@ pub mod bbs_verify_proof;
 pub mod bbs_verify_sign_proof;
 pub mod bls;
 
-#[cfg(any(target_os = "android", feature = "java"))]
+#[cfg(any(target_os = "linux", feature = "java"))]
 pub mod java;

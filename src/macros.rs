@@ -340,7 +340,7 @@ macro_rules! add_proof_message_impl {
     };
 }
 
-#[cfg(any(target_os = "android", feature = "java"))]
+#[cfg(any(target_os = "linux", feature = "java"))]
 macro_rules! copy_to_jni {
     ($env:expr, $var:expr, $from:expr) => {
         if $env.set_byte_array_region($var, 0, $from).is_err() {

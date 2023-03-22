@@ -41,7 +41,7 @@ case $PLATFORM in
     ;;
   LINUX)
       mkdir -p $OUTPUT_LOCATION/linux
-      cargo build --release
+      cargo build --release --features java
       cp ./target/release/libbbs.so $OUTPUT_LOCATION/linux
     ;;
   MACOS)

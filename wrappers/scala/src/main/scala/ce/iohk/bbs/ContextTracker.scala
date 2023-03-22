@@ -1,6 +1,6 @@
 package ce.iohk.bbs
 
-import ce.iohk.bbs.BbsPlus.{EExternError, ErrorCodeMsg}
+import ce.iohk.bbs.BbsPlusNative.{EExternError, ErrorCodeMsg}
 
 trait ContextTracker {
   private val lock: Object = new Object
@@ -12,9 +12,9 @@ trait ContextTracker {
     Left(ErrorCodeMsg(1000, s"${this.getClass.getName} handle already closed ...!"))
   }
 
-  def synced[T](t: => EExternError[T]): EExternError[T] = lock.synchronized(checkIfAlreadyClosed(t))
+  protected def synced[T](t: => EExternError[T]): EExternError[T] = lock.synchronized(checkIfAlreadyClosed(t))
 
-  def syncedAndClose[T](t: => EExternError[T]): EExternError[T] = synced {
+  protected def syncedAndClose[T](t: => EExternError[T]): EExternError[T] = synced {
     close()
     t
   }

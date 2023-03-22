@@ -34,5 +34,5 @@ rand = "0.7"
 serde = { version = "1.0", features = ["serde_derive"] }
 sha2 = "0.8"
 
-[target.'cfg(target_os="android")'.dependencies]
+[target.'cfg(target_os="linux")'.dependencies]
 jni = "0.10"
