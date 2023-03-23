@@ -6,6 +6,8 @@ import scala.sys.process.Process
 import scala.language.postfixOps
 import shared.Shared._
 
+name := "ffi-bbs-signatures-scala"
+
 scalaVersion := "2.13.10"
 
 organization := "ce.iohk"
