@@ -20,8 +20,15 @@ buildInfoKeys ++= Seq[BuildInfoKey](
   "TargetForBbsSharedObjectDownload" -> TargetForBbsSharedObjectDownload
 )
 
+resolvers += "jitpack" at "https://jitpack.io"
+
 libraryDependencies ++= Seq(
   "com.github.jnr" % "jnr-ffi" % "2.2.13",
+  "com.apicatalog" % "iron-verifiable-credentials" % "0.8.1",
+  "jakarta.json" % "jakarta.json-api" % "2.1.2",
+  "org.eclipse.parsson" % "parsson" % "1.1.2",
+  // https://mvnrepository.com/artifact/com.github.multiformats/java-multihash
+  "com.github.multiformats" % "java-multihash" % "4b9fb9830d",
   "org.scalatest" %% "scalatest" % "3.2.15" % Test
 )
 

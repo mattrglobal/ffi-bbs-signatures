@@ -9,7 +9,7 @@ trait ContextTracker {
   private def close(): Unit = handleClosed = true
 
   private def checkIfAlreadyClosed[T](t: => EExternError[T]): EExternError[T] = if (!handleClosed) t else {
-    Left(ErrorCodeMsg(1000, s"${this.getClass.getName} handle already closed ...!"))
+    Left(ErrorCodeMsg(ErrorCodes.HandleAlreadyClosed.id, s"${this.getClass.getName} handle already closed ...!"))
   }
 
   protected def synced[T](t: => EExternError[T]): EExternError[T] = lock.synchronized(checkIfAlreadyClosed(t))

@@ -39,6 +39,6 @@ ThisBuild / credentials += sys.env.get("IOG_NEXUS_USER").map(userName => Credent
   Credentials(Path.userHome / ".ivy2" / ".credentials")
 )
 
-ThisBuild / version := sys.env.getOrElse("GITHUB_REF_NAME", "0.1.0-SNAPSHOT").replaceAll("/", "_")
+ThisBuild / version := sys.env.getOrElse("GITHUB_REF_NAME", "0.1.1-SNAPSHOT").replaceAll("/", "_")
 
 //usePgpKeyHex("F4ED23D42A612E27F11A6B5AF75482A04B0D9486")

@@ -21,6 +21,17 @@ case class BbsBlindSignContext(api: BbsPlus, private val handle: BbsHandle) exte
     api.bbsBlindSignContextAddMessageBytes(handle, index, message).map(_ => this)
   }
 
+  def addMessages(startingIndex: Int, messages: Seq[Array[Byte]]): EExternError[BbsBlindSignContext] = synced {
+    require(startingIndex > -1, "Cannot have a negative index")
+    if (messages.nonEmpty) {
+      addMessage(startingIndex, messages.head)
+        .flatMap(_ => addMessages(startingIndex + 1, messages.tail))
+
+    } else {
+      Right(this)
+    }
+  }
+
   def signature(): EExternError[Array[Byte]] = syncedAndClose {
     api.bbsBlindSignContextFinish(handle)
   }

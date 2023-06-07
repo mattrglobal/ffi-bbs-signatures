@@ -37,7 +37,7 @@ object BbsPlusOps {
 
       val sizePubKey = api.nativeApi.bls_public_key_g2_size()
       val sizePrivKey = api.nativeApi.bls_secret_key_size()
-      println(s"Size pub = $sizePubKey size prive = $sizePrivKey")
+
       val pubKeyPtr = api.nativeApi.makeInStruct()
       val privKeyPtr = api.nativeApi.makeInStruct()
       val seedPtr = seed.toStructPointer

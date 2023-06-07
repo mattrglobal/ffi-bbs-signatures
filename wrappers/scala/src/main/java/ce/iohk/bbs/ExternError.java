@@ -5,8 +5,8 @@ import jnr.ffi.Runtime;
 
 public class ExternError extends Struct {
 
-    public final UTF8String message = new UTF8String(1024);
-    public final Unsigned32 code = new Unsigned32();
+    public final Signed32 code = new Signed32();
+    public final UTF8StringRef message = new UTF8StringRef(1024);
 
     public ExternError(Runtime runtime) {
         super(runtime);

@@ -22,7 +22,7 @@ case class BbsVerifyBlindCommitmentContext(api: BbsPlus, private val handle: Bbs
   }
 
   def verify(): EExternError[Boolean] = syncedAndClose {
-    api.bbsVerifyBlindCommitmentContextFinish(handle).map(_ => true)
+    api.bbsVerifyBlindCommitmentContextFinish(handle).map(_ == 0)
   }
 }
 

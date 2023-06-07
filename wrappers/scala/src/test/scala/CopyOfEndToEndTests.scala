@@ -48,12 +48,23 @@ object EndToEnd extends PrintUtil {
     val (sig, kp, bbsKey) = sigAndKp.unsafe
     println(s"Blind sig size is correct? ${sig.length} == ${api.bbsBlindSigSize()}")
 
-    val nonce = Array.fill(60)(15.toByte)
+    val nonce = Random.nextBytes(60)
+
+    println("Start VerifyContextInit")
+    val simpleVerifyResult = for {
+      verifyContext <- api.bbsVerifyContextInit()
+      _ <- printIt(verifyContext.setSignature(sig))
+      _ <- printIt(verifyContext.setPublicKey(bbsKey))
+      _ <- printIt(verifyContext.addMessages(messages))
+      result <- printIt(verifyContext.verify())
+    } yield result
+
+    println(s"simpleVerifyResult ${simpleVerifyResult.unsafe}")
 
     println("Start BlindCommitmentContextInit")
     val bcResult = for {
       blindCommitmentContext <- api.bbsBlindCommitmentContextInit()
-      _ <- printIt(blindCommitmentContext.addMessage(0, messages.head))
+      _ <- printIt(blindCommitmentContext.addMessage(0, messages(0)))
       _ <- printIt(blindCommitmentContext.setPublicKey(bbsKey))
       _ <- printIt(blindCommitmentContext.setNonce(nonce))
       result <- printIt(blindCommitmentContext.blindCommitment())
@@ -72,6 +83,8 @@ object EndToEnd extends PrintUtil {
       _ <- printIt(verifyBlindCommitmentContext.setProof(blindContext.outContext))
       res <- printIt(verifyBlindCommitmentContext.verify())
     } yield res
+
+    require(verifyResult.unsafe, "VerifyBlindCommitmentContextInit?")
 
     printIt(verifyResult)
 
@@ -130,8 +143,8 @@ object EndToEnd extends PrintUtil {
       _ <- printIt(verifyProofContext.setProof(proof))
       _ <- printIt(verifyProofContext.setPublicKey(bbsKey))
       _ <- printIt(verifyProofContext.setNonce(nonce))
-      _ <- printIt(verifyProofContext.verify())
-    } yield ()
+      res <- printIt(verifyProofContext.verify())
+    } yield res
 
     println(s"Res $res")
 

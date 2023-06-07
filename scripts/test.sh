@@ -38,6 +38,26 @@ case $PLATFORM in
           ;;
       esac
       ;;
+  LINUX)
+      echo "Building for LINUX x86_64"
+      TARGET='x86_64-unknown-linux-gnu'
+      rustup target add ${TARGET}
+      case $LANGUAGE in
+        C)
+          echo "To be used with C"
+          cargo build --target ${TARGET} --release
+          export RUST_LIBRARY_DIRECTORY="${PWD}/target/${TARGET}/release"
+          cd $RUST_LIBRARY_DIRECTORY
+          cmake ../../../tests
+          cmake --build .
+          ./bbs_test
+          ;;
+        *)
+          echo "ERROR: LANGUAGE not supported: $1"
+          exit 1
+          ;;
+      esac
+      ;;
   *)
     echo "ERROR: PLATFORM not supported: $2"
     exit 1

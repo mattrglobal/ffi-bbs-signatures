@@ -10,7 +10,7 @@ object BbsPlusNative {
   type EExternError[T] = Either[ErrorCodeMsg, T]
   type FfiStr = String
   type Handle = Long@u_int64_t
-  case class ErrorCodeMsg(code: Long, message: String)
+  case class ErrorCodeMsg(code: Long, message: String) extends Exception(s"code: $code, $message")
 
   def apply(): BbsPlusNative = apply(
     Seq(ClasspathSharedObject.createTempFolderWithExtractedLibs.toString)

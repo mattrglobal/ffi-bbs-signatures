@@ -22,6 +22,6 @@ case class BbsVerifyContext(api: BbsPlus, private val handle: BbsHandle) extends
   }
 
   def verify(): EExternError[Boolean] = syncedAndClose {
-    api.bbsVerifyContextFinish(handle) map (_ => true)
+    api.bbsVerifyContextFinish(handle) map (_ == 0)
   }
 }

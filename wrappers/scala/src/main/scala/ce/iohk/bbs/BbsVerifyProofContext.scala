@@ -1,7 +1,8 @@
 package ce.iohk.bbs
 
-import ce.iohk.bbs.BbsPlusNative.EExternError
+import ce.iohk.bbs.BbsPlusNative.{EExternError, ErrorCodeMsg}
 import ce.iohk.bbs.BbsPlusOps.{BbsHandle, BbsPlus, Ops}
+import ce.iohk.bbs.ErrorCodes.NoMessagesProvided
 
 case class BbsVerifyProofContext(api: BbsPlus, private val handle: BbsHandle) extends ContextTracker {
 
@@ -16,6 +17,26 @@ case class BbsVerifyProofContext(api: BbsPlus, private val handle: BbsHandle) ex
   def setProof(proof: Array[Byte]): EExternError[BbsVerifyProofContext] = synced {
     api.bbsVerifyProofContextSetProof(handle, proof).map(_ => this)
   }
+
+  def addMessages(
+                  messages: Seq[Array[Byte]],
+                ): EExternError[BbsVerifyProofContext] = synced {
+
+    def add(
+             messages: Seq[Array[Byte]],
+             acc: EExternError[BbsVerifyProofContext]): EExternError[BbsVerifyProofContext] = {
+      if (messages.nonEmpty) {
+        add(messages.tail, addMessage(messages.head))
+      } else acc
+    }
+
+    if(messages.isEmpty) {
+      Left(ErrorCodeMsg(NoMessagesProvided.id, NoMessagesProvided.toString))
+    } else {
+      add(messages.tail, addMessage(messages.head))
+    }
+  }
+
 
   def addMessage(
                   message: Array[Byte],
