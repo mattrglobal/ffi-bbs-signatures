@@ -1,0 +1,43 @@
+name: ci-scala
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+    tags: ["*"]
+
+env:
+  IOG_NEXUS_USER: ${{ secrets.IOG_NEXUS_USER }}
+  IOG_NEXUS_PASS: ${{ secrets.IOG_NEXUS_PASS }}
+
+jobs:
+  publish_jar:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+        working-directory: ./wrappers/scala
+      - run: sbt -v publish
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+        working-directory: ./wrappers/scala
+      - name: Build and Test
+        run: sbt -v test

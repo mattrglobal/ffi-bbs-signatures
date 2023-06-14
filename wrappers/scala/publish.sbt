@@ -1,6 +1,8 @@
 
 organization := "ce.iohk"
 
+javacOptions ++= Seq("-source", "11", "-target", "11")
+
 ThisBuild / licenses := List("APL2" -> url("https://www.apache.org/licenses/LICENSE-2.0.txt"))
 ThisBuild / description := "A scala wrapper of the BBS library"
 
@@ -39,6 +41,6 @@ ThisBuild / credentials += sys.env.get("IOG_NEXUS_USER").map(userName => Credent
   Credentials(Path.userHome / ".ivy2" / ".credentials")
 )
 
-ThisBuild / version := sys.env.getOrElse("GITHUB_REF_NAME", "0.1.3-SNAPSHOT").replaceAll("/", "_")
+ThisBuild / version := sys.env.getOrElse("GITHUB_REF_NAME", "0.1.4-SNAPSHOT").replaceAll("/", "_")
 
 //usePgpKeyHex("F4ED23D42A612E27F11A6B5AF75482A04B0D9486")
