@@ -171,9 +171,13 @@ task sourceJar(type: Jar) {
     archiveClassifier = "sources"
 }
 
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(8))
+}
+
 jar {
     //from configurations.compile.collect { zipTree it }
-    into('bbs/jniLibs') {
+    into('lib') {
         from "src/main/jniLibs"
     }
 }
