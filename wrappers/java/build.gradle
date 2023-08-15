@@ -49,6 +49,7 @@ dependencies {
 build {
     dependsOn ':copyWindowsBinaries'
     dependsOn ':copyLinuxBinaries'
+    dependsOn ':buildAndCopyAndroidBinaries'
 }
 
 task copyWindowsBinaries(type: Copy) {
@@ -72,67 +73,13 @@ task copyLinuxBinaries(type: Copy) {
 task buildLinuxBinaries(type: Exec) {
     workingDir "${projectDir}"
     commandLine 'rustup', 'target', 'add', 'x86_64-unknown-linux-gnu'
-    commandLine 'cargo', 'build', '--target', 'x86_64-unknown-linux-gnu', '--release', '--features', 'java'
+    commandLine 'cargo', 'zigbuild', '--target', 'x86_64-unknown-linux-gnu', '--release', '--features', 'java'
 }
 
-
-
-// Builds all the available binaries
-// given the current host
-task buildAndroidBinaries(type: Exec) {
-    workingDir '../../'
-
-    // Builds the Android Binaries
-    commandLine './scripts/build.sh', 'ANDROID', 'out'
-}
-
-// Builds all the available binaries
-// given the current host
-task buildMacosBinaries(type: Exec) {
-    workingDir '../../'
-
-    // Build MacOS Binaries (if on Mac)
-    commandLine './scripts/build.sh', 'MACOS', 'out'
-}
-
-// Builds and copies the required binaries for the java wrapper
-task buildBinaries {
-    dependsOn ':buildAndroidBinaries'
-    dependsOn ':buildMacosBinaries'
-}
-
-// Copies the android binaries to the JNI libraries folder
-task copyAndroidBinaries(type: Exec) {
-    workingDir '../../'
-
-    //on linux
-    commandLine 'cp', '-r', 'out/android/', 'wrappers/java/src/main/jniLibs/'
-}
-
-// Copies the android binaries to the JNI libraries folder
-task copyMacosBinaries(type: Exec) {
-    workingDir '../../'
-
-    //on macos
-    commandLine 'cp', '-r', 'out/macos/', 'wrappers/java/src/main/jniLibs/'
-}
-
-// Copies the required binaries for the java wrapper
-task copyBinaries {
-    dependsOn ':copyAndroidBinaries'
-    dependsOn ':copyMacosBinaries'
-}
-
-// Builds and copies the required binaries for the java wrapper
-task buildAndCopyBinaries {
-    dependsOn ':buildBinaries'
-    dependsOn ':copyBinaries'
-}
-
-/* Copy the native bbs file */
-task copyMacosNativeDep(type: Copy) {
-    from 'src/main/jniLibs/darwin-x86_64/libbbs.dylib'
-    into 'build/libs'
+task buildAndCopyAndroidBinaries(type: Exec) {
+    workingDir "${projectDir}"
+    commandLine 'rustup', 'target', 'add', 'armv7-linux-androideabi', 'aarch64-linux-android', 'x86_64-linux-android', 'i686-linux-android'
+    commandLine 'cargo', 'ndk', '--manifest-path', '../../Cargo.toml', '--target', 'armeabi-v7a', '--target', 'arm64-v8a', '--target', 'x86_64', '--target', 'x86', '-o', 'src/main/jniLibs', 'build', '--release'
 }
 
 /* Test with JUNIT on different platform (windows, linux, ...) */
