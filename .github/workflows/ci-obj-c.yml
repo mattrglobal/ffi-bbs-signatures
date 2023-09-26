@@ -25,7 +25,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Install XCode
-        run: sudo xcode-select -r
+        run: ls -l /Applications/
 
       - name: Build binary for IOS
         run: yarn build:ios
