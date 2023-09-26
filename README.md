@@ -1,5 +1,7 @@
 ![Mattr logo](./docs/assets/mattr-black.svg)
 
+_Just checking master build again_
+
 # BBS Signature FFI Wrapper
 
 This repository is home to a foreign function interface (FFI) wrapper around the Rust based [bbs crate](https://crates.io/crates/bbs) maintained by the [Hyperledger Ursa project](https://github.com/hyperledger/ursa).
