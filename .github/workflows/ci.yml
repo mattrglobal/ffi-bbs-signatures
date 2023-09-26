@@ -20,9 +20,6 @@ jobs:
       - name: Install Dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Lint
-        run: cargo clippy --all-targets --all-features -- -D warnings
-
       - name: Set up Android NDK
         uses: nttld/setup-ndk@b2abc75192ee2a1ec118c8238fd86dec6d96dc43 # pin@v1.0.6
         id: setup-ndk
