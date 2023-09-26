@@ -18,7 +18,7 @@
     "gen:c-header": "./scripts/generate-c-header.sh",
     "test": "make test",
     "test:macos": "./scripts/test.sh C MACOS",
-    "wrapper:obj-c:build": "pod lib lint --allow-warnings",
+    "wrapper:obj-c:build": "pod lib lint --verbose --allow-warnings",
     "wrapper:obj-c:update-binary": "yarn build:ios && cp out/ios/universal/libbbs.a wrappers/obj-c/libraries/libbbs.a",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md",
     "release:prepare": "./scripts/prepare-release-artifacts.sh",
@@ -28,10 +28,10 @@
   "devDependencies": {
     "@commitlint/cli": "17.7.1",
     "@commitlint/config-conventional": "17.7.0",
-    "conventional-changelog": "3.1.25",
-    "conventional-changelog-cli": "2.2.2",
-    "husky": "8.0.1",
-    "prettier": "2.7.1",
+    "conventional-changelog": "5.1.0",
+    "conventional-changelog-cli": "4.1.0",
+    "husky": "8.0.3",
+    "prettier": "3.0.3",
     "pretty-quick": "3.1.3"
   }
 }
