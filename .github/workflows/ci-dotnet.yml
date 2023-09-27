@@ -20,6 +20,7 @@ concurrency:
 
 jobs:
   build_windows:
+    if: false
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v1
@@ -34,6 +35,7 @@ jobs:
           path: ./out/windows/*
 
   build_linux:
+    if: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -44,6 +46,7 @@ jobs:
           path: ./out/linux/*
 
   build_macos:
+    if: false
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v1
@@ -54,6 +57,7 @@ jobs:
           path: ./out/macos/darwin-x86_64/*
 
   build_ios:
+    if: false
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v1
@@ -64,6 +68,7 @@ jobs:
           path: ./out/ios/*
 
   build_android:
+    if: false
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v1
@@ -82,6 +87,7 @@ jobs:
           path: ./out/android/*
 
   package_nuget:
+    if: false
     runs-on: windows-latest
     needs: [build_windows, build_macos, build_linux, build_android, build_ios]
     steps:
