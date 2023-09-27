@@ -5,7 +5,7 @@
   "homepage": "https://github.com/mattrglobal/ffi-bbs-signatures",
   "title": "An FFI Wrapper for BBS Signatures",
   "description": "An FFI Wrapper for BBS Signatures",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "scripts": {
     "install": "./scripts/install-dependencies.sh",
     "build": "yarn build:ios && yarn build:android",
