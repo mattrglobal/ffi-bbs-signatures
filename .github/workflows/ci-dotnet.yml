@@ -97,7 +97,7 @@ jobs:
           $projectFile.Save("./wrappers/dotnet/Directory.Build.props")
       - uses: microsoft/setup-msbuild@c26a08ba26249b81327e26f6ef381897b6a8754d # pin@v1.0.2
       - run: msbuild /t:restore,build /p:Configuration=Release ./wrappers/dotnet/
-      - run: dotnet test -c Release ./wrappers/dotnet/src/BbsSignatures.Tests/
+      - run: dotnet test --verbosity diagnostic -c Release ./wrappers/dotnet/src/BbsSignatures.Tests/
       - run: msbuild /t:restore,build,pack /p:Configuration=Release /p:Bbs_CopyLibsForProjectReference=false ./wrappers/dotnet/
       - uses: actions/upload-artifact@v2
         with:
