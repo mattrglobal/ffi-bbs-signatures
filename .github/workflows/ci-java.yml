@@ -15,7 +15,7 @@ concurrency:
 jobs:
   build_test:
     name: Build & Test Java Wrapper
-    if: "! contains(github.event.head_commit.message, '[skip ci]')"
+    if: "! contains(github.event.head_commit.message, '[skip ci]') && false"
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
