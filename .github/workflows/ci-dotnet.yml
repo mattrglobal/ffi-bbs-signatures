@@ -15,7 +15,7 @@ on:
         default: "1.0.0"
 
 concurrency:
-  group: ${{ github.head_ref }}
+  group: ${{ github.head_ref }}-dotnet
   cancel-in-progress: true
 
 jobs:
@@ -67,10 +67,12 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v1
-      - uses: nttld/setup-ndk@b2abc75192ee2a1ec118c8238fd86dec6d96dc43 # pin@v1.0.6
+      - name: Set up Android NDK
+        uses: nttld/setup-ndk@dbacc5871a0fac6eef9a09d2ca86bc8bf79432c3 # pin@v1.3.1
         id: setup-ndk
         with:
-          ndk-version: r21e
+          ndk-version: r23
+
       - run: yarn build:android
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}

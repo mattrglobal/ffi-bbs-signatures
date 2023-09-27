@@ -67,6 +67,7 @@ impl ByteArray {
     }
 
     /// Convert a slice to ByteArray
+    #[allow(clippy::unnecessary_cast)]
     pub fn from_slice<I: AsRef<[u8]>>(data: I) -> Self {
         let data = data.as_ref();
         Self {
@@ -83,6 +84,7 @@ impl From<&Vec<u8>> for ByteArray {
 }
 
 impl From<Vec<u8>> for ByteArray {
+    #[allow(clippy::needless_borrow)]
     fn from(b: Vec<u8>) -> Self {
         Self::from_slice(&b)
     }
@@ -95,6 +97,7 @@ impl From<&[u8]> for ByteArray {
 }
 
 impl From<ByteBuffer> for ByteArray {
+    #[allow(clippy::needless_borrow)]
     fn from(b: ByteBuffer) -> Self {
         Self::from_slice(&b.destroy_into_vec())
     }
