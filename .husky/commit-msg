@@ -3,4 +3,4 @@
 
 [ -n "$CI" ] && exit 0
 
-[[ -n $HUSKY_BYPASS ]] || npx --no -- commitlint --edit $1
+[[ -n $HUSKY_BYPASS ]] || yarn commitlint --edit $1
