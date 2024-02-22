@@ -86,7 +86,7 @@ impl From<&Vec<u8>> for ByteArray {
 impl From<Vec<u8>> for ByteArray {
     #[allow(clippy::needless_borrow)]
     fn from(b: Vec<u8>) -> Self {
-        Self::from_slice(&b)
+        Self::from_slice(b)
     }
 }
 
@@ -99,7 +99,7 @@ impl From<&[u8]> for ByteArray {
 impl From<ByteBuffer> for ByteArray {
     #[allow(clippy::needless_borrow)]
     fn from(b: ByteBuffer) -> Self {
-        Self::from_slice(&b.destroy_into_vec())
+        Self::from_slice(b.destroy_into_vec())
     }
 }
 
