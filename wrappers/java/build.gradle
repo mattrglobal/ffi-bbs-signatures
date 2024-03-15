@@ -17,14 +17,14 @@ plugins {
 group 'com.github.mattrglobal'
 version '1.6-SNAPSHOT'
 
-apply plugin : "java" 
+apply plugin: "java"
 apply plugin: "maven-publish"
 apply plugin: 'signing'
 
 ext {
-   javaMainClass = "bbs.signatures.Bbs"
+    javaMainClass = "bbs.signatures.Bbs"
 }
- 
+
 application {
     mainClassName = javaMainClass
 }
@@ -46,75 +46,63 @@ dependencies {
     testImplementation 'junit:junit:4.13'
 }
 
-// Builds all the available binaries
-// given the current host
-task buildAndroidBinaries(type:Exec) {  
-    workingDir '../../'
-
-    // Builds the Android Binaries
-    commandLine './scripts/build.sh' , 'ANDROID' , 'out'
+build {
+    dependsOn ':copyWindowsBinaries'
+    dependsOn ':copyLinuxBinaries'
+    dependsOn ':buildAndCopyAndroidBinaries'
 }
 
-// Builds all the available binaries
-// given the current host
-task buildMacosBinaries(type:Exec) {  
-    workingDir '../../'
-
-    // Build MacOS Binaries (if on Mac)
-    commandLine './scripts/build.sh' , 'MACOS', 'out'
+task copyWindowsBinaries(type: Copy) {
+    dependsOn ':buildWindowsBinaries'
+    from "../../target/x86_64-pc-windows-gnu/release/bbs.dll"
+    into "src/main/jniLibs/windows"
 }
 
-// Builds and copies the required binaries for the java wrapper
-task buildBinaries {
-    dependsOn ':buildAndroidBinaries'
-    dependsOn ':buildMacosBinaries'
+task buildWindowsBinaries(type: Exec) {
+    workingDir "${projectDir}"
+    commandLine 'rustup', 'target', 'add', 'x86_64-pc-windows-gnu'
+    commandLine 'cargo', 'build', '--target', 'x86_64-pc-windows-gnu', '--release', '--features', 'java'
 }
 
-// Copies the android binaries to the JNI libraries folder
-task copyAndroidBinaries(type:Exec) {
-    workingDir '../../'
-
-    //on linux
-    commandLine 'cp', '-r', 'out/android/', 'wrappers/java/src/main/jniLibs/'
+task copyLinuxBinaries(type: Copy) {
+    dependsOn ':buildLinuxBinaries'
+    from "../../target/x86_64-unknown-linux-gnu/release/libbbs.so"
+    into "src/main/jniLibs/linux"
 }
 
-// Copies the android binaries to the JNI libraries folder
-task copyMacosBinaries(type:Exec) {
-    workingDir '../../'
-    
-    //on macos
-    commandLine 'cp', '-r', 'out/macos/', 'wrappers/java/src/main/jniLibs/'
+task buildLinuxBinaries(type: Exec) {
+    workingDir "${projectDir}"
+    commandLine 'rustup', 'target', 'add', 'x86_64-unknown-linux-gnu'
+    commandLine 'cargo', 'zigbuild', '--target', 'x86_64-unknown-linux-gnu', '--release', '--features', 'java'
 }
 
-// Copies the required binaries for the java wrapper
-task copyBinaries {
-    dependsOn ':copyAndroidBinaries'
-    dependsOn ':copyMacosBinaries'
+task buildAndCopyAndroidBinaries(type: Exec) {
+    workingDir "${projectDir}"
+    commandLine 'rustup', 'target', 'add', 'armv7-linux-androideabi', 'aarch64-linux-android', 'x86_64-linux-android', 'i686-linux-android'
+    commandLine 'cargo', 'ndk', '--manifest-path', '../../Cargo.toml', '--target', 'armeabi-v7a', '--target', 'arm64-v8a', '--target', 'x86_64', '--target', 'x86', '-o', 'src/main/jniLibs', 'build', '--release'
 }
 
-// Builds and copies the required binaries for the java wrapper
-task buildAndCopyBinaries {
-    dependsOn ':buildBinaries'
-    dependsOn ':copyBinaries'
-}
-
-/* Copy the native bbs file */
-task copyMacosNativeDep(type: Copy) {
-    from 'src/main/jniLibs/darwin-x86_64/libbbs.dylib'
-    into 'build/libs'
-}
-
-/* Test with JUNIT on Macos */
+/* Test with JUNIT on different platform (windows, linux, ...) */
 test {
-    dependsOn copyMacosNativeDep
-    systemProperty "java.library.path", 'build/libs'
+    if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
+        dependsOn ':copyWindowsBinaries'
+        systemProperty "java.library.path", 'src/main/jniLibs/windows'
+        useJUnit()
+    } else if (org.gradle.internal.os.OperatingSystem.current().isLinux()){
+        dependsOn ':copyLinuxBinaries'
+        systemProperty "java.library.path", 'src/main/jniLibs/linux'
+        useJUnit()
+    } else {
+        dependsOn ':copyMacosNativeDep'
+        systemProperty "java.library.path", 'build/libs'
 
-    useJUnit()
+        useJUnit()
 
-    maxHeapSize = '1G'
-    
-    // Enable logging output to stderr
-    testLogging.showStandardStreams = true
+        maxHeapSize = '1G'
+
+        // Enable logging output to stderr
+        testLogging.showStandardStreams = true
+    }
 }
 
 task runMain(type: JavaExec) {
@@ -126,13 +114,17 @@ task runMain(type: JavaExec) {
 }
 
 task sourceJar(type: Jar) {
-  from sourceSets.main.allJava
-  archiveClassifier = "sources"
+    from sourceSets.main.allJava
+    archiveClassifier = "sources"
+}
+
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(8))
 }
 
 jar {
     //from configurations.compile.collect { zipTree it }
-    into('bbs/jniLibs') {
+    into('lib') {
         from "src/main/jniLibs"
     }
 }
