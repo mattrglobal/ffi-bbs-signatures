@@ -24,7 +24,7 @@ java = ["jni"]
 
 [dependencies]
 arrayref = "0.3"
-bbs = "0.4"
+bbs = { "package" = "aries-bbssignatures", "version" = "0.1" }
 ffi-support = "0.4"
 hkdf = "0.8"
 jni = { version = "0.10", optional = true }

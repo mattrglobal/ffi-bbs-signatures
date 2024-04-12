@@ -89,10 +89,10 @@ pub extern "C" fn bls_get_public_key(
     public_key: &mut ByteBuffer,
     err: &mut ExternError,
 ) -> i32 {
-    let sk = SecretKey::try_from(secret_key.to_vec());
-    match sk {
-        Ok(s) => {
-            let (dpk, _) = DeterministicPublicKey::new(Some(KeyGenOption::FromSecretKey(s)));
+    let kp = SecretKey::try_from(secret_key.to_vec())
+        .and_then(|sk| DeterministicPublicKey::new(Some(KeyGenOption::FromSecretKey(sk))));
+    match kp {
+        Ok((dpk, _)) => {
             *public_key = ByteBuffer::from_vec(dpk.to_bytes_compressed_form().to_vec());
             *err = ExternError::success();
             0
@@ -111,10 +111,10 @@ pub extern "C" fn bls_secret_key_to_bbs_key(
     public_key: &mut ByteBuffer,
     err: &mut ExternError,
 ) -> i32 {
-    let sk = SecretKey::try_from(secret_key.to_vec());
-    match sk {
-        Ok(s) => {
-            let (dpk, _) = DeterministicPublicKey::new(Some(KeyGenOption::FromSecretKey(s)));
+    let kp = SecretKey::try_from(secret_key.to_vec())
+        .and_then(|sk| DeterministicPublicKey::new(Some(KeyGenOption::FromSecretKey(sk))));
+    match kp {
+        Ok((dpk, _)) => {
             let res = dpk.to_public_key(message_count as usize);
             match res {
                 Ok(pk) => {
