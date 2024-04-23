@@ -2,7 +2,7 @@ name: Mirror repository to S3
 on:
   push:
     branches:
-      - master
+      - main
 jobs:
   BackupRepoToS3:
     runs-on: ubuntu-latest

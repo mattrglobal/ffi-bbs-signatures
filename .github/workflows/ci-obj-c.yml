@@ -3,10 +3,10 @@ name: ci-obj-c
 on:
   pull_request:
     branches:
-      - master
+      - main
   push:
     branches:
-      - master
+      - main
 
 concurrency:
   group: ${{ github.head_ref }}
