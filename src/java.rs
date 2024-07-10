@@ -225,7 +225,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bls_1secret_1key_1to_1bbs_1key(
         return bad_res;
     }
     let sk = sk.unwrap();
-    let (dpk, _) = DeterministicPublicKey::new(Some(KeyGenOption::FromSecretKey(sk)));
+    let Ok((dpk, _)) = DeterministicPublicKey::new(Some(KeyGenOption::FromSecretKey(sk))) else { todo!() };
     let pk = match dpk.to_public_key(message_count as usize) {
         Err(_) => return bad_res,
         Ok(p) => p,

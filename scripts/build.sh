@@ -48,12 +48,26 @@ case $PLATFORM in
       # Create the root directory for the MacOS release binaries
       mkdir -p $OUTPUT_LOCATION/macos
 
-      # ARM x86_64 darwin build
+      # Create the directories at the output location for the release binaries
+      mkdir -p $OUTPUT_LOCATION/macos/x86_64
+      mkdir -p $OUTPUT_LOCATION/macos/aarch64
+      mkdir -p $OUTPUT_LOCATION/macos/universal
+
+      # x86_64 build
       echo "Building for Apple Darwin x86_64"
       rustup target add x86_64-apple-darwin
-      mkdir -p $OUTPUT_LOCATION/macos/darwin-x86_64/
       cargo build --target x86_64-apple-darwin --release --features java
-      cp ./target/x86_64-apple-darwin/release/libbbs.dylib $OUTPUT_LOCATION/macos/darwin-x86_64/
+      cp ./target/x86_64-apple-darwin/release/libbbs.dylib $OUTPUT_LOCATION/macos/x86_64/
+
+      # arm64 build
+      echo "Building for Apple Darwin arm64"
+      rustup target add aarch64-apple-darwin
+      cargo build --target aarch64-apple-darwin --release --features java
+      cp ./target/aarch64-apple-darwin/release/libbbs.dylib $OUTPUT_LOCATION/macos/aarch64/
+
+      # Create universal binary
+      echo "Creating universal binary"
+      lipo -create -output $OUTPUT_LOCATION/macos/universal/libbbs.dylib $OUTPUT_LOCATION/macos/x86_64/libbbs.dylib $OUTPUT_LOCATION/macos/aarch64/libbbs.dylib
     ;;
   IOS)
       # Create the root directory for the IOS release binaries
