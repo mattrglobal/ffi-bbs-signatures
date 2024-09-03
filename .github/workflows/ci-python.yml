@@ -82,7 +82,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4.1.7
         with:
           name: ${{matrix.plat-name-simple}}
           path: ./wrappers/python/ursa_bbs_signatures
@@ -126,7 +126,7 @@ jobs:
           pip install setuptools wheel twine auditwheel
 
       - name: Download library artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: ${{matrix.plat-name-simple}}
           path: ./wrappers/python/ursa_bbs_signatures
