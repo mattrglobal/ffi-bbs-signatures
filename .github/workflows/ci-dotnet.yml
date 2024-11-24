@@ -29,7 +29,7 @@ jobs:
           cargo build --release
           cp .\target\release\bbs.dll .\out\windows
       # - run: yarn build:windows
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: windows
           path: ./out/windows/*
@@ -40,7 +40,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - run: yarn build:linux
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: linux
           path: ./out/linux/*
@@ -51,7 +51,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - run: yarn build:macos
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: macos
           path: ./out/macos/darwin-x86_64/*
@@ -62,7 +62,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - run: yarn build:ios
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: ios
           path: ./out/ios/*
@@ -81,7 +81,7 @@ jobs:
       - run: yarn build:android
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: android
           path: ./out/android/*
@@ -105,7 +105,7 @@ jobs:
       - run: msbuild /t:restore,build /p:Configuration=Release ./wrappers/dotnet/
       - run: dotnet test -c Release ./wrappers/dotnet/src/BbsSignatures.Tests/
       - run: msbuild /t:restore,build,pack /p:Configuration=Release /p:Bbs_CopyLibsForProjectReference=false ./wrappers/dotnet/
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: package-nuget
           path: |

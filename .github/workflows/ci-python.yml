@@ -50,7 +50,7 @@ jobs:
           cp .\target\release\bbs.dll .\out\windows
       - if: "matrix.os != 'windows-latest'"
         run: yarn build:${{matrix.plat-name-simple}}
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: ${{matrix.plat-name-simple}}
           path: ${{matrix.target-path}}/*
@@ -73,9 +73,9 @@ jobs:
           - os: windows-latest
             plat-name-simple: windows
             target-name: bbs.dll
-    
+
     runs-on: ${{ matrix.os }}
-        
+
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
@@ -130,7 +130,7 @@ jobs:
         with:
           name: ${{matrix.plat-name-simple}}
           path: ./wrappers/python/ursa_bbs_signatures
-          
+
       - name: Build python wheels
         shell: sh
         run: |
@@ -142,7 +142,7 @@ jobs:
         run: auditwheel show ./wrappers/python/dist/*
 
       - name: Upload python package
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: python-${{ runner.os }}
           path: ./wrappers/python/dist/*
