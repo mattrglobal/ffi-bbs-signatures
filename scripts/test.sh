@@ -25,7 +25,7 @@ case $PLATFORM in
       case $LANGUAGE in
         C)
           echo "To be used with C"
-          argo build --target aarch64-apple-darwin --release
+          cargo build --target aarch64-apple-darwin --release
           export RUST_LIBRARY_DIRECTORY="${PWD}/target/aarch64-apple-darwin/release"
           cd $RUST_LIBRARY_DIRECTORY
           cmake ../../../tests
