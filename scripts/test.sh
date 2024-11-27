@@ -21,12 +21,12 @@ fi
 case $PLATFORM in
   MACOS)
       echo "Building for Apple Darwin x86_64"
-      rustup target add x86_64-apple-darwin
+      rustup target add aarch64-apple-darwin
       case $LANGUAGE in
         C)
           echo "To be used with C"
-          cargo build --target x86_64-apple-darwin --release
-          export RUST_LIBRARY_DIRECTORY="${PWD}/target/x86_64-apple-darwin/release"
+          cargo build --target aarch64-apple-darwin --release
+          export RUST_LIBRARY_DIRECTORY="${PWD}/target/aarch64-apple-darwin/release"
           cd $RUST_LIBRARY_DIRECTORY
           cmake ../../../tests
           cmake --build .
