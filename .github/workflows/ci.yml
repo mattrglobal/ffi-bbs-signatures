@@ -31,7 +31,7 @@ jobs:
         run: cargo clippy --all-targets --all-features -- -D warnings
 
       - name: Set up Android NDK
-        uses: nttld/setup-ndk@dbacc5871a0fac6eef9a09d2ca86bc8bf79432c3 # pin@v1.3.1
+        uses: nttld/setup-ndk@afb4c9964b521afb97c864b7d40b11e6911bd410 # pin@v1.5.0
         id: setup-ndk
         with:
           ndk-version: r23
