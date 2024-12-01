@@ -23,13 +23,13 @@ jobs:
     if: false
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - run: |
           mkdir .\out\windows
           cargo build --release
           cp .\target\release\bbs.dll .\out\windows
       # - run: yarn build:windows
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: windows
           path: ./out/windows/*
@@ -38,9 +38,9 @@ jobs:
     if: false
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - run: yarn build:linux
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: linux
           path: ./out/linux/*
@@ -49,9 +49,9 @@ jobs:
     if: false
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - run: yarn build:macos
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: macos
           path: ./out/macos/darwin-x86_64/*
@@ -60,9 +60,9 @@ jobs:
     if: false
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - run: yarn build:ios
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: ios
           path: ./out/ios/*
@@ -71,17 +71,17 @@ jobs:
     if: false
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - name: Set up Android NDK
-        uses: nttld/setup-ndk@dbacc5871a0fac6eef9a09d2ca86bc8bf79432c3 # pin@v1.3.1
+        uses: nttld/setup-ndk@afb4c9964b521afb97c864b7d40b11e6911bd410 # pin@v1.5.0
         id: setup-ndk
         with:
-          ndk-version: r23
+          ndk-version: r27c
 
       - run: yarn build:android
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: android
           path: ./out/android/*
@@ -91,7 +91,7 @@ jobs:
     runs-on: windows-latest
     needs: [build_windows, build_macos, build_linux, build_android, build_ios]
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - uses: actions/download-artifact@v2
         with:
           path: ./wrappers/dotnet/libs
@@ -105,7 +105,7 @@ jobs:
       - run: msbuild /t:restore,build /p:Configuration=Release ./wrappers/dotnet/
       - run: dotnet test -c Release ./wrappers/dotnet/src/BbsSignatures.Tests/
       - run: msbuild /t:restore,build,pack /p:Configuration=Release /p:Bbs_CopyLibsForProjectReference=false ./wrappers/dotnet/
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: package-nuget
           path: |
