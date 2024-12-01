@@ -50,6 +50,7 @@ use bbs::{ToVariableLengthBytes, FR_COMPRESSED_SIZE, G1_COMPRESSED_SIZE};
 use std::cell::RefCell;
 
 thread_local! {
+    #[allow(clippy::missing_const_for_thread_local)]
     static LAST_ERROR: RefCell<Option<String>> = RefCell::new(None);
 }
 
@@ -64,6 +65,7 @@ fn update_last_error(m: &str) {
 pub extern "C" fn Java_bbs_signatures_Bbs_get_1last_1error<'a>(env: JNIEnv<'a>, _: JObject) -> JString<'a> {
     let mut res = env.new_string("").unwrap();
     LAST_ERROR.with(|prev| {
+        #[allow(clippy::single_match)]
         match &*prev.borrow() {
             Some(s) => res = env.new_string(s).unwrap(),
             None => ()
