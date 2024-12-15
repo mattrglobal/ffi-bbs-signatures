@@ -87,7 +87,7 @@ impl<'a> Deserialize<'a> for PoKOfSignatureProofWrapper {
     {
         struct DeserializeVisitor;
 
-        impl<'a> Visitor<'a> for DeserializeVisitor {
+        impl Visitor<'_> for DeserializeVisitor {
             type Value = PoKOfSignatureProofWrapper;
 
             fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
