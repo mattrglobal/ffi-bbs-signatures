@@ -586,11 +586,14 @@ Exit:
     bbs_byte_buffer_free(*(ByteBuffer*)blind_sign_context);
     bbs_byte_buffer_free(*(ByteBuffer*)blinding_factor);
     bbs_byte_buffer_free(*(ByteBuffer*)blind_signature);
+    bbs_byte_buffer_free(*(ByteBuffer*)unblind_signature);
     bbs_byte_buffer_free(*(ByteBuffer*)proof);
     free(nonce);
     free(proof);
     free(signature);
     free(blind_signature);
+    free(unblind_signature);
+    free(messages);
     free(err);
     free(seed);
     free(public_key);
@@ -598,4 +601,5 @@ Exit:
     free(commitment);
     free(blind_sign_context);
     free(blinding_factor);
+    return 0;
 }
