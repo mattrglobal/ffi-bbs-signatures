@@ -99,8 +99,15 @@ task buildAndCopyBinaries {
     dependsOn ':copyBinaries'
 }
 
-// Add the dependency to distZip (if it exists from a plugin)
+tasks.named('startScripts') {
+    dependsOn copyMacosNativeDep
+}
+
 tasks.named('distZip') {
+    dependsOn copyMacosNativeDep
+}
+
+tasks.named('distTar') {
     dependsOn copyMacosNativeDep
 }
 
