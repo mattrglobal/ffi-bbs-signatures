@@ -47,9 +47,25 @@ dependencies {
     testImplementation 'junit:junit:4.13'
 }
 
+// Set the source and target compatibility to Java 21
+sourceCompatibility = JavaVersion.VERSION_11
+
+if (project.hasProperty('targetVersion') && project.targetVersion == '17') {
+    println "Targetting java 17"
+    targetCompatibility = JavaVersion.VERSION_17
+} else if (project.hasProperty('targetVersion') && project.targetVersion == '21') {
+    println "Targetting java 21"
+    targetCompatibility = JavaVersion.VERSION_21
+} else {
+    println "Falling back to java 11"
+    targetCompatibility = JavaVersion.VERSION_11  // Default to 11
+}
+
+
 // Builds all the available binaries
 // given the current host
 task buildAndroidBinaries(type:Exec) {  
+    println "Building Android binaries"
     workingDir '../../'
 
     // Builds the Android Binaries
@@ -59,6 +75,8 @@ task buildAndroidBinaries(type:Exec) {
 // Builds all the available binaries
 // given the current host
 task buildMacosBinaries(type:Exec) {  
+    println "Building macOS binaries"
+
     workingDir '../../'
 
     // Build MacOS Binaries (if on Mac)
@@ -67,12 +85,15 @@ task buildMacosBinaries(type:Exec) {
 
 // Builds and copies the required binaries for the java wrapper
 task buildBinaries {
-    dependsOn ':buildAndroidBinaries'
+    println "Building binaries"
+    //dependsOn ':buildAndroidBinaries'
     dependsOn ':buildMacosBinaries'
 }
 
 // Copies the android binaries to the JNI libraries folder
 task copyAndroidBinaries(type:Exec) {
+    println "Copying Android binaries"
+
     workingDir '../../'
 
     //on linux
@@ -81,6 +102,8 @@ task copyAndroidBinaries(type:Exec) {
 
 // Copies the android binaries to the JNI libraries folder
 task copyMacosBinaries(type:Exec) {
+    println "Copying macOS binaries"
+
     workingDir '../../'
     
     //on macos
@@ -101,27 +124,31 @@ tasks.named('distTar') {
 
 // Copies the required binaries for the java wrapper
 task copyBinaries {
-    dependsOn ':copyAndroidBinaries'
+    println "Copying binaries"
+    //dependsOn ':copyAndroidBinaries'
     dependsOn ':copyMacosBinaries'
 }
 
 // Builds and copies the required binaries for the java wrapper
 task buildAndCopyBinaries {
+    println "Building and copying binaries"
     dependsOn ':buildBinaries'
     dependsOn ':copyBinaries'
 }
 
 /* Copy the native bbs file */
 task copyMacosNativeDep(type: Copy) {
+    println "Copying macOS dependencies"
+
     dependsOn ':buildAndCopyBinaries'
-    from 'src/main/jniLibs/darwin-x86_64/libbbs.dylib'
+    from 'src/main/jniLibs/darwin-aarch64/libbbs.dylib'
     into 'build/libs'
 }
 
 /* Test with JUNIT on Macos */
 test {
-    dependsOn copyMacosNativeDep
     systemProperty "java.library.path", 'build/libs'
+    dependsOn ':copyMacosNativeDep'
 
     useJUnit()
 
@@ -179,18 +206,3 @@ publishing {
         }
     }
 }
-
-// Set the source and target compatibility to Java 21
-sourceCompatibility = JavaVersion.VERSION_11
-
-if (project.hasProperty('targetVersion') && project.targetVersion == '17') {
-    println "Targetting java 17"
-    targetCompatibility = JavaVersion.VERSION_17
-} else if (project.hasProperty('targetVersion') && project.targetVersion == '21') {
-    println "Targetting java 21"
-    targetCompatibility = JavaVersion.VERSION_21
-} else {
-    println "Falling back to java 11"
-    targetCompatibility = JavaVersion.VERSION_11  // Default to 11
-}
-

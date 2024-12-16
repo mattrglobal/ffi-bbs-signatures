@@ -49,7 +49,7 @@ case $PLATFORM in
       mkdir -p $OUTPUT_LOCATION/macos
 
       # ARM x86_64 darwin build
-      echo "Building for Apple Darwin x86_64"
+      echo "Building for Apple Darwin aarch64"
       rustup target add aarch64-apple-darwin
       mkdir -p $OUTPUT_LOCATION/macos/darwin-aarch64/
       cargo build --target aarch64-apple-darwin --release --features java
