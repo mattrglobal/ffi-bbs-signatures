@@ -28,7 +28,6 @@ jobs:
           distribution: "adopt"
           java-version: |
             ${{ matrix.jdk-version }}
-            ${{ matrix.jvm-build-version }}
       - name: Show env
         run: env | grep -i java
       - name: Build with Gradle
