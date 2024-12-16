@@ -18,14 +18,19 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        java-version: [11, 17, 21]
+        jdk-version: [11, 17, 21]
+        jvm-build-version: [21]
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK ${{ matrix.java-version }}
+      - name: Set up JDK ${{ matrix.jdk-version }}
         uses: actions/setup-java@v2
         with:
-          java-version: ${{ matrix.java-version }}
           distribution: "adopt"
+          java-version: |
+            ${{ matrix.jdk-version }}
+            ${{ jvm-build-version }}
+      - name: Show env
+        run: env | grep -i java
       - name: Build with Gradle
         working-directory: ./wrappers/java
         run: ./gradlew build
