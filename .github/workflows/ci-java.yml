@@ -18,7 +18,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        java-version: [11, 17, 21] # Add other versions if needed
+        java-version: [11, 17, 21]
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK ${{ matrix.java-version }}
@@ -26,19 +26,6 @@ jobs:
         with:
           java-version: ${{ matrix.java-version }}
           distribution: "adopt"
-      - name: Cache Gradle packages
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
       - name: Build with Gradle
         working-directory: ./wrappers/java
         run: ./gradlew build
-      - name: Cleanup Gradle Cache
-        run: |
-          rm -f ~/.gradle/caches/modules-2/modules-2.lock
-          rm -f ~/.gradle/caches/modules-2/gc.properties
