@@ -99,6 +99,11 @@ task buildAndCopyBinaries {
     dependsOn ':copyBinaries'
 }
 
+// Add the dependency to distZip (if it exists from a plugin)
+tasks.named('distZip') {
+    dependsOn copyMacosNativeDep
+}
+
 /* Copy the native bbs file */
 task copyMacosNativeDep(type: Copy) {
     from 'src/main/jniLibs/darwin-x86_64/libbbs.dylib'
