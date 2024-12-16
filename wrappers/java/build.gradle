@@ -180,5 +180,13 @@ publishing {
 }
 
 // Set the source and target compatibility to Java 21
-sourceCompatibility = JavaVersion.VERSION_21
-targetCompatibility = JavaVersion.VERSION_21
+sourceCompatibility = JavaVersion.VERSION_11
+
+if (project.hasProperty('targetVersion') && project.targetVersion == '17') {
+    targetCompatibility = JavaVersion.VERSION_17
+} else if (project.hasProperty('targetVersion') && project.targetVersion == '21') {
+    targetCompatibility = JavaVersion.VERSION_21
+} else {
+    targetCompatibility = JavaVersion.VERSION_11  // Default to 11
+}
+
