@@ -87,18 +87,6 @@ task copyMacosBinaries(type:Exec) {
     commandLine 'cp', '-r', 'out/macos/', 'wrappers/java/src/main/jniLibs/'
 }
 
-// Copies the required binaries for the java wrapper
-task copyBinaries {
-    dependsOn ':copyAndroidBinaries'
-    dependsOn ':copyMacosBinaries'
-}
-
-// Builds and copies the required binaries for the java wrapper
-task buildAndCopyBinaries {
-    dependsOn ':buildBinaries'
-    dependsOn ':copyBinaries'
-}
-
 tasks.named('startScripts') {
     dependsOn copyMacosNativeDep
 }
@@ -109,6 +97,18 @@ tasks.named('distZip') {
 
 tasks.named('distTar') {
     dependsOn copyMacosNativeDep
+}
+
+// Copies the required binaries for the java wrapper
+task copyBinaries {
+    dependsOn ':copyAndroidBinaries'
+    dependsOn ':copyMacosBinaries'
+}
+
+// Builds and copies the required binaries for the java wrapper
+task buildAndCopyBinaries {
+    dependsOn ':buildBinaries'
+    dependsOn ':copyBinaries'
 }
 
 /* Copy the native bbs file */
