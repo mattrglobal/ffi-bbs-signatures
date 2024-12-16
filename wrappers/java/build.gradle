@@ -113,6 +113,7 @@ task buildAndCopyBinaries {
 
 /* Copy the native bbs file */
 task copyMacosNativeDep(type: Copy) {
+    dependsOn ':buildAndCopyBinaries'
     from 'src/main/jniLibs/darwin-x86_64/libbbs.dylib'
     into 'build/libs'
 }
