@@ -15,8 +15,8 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        jdk-version: [11, 17, 21]
-        jvm-build-version: [21]
+        jdk-version: [11]
+        jvm-build-version: [11]
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK ${{ matrix.jdk-version }}
