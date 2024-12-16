@@ -12,6 +12,7 @@ plugins {
     id 'maven-publish'
     id 'application'
     id 'signing'
+    id 'java'
 }
 
 group 'com.github.mattrglobal'
@@ -165,3 +166,7 @@ publishing {
         }
     }
 }
+
+// Set the source and target compatibility to Java 21
+sourceCompatibility = JavaVersion.VERSION_21
+targetCompatibility = JavaVersion.VERSION_21
