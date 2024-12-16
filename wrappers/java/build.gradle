@@ -183,10 +183,13 @@ publishing {
 sourceCompatibility = JavaVersion.VERSION_11
 
 if (project.hasProperty('targetVersion') && project.targetVersion == '17') {
+    println "Targetting java 17"
     targetCompatibility = JavaVersion.VERSION_17
 } else if (project.hasProperty('targetVersion') && project.targetVersion == '21') {
+    println "Targetting java 21"
     targetCompatibility = JavaVersion.VERSION_21
 } else {
+    println "Falling back to java 11"
     targetCompatibility = JavaVersion.VERSION_11  // Default to 11
 }
 
