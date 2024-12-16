@@ -35,4 +35,4 @@ jobs:
         run: env | grep -i java
       - name: Build with Gradle
         working-directory: ./wrappers/java
-        run: ./gradlew build -Dorg.gradle.java.home=$JAVA_HOME_${{ matrix.jdk-version }}_arm64 -PtargetVersion=${{ matrix.jdk-version }} --stacktrace
+        run: ./gradlew build -Dorg.gradle.java.home=$JAVA_HOME_${{ matrix.jdk-version }}_arm64 -PtargetVersion=${{ matrix.jdk-version }} --stacktrace --debug
