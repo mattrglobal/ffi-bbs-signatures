@@ -26,14 +26,14 @@ use std::{ptr, slice};
 #[repr(C)]
 pub struct ByteArray {
     length: usize,
-    data: Vec<u8>,
+    data: *const u8,
 }
 
 impl Default for ByteArray {
     fn default() -> Self {
         Self {
             length: 0,
-            data: Vec::new()
+            data: ptr::null(),
         }
     }
 }
@@ -41,14 +41,24 @@ impl Default for ByteArray {
 impl ByteArray {
     /// Convert this into a byte vector
     pub fn to_vec(&self) -> Vec<u8> {
-        self.data.clone()
+        if self.data.is_null() || self.length == 0 {
+            Vec::new()
+        } else {
+            unsafe { slice::from_raw_parts(self.data, self.length).to_vec() }
+        }
     }
 
     /// Convert this into a byte vector if possible
     /// Some if success
     /// None if not
     pub fn to_opt_vec(&self) -> Option<Vec<u8>> {
-        Some(self.data.clone())
+        if self.data.is_null() {
+            None
+        } else if self.length == 0 {
+            Some(Vec::new())
+        } else {
+            Some(unsafe { slice::from_raw_parts(self.data, self.length).to_vec() })
+        }
     }
 
     ///Convert to outgoing struct ByteBuffer
@@ -62,7 +72,7 @@ impl ByteArray {
         let data = data.as_ref();
         Self {
             length: data.len(),
-            data: data.to_vec()
+            data: data.as_ptr() as *const u8,
         }
     }
 }
