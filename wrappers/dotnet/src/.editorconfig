@@ -1,9 +1,0 @@
-﻿[NativeMethods.cs]
-
-# IDE1006: Naming Styles
-dotnet_diagnostic.IDE1006.severity = none
-
-[*.cs]
-
-# CS1701: Assuming assembly reference matches identity
-dotnet_diagnostic.CS1701.severity = silent

@@ -1,2 +1,0 @@
-class FfiException(Exception):
-    pass
