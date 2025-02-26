@@ -1,5 +1,11 @@
 ![Mattr logo](./docs/assets/mattr-black.svg)
 
+## Deprecation Notice
+
+This library has been deprecated in favor of the [Pairing Cryptography](https://github.com/mattrglobal/pairing_crypto)
+library which implements the more modern
+[BBS Signature Scheme](https://datatracker.ietf.org/doc/draft-irtf-cfrg-bbs-signatures/).
+
 # BBS Signature FFI Wrapper
 
 This repository is home to a foreign function interface (FFI) wrapper around the Rust based [bbs crate](https://crates.io/crates/bbs) maintained by the [Hyperledger Ursa project](https://github.com/hyperledger/ursa).
