@@ -8,37 +8,31 @@ on:
     branches:
       - master
 
-concurrency:
-  group: ${{ github.head_ref }}-java
-  cancel-in-progress: true
-
 jobs:
   build_test:
     name: Build & Test Java Wrapper
-    if: "! contains(github.event.head_commit.message, '[skip ci]') && false"
+    if: "! contains(github.event.head_commit.message, '[skip ci]')"
     runs-on: macos-latest
+    strategy:
+      matrix:
+        jdk-version: [11]
+        jvm-build-version: [11]
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK 11
+      - name: Set up JDK ${{ matrix.jdk-version }}
         uses: actions/setup-java@v2
         with:
-          java-version: "11"
           distribution: "adopt"
-      - name: Cache Gradle packages
-        uses: actions/cache@v2
+          java-version: |
+            ${{ matrix.jdk-version }}
+      - name: Set up JVM for building ${{ matrix.jvm-build-version }}
+        uses: actions/setup-java@v2
         with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+          distribution: "adopt"
+          java-version: |
+            ${{ matrix.jdk-version }}
+      - name: Show env
+        run: env | grep -i java
       - name: Build with Gradle
         working-directory: ./wrappers/java
-        run: ./gradlew build
-      - name: Cleanup Gradle Cache
-        # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
-        # Restoring these files from a GitHub Actions cache might cause problems for future builds.
-        run: |
-          rm -f ~/.gradle/caches/modules-2/modules-2.lock
-          rm -f ~/.gradle/caches/modules-2/gc.properties
+        run: ./gradlew build -Dorg.gradle.java.home=$JAVA_HOME_${{ matrix.jdk-version }}_arm64 -PtargetVersion=${{ matrix.jdk-version }} --stacktrace --debug
