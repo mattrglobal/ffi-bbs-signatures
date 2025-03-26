@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Base64;
+import java.util.Random;
 
 import static org.junit.Assert.*;
 
@@ -174,11 +175,17 @@ public class BbsSignatureTest {
     public void canVerifyMessage() {
         KeyPair keyPair = getBls12381G2KeyPair();
 
-        byte[][] messages = {"message1".getBytes()};
+        int numberOfMessages = 200;
+        byte[][] messages = new byte[numberOfMessages][200];
+        Random random = new Random();
+        for (int i = 0; i < numberOfMessages; i++) {
+            random.nextBytes(messages[i]);
+        }
+
         byte[] bbsKey = Bbs.blsPublicToBbsPublicKey(keyPair.publicKey, messages.length);
         byte[] secretKey = keyPair.secretKey;
 
-        byte[] signature = new byte[Bbs.getSignatureSize()];
+        byte[] signature = null;
 
         try {
             signature = Bbs.sign(secretKey, bbsKey, messages);
@@ -204,9 +211,15 @@ public class BbsSignatureTest {
         KeyPair keyPair = getBls12381G2KeyPair();
         byte[] publicKey = keyPair.publicKey;
         byte[] secretKey = keyPair.secretKey;
-        byte[][] messages = {"message1".getBytes()};
 
-        byte[] signature = new byte[Bbs.getSignatureSize()];
+        int numberOfMessages = 200;
+        byte[][] messages = new byte[numberOfMessages][200];
+        Random random = new Random();
+        for (int i = 0; i < numberOfMessages; i++) {
+            random.nextBytes(messages[i]);
+        }
+
+        byte[] signature = null;
 
         try {
             signature = Bbs.blsSign(secretKey, publicKey, messages);

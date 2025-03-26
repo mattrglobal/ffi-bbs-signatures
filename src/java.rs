@@ -14,39 +14,67 @@ use jni::sys::{jbyte, jbyteArray, jint, jlong};
 
 use crate::bbs_blind_commitment::{
     bbs_blind_commitment_context_add_message_bytes,
-    bbs_blind_commitment_context_add_message_prehashed, bbs_blind_commitment_context_finish,
-    bbs_blind_commitment_context_init, bbs_blind_commitment_context_set_nonce_bytes,
-    bbs_blind_commitment_context_set_public_key, bbs_blind_signature_size,
+    bbs_blind_commitment_context_add_message_prehashed,
+    bbs_blind_commitment_context_finish,
+    bbs_blind_commitment_context_init,
+    bbs_blind_commitment_context_set_nonce_bytes,
+    bbs_blind_commitment_context_set_public_key,
+    bbs_blind_signature_size,
 };
 use crate::bbs_blind_sign::{
-    bbs_blind_sign_context_add_message_bytes, bbs_blind_sign_context_add_message_prehashed,
-    bbs_blind_sign_context_finish, bbs_blind_sign_context_init,
-    bbs_blind_sign_context_set_commitment, bbs_blind_sign_context_set_public_key,
-    bbs_blind_sign_context_set_secret_key, bbs_blinding_factor_size, bbs_unblind_signature,
+    bbs_blind_sign_context_add_message_bytes,
+    bbs_blind_sign_context_add_message_prehashed,
+    bbs_blind_sign_context_finish,
+    bbs_blind_sign_context_init,
+    bbs_blind_sign_context_set_commitment,
+    bbs_blind_sign_context_set_public_key,
+    bbs_blind_sign_context_set_secret_key,
+    bbs_blinding_factor_size,
+    bbs_unblind_signature,
 };
 use crate::bbs_create_proof::{
-    CREATE_PROOF_CONTEXT,
-    bbs_create_proof_context_add_proof_message_bytes, bbs_create_proof_context_finish,
-    bbs_create_proof_context_init, bbs_create_proof_context_set_nonce_bytes,
+    bbs_create_proof_context_add_proof_message_bytes,
+    bbs_create_proof_context_finish,
+    bbs_create_proof_context_init,
+    bbs_create_proof_context_set_nonce_bytes,
     bbs_create_proof_context_set_signature,
     bbs_create_proof_context_size,
+    bbs_create_proof_context_set_public_key
 };
 use crate::bbs_sign::*;
 use crate::bbs_verify_proof::{
-    VERIFY_PROOF_CONTEXT,
-    bbs_verify_proof_context_add_message_bytes, bbs_verify_proof_context_add_message_prehashed,
-    bbs_verify_proof_context_finish, bbs_verify_proof_context_init,
-    bbs_verify_proof_context_set_nonce_bytes, bbs_verify_proof_context_set_proof,
+    bbs_verify_proof_context_add_message_bytes,
+    bbs_verify_proof_context_add_message_prehashed,
+    bbs_verify_proof_context_finish,
+    bbs_verify_proof_context_init,
+    bbs_verify_proof_context_set_nonce_bytes,
+    bbs_verify_proof_context_set_proof,
+    bbs_verify_proof_context_set_public_key
 };
-use crate::bls::{bls_public_key_g1_size, bls_public_key_g2_size, bls_secret_key_size};
+use crate::bls::{
+    bls_public_key_g1_size,
+    bls_public_key_g2_size,
+    bls_secret_key_size
+};
 use crate::*;
 use crate::{
-    bls_generate_blinded_g1_key, bls_generate_blinded_g2_key, bls_generate_g1_key,
+    bls_generate_blinded_g1_key,
+    bls_generate_blinded_g2_key,
+    bls_generate_g1_key,
     bls_generate_g2_key,
 };
-use bbs::keys::{DeterministicPublicKey, KeyGenOption, SecretKey, DETERMINISTIC_PUBLIC_KEY_COMPRESSED_SIZE, PublicKey};
-use bbs::{ToVariableLengthBytes, FR_COMPRESSED_SIZE, G1_COMPRESSED_SIZE};
-
+use bbs::keys::{
+    DeterministicPublicKey,
+    KeyGenOption,
+    SecretKey,
+    DETERMINISTIC_PUBLIC_KEY_COMPRESSED_SIZE,
+    PublicKey
+};
+use bbs::{
+    ToVariableLengthBytes,
+    FR_COMPRESSED_SIZE,
+    G1_COMPRESSED_SIZE
+};
 use std::cell::RefCell;
 
 thread_local! {
@@ -173,7 +201,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bls_1generate_1blinded_1g1_1key(
     public_key: jbyteArray,
     secret_key: jbyteArray,
 ) -> jint {
-    let ikm =match env.convert_byte_array(seed) {
+    let ikm = match env.convert_byte_array(seed) {
         Err(_) => return 1,
         Ok(s) => s,
     };
@@ -310,7 +338,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1sign_1set_1secret_1key(
                 2
             } else {
                 let mut error = ExternError::success();
-                let byte_array = ByteArray::from(s);
+                let byte_array = ByteArray::from(&s);
                 bbs_sign_context_set_secret_key(handle as u64, byte_array, &mut error)
             }
         }
@@ -352,7 +380,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1sign_1add_1message_1bytes(
         Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
-            let byte_array = ByteArray::from(s);
+            let byte_array = ByteArray::from(&s);
             bbs_sign_context_add_message_bytes(handle as u64, byte_array, &mut error)
         }
     }
@@ -370,7 +398,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1sign_1add_1message_1prehashed(
         Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
-            let byte_array = ByteArray::from(s);
+            let byte_array = ByteArray::from(&s);
             bbs_sign_context_add_message_prehashed(handle as u64, byte_array, &mut error)
         }
     }
@@ -414,7 +442,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1add_1message_1bytes(
         Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
-            let byte_array = ByteArray::from(s);
+            let byte_array = ByteArray::from(&s);
             bbs_verify_context_add_message_bytes(handle as u64, byte_array, &mut error)
         }
     }
@@ -432,7 +460,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1add_1message_1prehashed(
         Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
-            let byte_array = ByteArray::from(s);
+            let byte_array = ByteArray::from(&s);
             bbs_verify_context_add_message_prehashed(handle as u64, byte_array, &mut error)
         }
     }
@@ -450,7 +478,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1set_1public_1key(
         Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
-            let byte_array = ByteArray::from(s);
+            let byte_array = ByteArray::from(&s);
             bbs_verify_context_set_public_key(handle as u64, byte_array, &mut error)
         }
     }
@@ -471,7 +499,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1set_1signature(
                 2
             } else {
                 let mut error = ExternError::success();
-                let byte_array = ByteArray::from(s);
+                let byte_array = ByteArray::from(&s);
                 bbs_verify_context_set_signature(handle as u64, byte_array, &mut error)
             }
         }
@@ -512,7 +540,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1commitment_1add_1message_1
         Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
-            let byte_array = ByteArray::from(s);
+            let byte_array = ByteArray::from(&s);
             bbs_blind_commitment_context_add_message_bytes(
                 handle as u64,
                 index as u32,
@@ -536,7 +564,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1commitment_1add_1prehashed
         Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
-            let byte_array = ByteArray::from(s);
+            let byte_array = ByteArray::from(&s);
             bbs_blind_commitment_context_add_message_prehashed(
                 handle as u64,
                 index as u32,
@@ -559,7 +587,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1commitment_1set_1public_1k
         Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
-            let byte_array = ByteArray::from(s);
+            let byte_array = ByteArray::from(&s);
             bbs_blind_commitment_context_set_public_key(handle as u64, byte_array, &mut error)
         }
     }
@@ -577,7 +605,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1commitment_1set_1nonce_1by
         Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
-            let byte_array = ByteArray::from(s);
+            let byte_array = ByteArray::from(&s);
             bbs_blind_commitment_context_set_nonce_bytes(handle as u64, byte_array, &mut error)
         }
     }
@@ -642,7 +670,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1sign_1set_1secret_1key(
                 2
             } else {
                 let mut error = ExternError::success();
-                let byte_array = ByteArray::from(s);
+                let byte_array = ByteArray::from(&s);
                 bbs_blind_sign_context_set_secret_key(handle as u64, byte_array, &mut error)
             }
         }
@@ -661,7 +689,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1sign_1set_1public_1key(
         Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
-            let byte_array = ByteArray::from(s);
+            let byte_array = ByteArray::from(&s);
             bbs_blind_sign_context_set_public_key(handle as u64, byte_array, &mut error)
         }
     }
@@ -679,7 +707,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1sign_1set_1commitment(
         Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
-            let byte_array = ByteArray::from(s);
+            let byte_array = ByteArray::from(&s);
             bbs_blind_sign_context_set_commitment(handle as u64, byte_array, &mut error)
         }
     }
@@ -698,7 +726,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1sign_1add_1message_1bytes(
         Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
-            let byte_array = ByteArray::from(s);
+            let byte_array = ByteArray::from(&s);
             bbs_blind_sign_context_add_message_bytes(
                 handle as u64,
                 index as u32,
@@ -722,7 +750,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1blind_1sign_1add_1prehashed(
         Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
-            let byte_array = ByteArray::from(s);
+            let byte_array = ByteArray::from(&s);
             bbs_blind_sign_context_add_message_prehashed(
                 handle as u64,
                 index as u32,
@@ -773,8 +801,8 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1unblind_1signature(
 
     let mut signature = ByteBuffer::default();
     let res = bbs_unblind_signature(
-        ByteArray::from(bs),
-        ByteArray::from(bf),
+        ByteArray::from(&bs),
+        ByteArray::from(&bf),
         &mut signature,
         &mut err,
     );
@@ -812,15 +840,8 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1set_1publ
         Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
-            // let byte_array = ByteArray::from(s.clone());
-            // bbs_create_proof_context_set_public_key(handle as u64, byte_array, &mut error)
-            CREATE_PROOF_CONTEXT.call_with_result_mut(&mut error, handle as u64, |ctx| -> Result<(), BbsFfiError> {
-                use std::convert::TryFrom;
-                let v = PublicKey::try_from(s)?;
-                ctx.public_key = Some(v);
-                Ok(())
-            });
-            error.get_code().code()
+            let byte_array = ByteArray::from(&s);
+            bbs_create_proof_context_set_public_key(handle as u64, byte_array, &mut error)
         }
     }
 }
@@ -837,7 +858,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1set_1sign
         Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
-            let byte_array = ByteArray::from(s);
+            let byte_array = ByteArray::from(&s);
             let res = bbs_create_proof_context_set_signature(handle as u64, byte_array, &mut error);
             if res != 0 {
                 update_last_error(error.get_message().as_str());
@@ -859,7 +880,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1set_1nonc
         Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
-            let byte_array = ByteArray::from(s);
+            let byte_array = ByteArray::from(&s);
             bbs_create_proof_context_set_nonce_bytes(handle as u64, byte_array, &mut error)
         }
     }
@@ -879,7 +900,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1add_1proo
         Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
-            let byte_array = ByteArray::from(s);
+            let byte_array = ByteArray::from(&s);
             let mut bf_byte_array = ByteArray::default();
             let proof_msg_type = match xtype {
                 1 => ProofMessageType::Revealed,
@@ -888,7 +909,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1create_1proof_1context_1add_1proo
                     match env.convert_byte_array(blinding_factor) {
                         Err(_) => return 0,
                         Ok(bf) => {
-                            bf_byte_array = ByteArray::from(bf);
+                            bf_byte_array = ByteArray::from(&bf);
                         }
                     };
                     ProofMessageType::HiddenExternalBlinding
@@ -954,7 +975,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1add_1mess
         Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
-            let byte_array = ByteArray::from(s);
+            let byte_array = ByteArray::from(&s);
             bbs_verify_proof_context_add_message_bytes(
                 handle as u64,
                 byte_array,
@@ -976,7 +997,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1add_1mess
         Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
-            let byte_array = ByteArray::from(s);
+            let byte_array = ByteArray::from(&s);
             bbs_verify_proof_context_add_message_prehashed(
                 handle as u64,
                 byte_array,
@@ -1020,15 +1041,8 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1set_1publ
         Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
-            // let byte_array = ByteArray::from(s);
-            // bbs_verify_proof_context_set_public_key(handle as u64, byte_array, &mut error)
-            VERIFY_PROOF_CONTEXT.call_with_result_mut(&mut error, handle as u64, |ctx| -> Result<(), BbsFfiError> {
-                use std::convert::TryFrom;
-                let v = PublicKey::try_from(s)?;
-                ctx.public_key = Some(v);
-                Ok(())
-            });
-            error.get_code().code()
+            let byte_array = ByteArray::from(&s);
+            bbs_verify_proof_context_set_public_key(handle as u64, byte_array, &mut error)
         }
     }
 }
@@ -1045,7 +1059,7 @@ pub extern "C" fn Java_bbs_signatures_Bbs_bbs_1verify_1proof_1context_1set_1nonc
         Err(_) => 1,
         Ok(s) => {
             let mut error = ExternError::success();
-            let byte_array = ByteArray::from(s);
+            let byte_array = ByteArray::from(&s);
             bbs_verify_proof_context_set_nonce_bytes(handle as u64, byte_array, &mut error)
         }
     }
